@@ -1,0 +1,72 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+
+<h3>{{#str}} supporters, block_edusupport {{/str}}</h3>
+<p>{{#str}} supporters:description, block_edusupport {{/str}}</p>
+<ul>
+    {{#supporters}}
+        <li>
+            <input type="text" id="{{uniqid}}-setsupporter-{{id}}" onkeyup="var inp = this; require(['block_edusupport/courseconfig'], function(COURSE) { COURSE.setSupporter('{{uniqid}}', {{courseid}}, {{id}}, inp.value); });" value="{{supportlevel}}" />&nbsp;
+            <label for="{{uniqid}}-setsupporter-{{id}}">{{firstname}} {{lastname}} ({{email}})</label>
+        </li>
+    {{/supporters}}
+</ul>
+
+<h3>{{#str}} targetforum, block_edusupport {{/str}}</h3>
+<p>{{#str}} targetforum:description, block_edusupport {{/str}}</p>
+<table border="0">
+    <thead>
+        <tr>
+            {{#canconfigglobal}} <th>{{#str}} coresystem {{/str}}<sup>1)</sup></th> {{/canconfigglobal}}
+            <th>{{#str}} course {{/str}}</th>
+            <th>{{#str}} name {{/str}}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#forums}}
+            <tr id="{{uniqid}}-forum-{{id}}">
+                {{#canconfigglobal}}
+                    <td>
+                        {{#selectedforglobal}}
+                            {{#pix}} /t/approve, core, {{#str}} select_isselected, block_edusupport {{/str}} {{/pix}}
+                        {{/selectedforglobal}}
+                        {{^selectedforglobal}}
+                            <a href="#" class="btn btn-secondary" onclick="require(['block_edusupport/courseconfig'], function(COURSE) { COURSE.setDefault('{{uniqid}}', {{id}}, 1); });">{{#str}} select {{/str}}</a>
+                        {{/selectedforglobal}}
+                    </td>
+                {{/canconfigglobal}}
+                <td>
+                    {{#selectedforglobal}}
+                        {{#pix}} /t/delete, core, {{#str}} select_unavailable, block_edusupport {{/str}} {{/pix}}
+                    {{/selectedforglobal}}
+                    {{^selectedforglobal}}
+                        {{#selectedforcourse}}
+                            {{#pix}} /t/approve, core, {{#str}} select_isselected, block_edusupport {{/str}} {{/pix}}
+                        {{/selectedforcourse}}
+                        {{^selectedforcourse}}
+                            <a href="#" class="btn btn-secondary" onclick="require(['block_edusupport/courseconfig'], function(COURSE) { COURSE.setDefault('{{uniqid}}', {{id}}); });">{{#str}} select {{/str}}</a>
+                        {{/selectedforcourse}}
+                    {{/selectedforglobal}}
+                </td>
+                <td>{{name}}</td>
+            </tr>
+        {{/forums}}
+    </tbody>
+</table>
+{{#canconfigglobal}}
+<p><small><sup>1)</sup>{{#str}} targetforum:core:description, block_edusupport {{/str}}</small></p>
+{{/canconfigglobal}}

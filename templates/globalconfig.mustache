@@ -1,0 +1,33 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+
+NOT USED ANYMORE.
+
+<h3>{{#str}} targetforum, block_edusupport {{/str}}</h3>
+<p>{{#str}} targetforum:description, block_edusupport {{/str}}</p>
+<ul>
+    {{#forums}}
+        <li>
+        {{^selectedforglobal}}
+            <a href="#" class="btn btn-secondary" onclick="require(['block_edusupport/globalconfig'], function(GLOBAL) { GLOBAL.setDefault('{{uniqid}}', {{id}}); });">{{name}}</a>
+        {{/selectedforglobal}}
+        {{#selectedforglobal}}
+            <a href="#" class="btn btn-primary">{{name}}</a>
+        {{/selectedforglobal}}
+        </li>
+    {{/forums}}
+</ul>
