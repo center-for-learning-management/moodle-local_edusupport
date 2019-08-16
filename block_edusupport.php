@@ -164,7 +164,7 @@ class block_edusupport extends block_list {
     public static function close_issue($discussionid) {
         global $DB, $USER;
         $issue = $DB->get_record('block_edusupport_issues', array('discussionid' => $discussionid));
-        $discussion = $DB->get_record('forum_discussions', array('id' => $issue->discussionid));
+        $discussion = $DB->get_record('forum_discussions', array('id' => $discussionid));
 
         $supportlevel = self::get_supporter_level($discussion->course, $USER->id);
         if (!empty($supportlevel)) {
