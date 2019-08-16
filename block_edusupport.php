@@ -163,7 +163,7 @@ class block_edusupport extends block_list {
     **/
     public static function close_issue($discussionid) {
         global $DB, $USER;
-        $issue = $DB->get_record('block_edusupport_issues', array('discussionid' => $discussionid));
+        $issue = self::get_issue($discussionid);
         $discussion = $DB->get_record('forum_discussions', array('id' => $discussionid));
 
         $supportlevel = self::get_supporter_level($discussion->course, $USER->id);
@@ -278,6 +278,23 @@ class block_edusupport extends block_list {
             }
         }
         return ($failures == 0);
+    }
+    /**
+     * Loads an issue from database
+     * @param discussionid the discussionid of that issue
+     * @return the issue
+     */
+    public static function get_issue($discussionid) {
+        global $DB;
+        $issue = $DB->get_record('block_edusupport_issues', array('discussionid' => $discussionid));
+        if (empty($issue->id)) {
+            $discussion = $DB->get_record('forum_discussions', array('id' => $discussionid));
+            if (empty($discussion->id)) return;
+            // Attention: This issue should exist. We create it.
+            $issue = (object) array('courseid' => $discussion->course, 'discussionid' => $discussionid, 'currentsupporter' => 0, 'currentlevel' => '', 'opened' => 1, 'created' =>  time());
+            $issue->id = $DB->insert_record('block_edusupport_issues', $issue);
+        }
+        return $issue;
     }
     /**
      * @return true if user is sysadmin

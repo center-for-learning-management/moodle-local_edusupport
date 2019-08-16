@@ -68,12 +68,7 @@ class block_edusupport_external extends external_api {
                 // Sorry, this discussion is not from a support forum.
                 continue;
             }
-            $issue = $DB->get_record('block_edusupport_issues', array('discussionid' => $discussionid));
-            if (empty($issue->id)) {
-                // Attention: This issue should exist. We create it.
-                $issue = (object) array('courseid' => $discussion->course, 'discussionid' => $discussionid, 'currentsupporter' => 0, 'currentlevel' => '', 'opened' => 1, 'created' =>  time());
-                $issue->id = $DB->insert_record('block_edusupport_issues', $issue);
-            }
+            $issue = block_edusupport::get_issue($discussionid);
             if (empty($issue->currentsupporter)) {
                 $styles[$discussionid] = block_edusupport::$STYLE_UNASSIGNED;
             } elseif ($issue->opened == 1) {
