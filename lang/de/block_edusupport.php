@@ -21,7 +21,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$string['pluginname'] = 'eduSupport';
+$string['pluginname'] = 'Hilfe';
 $string['edusupport:addinstance'] = 'eduSupport Block hinzufügen';
 $string['edusupport:manage'] = 'eduSupport Manage Capability';
 $string['edusupport:myaddinstance'] = 'eduSupport Block hinzufügen';
@@ -41,6 +41,8 @@ $string['create_issue_success_goto'] = 'Anfrage öffnen';
 $string['create_issue_success_close'] = 'Schließen';
 $string['description'] = 'Beschreibung';
 $string['description_missing'] = 'Bitte geben Sie eine detaillierte Beschreibung an!';
+$string['goto_tutorials'] = 'Hilfe & Anleitungen';
+$string['goto_targetforum'] = 'Supportforum';
 $string['edusupport:manage'] = 'Verwalten';
 $string['header'] = 'Hilfe in <i>{$a}</i> anfordern';
 $string['issue_assign'] = 'Zuordnen';
@@ -59,6 +61,7 @@ $string['select_isselected'] = 'Derzeit ausgewählt';
 $string['select_unavailable'] = 'Nicht verfügbar';
 $string['subject'] = 'Betreff';
 $string['subject_missing'] = 'Bitte geben Sie einen stichwortartigen Titel an, der das Problem beschreibt!';
+$string['support_area'] = 'Hilfe & Anleitungen';
 $string['supporters'] = 'Supportmitarbeiter/innen';
 $string['supporters:description'] = 'Alle Nutzer/innen des Kurses, die zumindest als "non-editing Teacher" eingestuft sind, stehen als Supportmitarbeiter/innen zur Verfügung. Geben Sie ein beliebiges Supportlevel (wird immer alphabetisch sortiert) an, um jemanden als Mitarbeiter/in einzusetzen!';
 $string['targetforum'] = 'Supportforum';

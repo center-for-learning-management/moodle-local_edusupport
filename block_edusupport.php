@@ -476,9 +476,25 @@ class block_edusupport extends block_list {
                 "href" => '#',
                 "id" => 'btn-block_edusupport_create_issue',
                 "onclick" => 'require(["block_edusupport/main"], function(MAIN){ MAIN.showBox(' . $targetforum . '); }); return false;',
+                "icon" => '/pix/t/messages.svg',
+            );
+            $cm = $DB->get_record('course_modules', array('course' => $forum->course, 'instance' => $targetforum));
+            $options[] = array(
+                "title" => get_string('goto_targetforum', 'block_edusupport'),
+                "href" => $CFG->wwwroot . '/mod/forum/view.php?id=' . $cm->id,
+                "class" => '',
                 "icon" => '/pix/i/publish.svg',
             );
+            if (file_exists($CFG->dirroot . '/blocks/eduvidual/block_eduvidual.php')) {
+                $options[] = array(
+                    "title" => get_string('goto_tutorials', 'block_edusupport'),
+                    "href" => $CFG->wwwroot . '/course/view.php?id=' . $forum->course . '&section=3',
+                    "class" => '',
+                    "icon" => '/pix/docs.svg',
+                );
+            }
 
+            /*
             $sql = "SELECT i.id issueid, i.opened opened, s.courseid courseid, c.fullname coursename, d.id discussionid, d.name discussionname
                         FROM {block_edusupport} s, {course} c, {forum_discussions} d, {block_edusupport_issues} i
                         WHERE s.courseid=d.course
@@ -507,6 +523,7 @@ class block_edusupport extends block_list {
                     "style" => (!empty($issue->opened) && $issue->opened == 1) ? self::$STYLE_OPENED : self::$STYLE_CLOSED,
                 );
             }
+            */
         }
 
         foreach($options AS $option) {
