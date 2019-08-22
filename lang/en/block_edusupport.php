@@ -21,7 +21,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$string['pluginname'] = 'eduSupport';
+$string['pluginname'] = 'Help';
 $string['edusupport:addinstance'] = 'Add eduSupport block';
 $string['edusupport:myaddinstance'] = 'Add eduSupport block';
 
@@ -31,7 +31,7 @@ $string['be_more_accurate'] = 'Please be more accurate when describing your prob
 $string['contactphone'] = 'Telephone';
 $string['contactphone_missing'] = 'Please enter your telephone number';
 $string['courseconfig'] = 'Course config';
-$string['create_issue'] = 'create issue';
+$string['create_issue'] = 'Create issue';
 $string['create_issue_error_title'] = 'Error';
 $string['create_issue_error_description'] = 'Your issue could not be stored!';
 $string['create_issue_success_title'] = 'Success';
@@ -40,6 +40,8 @@ $string['create_issue_success_goto'] = 'view issue';
 $string['create_issue_success_close'] = 'close';
 $string['description'] = 'Description';
 $string['description_missing'] = 'Missing description';
+$string['goto_tutorials'] = 'Documents & Tutorials';
+$string['goto_targetforum'] = 'Supportforum';
 $string['edusupport:manage'] = 'Manage';
 $string['header'] = 'Request for help in <i>{$a}</i>';
 $string['issue_assign'] = 'Assign issue';
@@ -58,6 +60,7 @@ $string['select_isselected'] = 'Currently selected';
 $string['select_unavailable'] = 'Unavailable';
 $string['subject'] = 'Subject';
 $string['subject_missing'] = 'Missing subject';
+$string['support_area'] = 'Helpdesk & Tutorials';
 $string['supporters'] = 'Supporters';
 $string['supporters:description'] = 'All users of the course, that are enrolled at least as "non-editing teacher" can be configured as supporter. Just enter anything as supportlevel to activate somebody as supporter!';
 $string['targetforum'] = 'Supportforum';
