@@ -529,8 +529,10 @@ class block_edusupport extends block_base {
         foreach($options AS $option) {
             $tx = $option["title"];
             if (!empty($option["icon"])) $tx = "<img src='" . $option["icon"] . "' class='icon'>" . $tx;
-            if (!empty($option["href"])) $tx = "<a href='" . $option["href"] . "' class='btn' " . ((!empty($option["target"])) ? " target='" . $option["target"] : "") . "'>" . $tx . "</a>";
-            else  $tx = "<a class='btn'>" . $tx . "</a>";
+            if (!empty($option["href"])) $tx = "
+                <a href='" . $option["href"] . "' " . ((!empty($option["onclick"])) ? " onclick=\"" . $option["onclick"] . "\"" : "") . "
+                   " . ((!empty($option["target"])) ? " target=\"" . $option["target"] . "\"" : "") . "'>" . $tx . "</a>";
+            else  $tx = "<a>" . $tx . "</a>";
             $this->content->text .= $tx . "<br />";
         }
 
