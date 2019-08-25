@@ -410,7 +410,7 @@ class block_edusupport extends block_base {
         $PAGE->requires->css('/blocks/edusupport/style/spinner.css');
 
         $this->content = (object) array(
-            'items' => array(),
+            'text' => '',
             'footer' => array()
         );
         $options = array();
@@ -527,32 +527,13 @@ class block_edusupport extends block_base {
         }
 
         foreach($options AS $option) {
-            $this->content->text .= "
-                <a href='" . $option["href"] . "' class='btn' " . ((!empty($option["target"])) ? " target='" . $option["target"] . "'" : "") . ">
-                    <img src='" . $option["icon"] . "' class='icon' />
-                    " . $option["title"] . "
-                </a>";
+            $tx = $option["title"];
+            if (!empty($option["icon"])) $tx = "<img src='" . $option["icon"] . "' class='icon'>" . $tx;
+            if (!empty($option["href"])) $tx = "<a href='" . $option["href"] . "' class='btn' " . ((!empty($option["target"])) ? " target='" . $option["target"] : "") . "'>" . $tx . "</a>";
+            else  $tx = "<a class='btn'>" . $tx . "</a>";
+            $this->content->text .= $tx . "<br />";
         }
-        /*
-        foreach($options AS $option) {
-            if (isset($option["href"])) {
-                $this->content->items[] = html_writer::tag('a', $option["title"], $option); // array('href' => $option["href"])
-                if (!empty($option["icon"])) {
-                    $this->content->icons[] = html_writer::empty_tag('img', array('src' => $option["icon"], 'class' => 'icon'));
-                } else {
-                    $this->content->icons[] = '&nbsp;';
-                }
-                if (isset($option["subtitle"])) {
-                    $this->content->items[] = html_writer::tag('p',  $option["subtitle"]); // array('href' => $option["href"])
-                    $this->content->icons[] = '&nbsp;';
-                }
-            } else {
-                if (!isset($option["class"])) { $option["class"] = 'divider'; }
-                $this->content->items[] = html_writer::tag('div', $option["title"], $option);
-                $this->content->icons[] = '';
-            }
-        }
-        */
+
         return $this->content;
     }
     public function hide_header() {
