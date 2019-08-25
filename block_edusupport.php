@@ -26,7 +26,7 @@ defined('MOODLE_INTERNAL') || die;
 require_once($CFG->libdir . '/adminlib.php');
 require_once($CFG->dirroot . '/blocks/moodleblock.class.php');
 
-class block_edusupport extends block_list {
+class block_edusupport extends block_base {
     public static $STYLE_UNASSIGNED = 'font-weight: bold; background-color: rgba(255, 0, 0, 0.3);';
     public static $STYLE_OPENED = 'background-color: rgba(255,246,143, 0.6)';
     public static $STYLE_CLOSED = 'background-color: rgba(0, 255, 0, 0.3)';
@@ -527,6 +527,14 @@ class block_edusupport extends block_list {
         }
 
         foreach($options AS $option) {
+            $this->content->text .= "
+                <a href='" . $option["href"] . "' class='btn' " . ((!empty($option["target"])) ? " target='" . $option["target"] . "'" : "") . ">
+                    <img src='" . $option["icon"] . "' class='icon' />
+                    " . $option["title"] . "
+                </a>";
+        }
+        /*
+        foreach($options AS $option) {
             if (isset($option["href"])) {
                 $this->content->items[] = html_writer::tag('a', $option["title"], $option); // array('href' => $option["href"])
                 if (!empty($option["icon"])) {
@@ -544,6 +552,7 @@ class block_edusupport extends block_list {
                 $this->content->icons[] = '';
             }
         }
+        */
         return $this->content;
     }
     public function hide_header() {
