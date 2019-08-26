@@ -107,6 +107,7 @@ class block_edusupport extends block_base {
             break;
         }
         if (empty($cm->id)) return -1;
+        if (empty($USER->id) || !isguestuser($USER)) return -1;
 
         block_edusupport::course_manual_enrolments(array($cm->course), array($USER->id), 5); // Enrol as student
 
