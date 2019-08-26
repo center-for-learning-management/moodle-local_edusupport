@@ -269,6 +269,7 @@ class block_edusupport extends block_base {
                     $instance->status = $data->status;
                 }
                 foreach ($userids AS $userid) {
+                    if (empty($userid)) continue;
                     if ($roleid == -1) {
                         $enrol->unenrol_user($instance, $userid);
                     } else {
