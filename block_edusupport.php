@@ -421,14 +421,6 @@ class block_edusupport extends block_base {
         $forum = $DB->get_record('forum', array('id' => $targetforum));
         $supportlevel = self::get_supporter_level($forum->course, $USER->id);
 
-        if ($COURSE->id > 1 && self::can_config_course($COURSE->id)) {
-            $options[] = array(
-                "title" => get_string('courseconfig', 'block_edusupport'),
-                "icon" => '/pix/t/edit.svg',
-                "href" => $CFG->wwwroot . '/blocks/edusupport/courseconfig.php?id=' . $COURSE->id
-            );
-        }
-
         if ($targetforum < 0) {
             $options[] = array(
                 "title" => get_string('missing_targetforum', 'block_edusupport'),
@@ -527,6 +519,16 @@ class block_edusupport extends block_base {
             }
             */
         }
+
+        /*
+        if ($COURSE->id > 1 && self::can_config_course($COURSE->id)) {
+            $options[] = array(
+                "title" => get_string('courseconfig', 'block_edusupport'),
+                "icon" => '/pix/t/edit.svg',
+                "href" => $CFG->wwwroot . '/blocks/edusupport/courseconfig.php?id=' . $COURSE->id
+            );
+        }
+        */
 
         foreach($options AS $option) {
             $tx = $option["title"];
