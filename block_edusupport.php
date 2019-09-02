@@ -90,7 +90,7 @@ class block_edusupport extends block_base {
 
         require_once($CFG->dirroot . '/blocks/edusupport/block_edusupport.php');
         $targetforum = block_edusupport::get_target();
-        if ($targetforum < 0) return -1;
+        if ($targetforum < 0) return array();
 
         // Check if this coursemodule has a groupmode
         $sql = "SELECT cm.*
@@ -106,8 +106,8 @@ class block_edusupport extends block_base {
             }
             break;
         }
-        if (empty($cm->id)) return -1;
-        if (empty($USER->id) || !isguestuser($USER)) return -1;
+        if (empty($cm->id)) return array();
+        if (empty($USER->id) || isguestuser($USER)) return array();
 
         block_edusupport::course_manual_enrolments(array($cm->course), array($USER->id), 5); // Enrol as student
 
@@ -520,15 +520,14 @@ class block_edusupport extends block_base {
             */
         }
 
-        /*
-        if ($COURSE->id > 1 && self::can_config_course($COURSE->id)) {
+
+        if (false && $COURSE->id > 1 && self::can_config_global()) { //self::can_config_course($COURSE->id)) {
             $options[] = array(
                 "title" => get_string('courseconfig', 'block_edusupport'),
                 "icon" => '/pix/t/edit.svg',
                 "href" => $CFG->wwwroot . '/blocks/edusupport/courseconfig.php?id=' . $COURSE->id
             );
         }
-        */
 
         foreach($options AS $option) {
             $tx = $option["title"];

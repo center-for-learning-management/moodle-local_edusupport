@@ -117,6 +117,7 @@ class block_edusupport_external extends external_api {
         $PAGE->set_context(context_module::instance($cm->id));
 
         $groups = block_edusupport::get_groups();
+        error_log("Groups: " . print_r($groups, 1));
         foreach ($groups AS $group) {
             if (isset($post_to_group->id)) continue;
             if (empty($to_group) || $to_group == $group->id) {
