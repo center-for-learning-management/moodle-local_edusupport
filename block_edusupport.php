@@ -479,10 +479,11 @@ class block_edusupport extends block_base {
                 "class" => '',
                 "icon" => '/pix/i/publish.svg',
             );
-            if (file_exists($CFG->dirroot . '/blocks/eduvidual/block_eduvidual.php')) {
+
+            if (!empty(get_config('block_edusupport', 'relativeurlsupportarea'))) {
                 $options[] = array(
                     "title" => get_string('goto_tutorials', 'block_edusupport'),
-                    "href" => $CFG->wwwroot . '/course/view.php?id=' . $forum->course . '&section=3',
+                    "href" => $CFG->wwwroot . get_config('block_edusupport', 'relativeurlsupportarea'),
                     "class" => '',
                     "icon" => '/pix/docs.svg',
                 );
@@ -521,7 +522,7 @@ class block_edusupport extends block_base {
         }
 
 
-        if (false && $COURSE->id > 1 && self::can_config_global()) { //self::can_config_course($COURSE->id)) {
+        if ($COURSE->id > 1 && self::can_config_global()) { //self::can_config_course($COURSE->id)) {
             $options[] = array(
                 "title" => get_string('courseconfig', 'block_edusupport'),
                 "icon" => '/pix/t/edit.svg',

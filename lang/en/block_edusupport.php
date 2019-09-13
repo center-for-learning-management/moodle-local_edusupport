@@ -54,6 +54,7 @@ $string['missing_targetforum'] = 'Missing target forum, must be configured!';
 $string['missing_targetforum_exists'] = 'The configured target forum does not exist. Wrong configuration!';
 $string['only_you'] = 'Only you and our team';
 $string['privacy:metadata'] = 'This plugin does not store any personal data as it uses a forum as target.';
+$string['relativeurlsupportarea'] = 'Relative URL to Supportarea';
 $string['screenshot'] = 'Post screenshot';
 $string['screenshot:description'] = 'A screenshot may help to solve the problem.';
 $string['select_isselected'] = 'Currently selected';

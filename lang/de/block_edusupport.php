@@ -55,6 +55,7 @@ $string['missing_targetforum'] = 'Das Zielforum fehlt und muss konfiguriert werd
 $string['missing_targetforum_exists'] = 'Das konfigurierte Zielforum existiert nicht. Die fehlerhafte Konfiguration muss behoben werden!';
 $string['only_you'] = 'Nur Sie und unser Team';
 $string['privacy:metadata'] = 'Dieses Plugin speichert keine personenbezogenen Daten, da die Informationen in einem Forum abgelegt werden.';
+$string['relativeurlsupportarea'] = 'Relative URL zum Supportbereich';
 $string['screenshot'] = 'Screenshot anhängen';
 $string['screenshot:description'] = 'Ein Screenshot kann bei der Problembehebung helfen!';
 $string['select_isselected'] = 'Derzeit ausgewählt';
