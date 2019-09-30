@@ -500,45 +500,83 @@ class block_edusupport extends block_base {
                 );
             }
 
-            /*
-            $sql = "SELECT i.id issueid, i.opened opened, s.courseid courseid, c.fullname coursename, d.id discussionid, d.name discussionname
-                        FROM {block_edusupport} s, {course} c, {forum_discussions} d, {block_edusupport_issues} i
-                        WHERE s.courseid=d.course
-                            AND s.courseid=c.id
-                            AND d.course=c.id
-                            AND i.discussionid=d.id
-                            AND i.opened=1
-                            AND i.id IN (SELECT DISTINCT(l.issueid) FROM oer_block_edusupport_supportlog l WHERE l.userid=?)
-                        ORDER BY d.timemodified DESC";
-            $issues = $DB->get_records_sql($sql, array($USER->id));
-            //$discussions = $DB->get_records('forum_discussions', array('forum' => $targetforum, 'userid' => $USER->id));
-            $header_printed = '';
-            foreach($issues AS $issue) {
-                if ($header_printed != $issue->coursename) {
-                    $options[] = array(
-                        "title" => $issue->coursename,
-                        "icon" => '/pix/i/publish.svg',
-                        "class" => 'divider',
-                    );
-                    $header_printed = $issue->coursename;
-                }
+            if ($COURSE->id > 1 && self::can_config_global()) { //self::can_config_course($COURSE->id)) {
                 $options[] = array(
-                    "title" => (strlen($issue->discussionname) > 27) ? substr($issue->discussionname, 0, 24) . '...' : $issue->discussionname,
-                    "icon" => '',
-                    "href" => $CFG->wwwroot . '/mod/forum/discuss.php?d=' . $issue->discussionid,
-                    "style" => (!empty($issue->opened) && $issue->opened == 1) ? self::$STYLE_OPENED : self::$STYLE_CLOSED,
+                    "title" => get_string('courseconfig', 'block_edusupport'),
+                    "icon" => '/pix/t/edit.svg',
+                    "href" => $CFG->wwwroot . '/blocks/edusupport/courseconfig.php?id=' . $COURSE->id
                 );
             }
-            */
-        }
 
+            if (!empty($supportlevel)) {
+                // Get open issues with me as supporter.
+                $sql = "SELECT '0' AS id,COUNT(id) AS cnt
+                            FROM {block_edusupport_issues}
+                            WHERE opened=1 AND currentsupporter=?";
+                $tmine = $DB->get_records_sql($sql, array($USER->id));
+                $rmine = $tmine[0];
 
-        if ($COURSE->id > 1 && self::can_config_global()) { //self::can_config_course($COURSE->id)) {
-            $options[] = array(
-                "title" => get_string('courseconfig', 'block_edusupport'),
-                "icon" => '/pix/t/edit.svg',
-                "href" => $CFG->wwwroot . '/blocks/edusupport/courseconfig.php?id=' . $COURSE->id
-            );
+                $options[] = array(
+                    "title" => get_string('issues:openmine', 'block_edusupport', $rmine->cnt),
+                    "icon" => '/pix/i/completion-auto-y.svg',
+                );
+
+                // Get open issues with no supporter.
+                $sql = "SELECT '0' AS id,COUNT(id) AS cnt
+                            FROM {block_edusupport_issues}
+                            WHERE opened=1 AND currentsupporter=0";
+                $tnone = $DB->get_records_sql($sql, array());
+                $rnone = $tnone[0];
+
+                $options[] = array(
+                    "title" => get_string('issues:opennosupporter', 'block_edusupport', $rnone->cnt),
+                    "icon" => '/pix/i/completion-auto-fail.svg',
+                );
+
+                // Get all open issues.
+                $sql = "SELECT '0' AS id,COUNT(id) AS cnt
+                            FROM {block_edusupport_issues}
+                            WHERE opened=1";
+                $tcount = $DB->get_records_sql($sql, array());
+                $rcount = $tcount[0];
+
+                $options[] = array(
+                    "title" => get_string('issues:openall', 'block_edusupport', $rcount->cnt),
+                    "icon" => '/pix/i/completion-auto-n.svg',
+                );
+
+                /*
+                $sql = "SELECT i.id issueid, i.opened opened, s.courseid courseid, c.fullname coursename, d.id discussionid, d.name discussionname
+                            FROM {block_edusupport} s, {course} c, {forum_discussions} d, {block_edusupport_issues} i
+                            WHERE s.courseid=d.course
+                                AND s.courseid=c.id
+                                AND d.course=c.id
+                                AND i.discussionid=d.id
+                                AND i.opened=1
+                                AND i.id IN (SELECT DISTINCT(l.issueid) FROM oer_block_edusupport_supportlog l WHERE l.userid=?)
+                            ORDER BY d.timemodified DESC";
+                $issues = $DB->get_records_sql($sql, array($USER->id));
+
+                //$discussions = $DB->get_records('forum_discussions', array('forum' => $targetforum, 'userid' => $USER->id));
+                $header_printed = '';
+                foreach($issues AS $issue) {
+                    if ($header_printed != $issue->coursename) {
+                        $options[] = array(
+                            "title" => $issue->coursename,
+                            "icon" => '/pix/i/publish.svg',
+                            "class" => 'divider',
+                        );
+                        $header_printed = $issue->coursename;
+                    }
+                    $options[] = array(
+                        "title" => (strlen($issue->discussionname) > 27) ? substr($issue->discussionname, 0, 24) . '...' : $issue->discussionname,
+                        "icon" => '',
+                        "href" => $CFG->wwwroot . '/mod/forum/discuss.php?d=' . $issue->discussionid,
+                        "style" => (!empty($issue->opened) && $issue->opened == 1) ? self::$STYLE_OPENED : self::$STYLE_CLOSED,
+                    );
+                }
+                */
+            }
         }
 
         foreach($options AS $option) {
@@ -548,7 +586,7 @@ class block_edusupport extends block_base {
                 <a href='" . $option["href"] . "' " . ((!empty($option["onclick"])) ? " onclick='" . $option["onclick"] . "'" : "") . "
                    " . ((!empty($option["target"])) ? " target=\"" . $option["target"] . "\"" : "") . "'>" . $tx . "</a>";
             else  $tx = "<a>" . $tx . "</a>";
-            $this->content->text .= $tx . "<br />";
+            $this->content->text .= $tx. "<br />";
         }
 
         return $this->content;

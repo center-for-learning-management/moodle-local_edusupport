@@ -51,6 +51,9 @@ $string['issue_assigned:text'] = 'The support issue was assigned to <a href="{$a
 $string['issue_close'] = 'Close issue';
 $string['issue_closed:subject'] = 'Issue closed';
 $string['issue_closed:text'] = 'Issue closed';
+$string['issues:openmine'] = '{$a} for me';
+$string['issues:opennosupporter'] = '{$a} unassigned';
+$string['issues:openall'] = '{$a} total open';
 $string['missing_targetforum'] = 'Missing target forum, must be configured!';
 $string['missing_targetforum_exists'] = 'The configured target forum does not exist. Wrong configuration!';
 $string['only_you'] = 'Only you and our team';

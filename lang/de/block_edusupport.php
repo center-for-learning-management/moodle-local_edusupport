@@ -52,6 +52,9 @@ $string['issue_assigned:text'] = 'Die Supportanfrage wurde <a href="{$a->wwwroot
 $string['issue_close'] = 'Anfrage schließen';
 $string['issue_closed:subject'] = 'Anfrage wurde geschlossen';
 $string['issue_closed:text'] = 'Anfrage wurde geschlossen';
+$string['issues:openmine'] = '{$a} für mich';
+$string['issues:opennosupporter'] = '{$a} nicht zugeordnet';
+$string['issues:openall'] = '{$a} gesamt offen';
 $string['missing_targetforum'] = 'Das Zielforum fehlt und muss konfiguriert werden!';
 $string['missing_targetforum_exists'] = 'Das konfigurierte Zielforum existiert nicht. Die fehlerhafte Konfiguration muss behoben werden!';
 $string['only_you'] = 'Nur Sie und unser Team';
