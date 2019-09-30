@@ -73,6 +73,14 @@ $functions = array(
         'type'        => 'write',
         'ajax'        => 1,
     ),
+    'block_edusupport_set_archive' => array(
+        'classname'   => 'block_edusupport_external',
+        'methodname'  => 'set_archive',
+        'classpath'   => 'blocks/edusupport/externallib.php',
+        'description' => 'Sets a forum as archive',
+        'type'        => 'write',
+        'ajax'        => 1,
+    ),
     'block_edusupport_set_default' => array(
         'classname'   => 'block_edusupport_external',
         'methodname'  => 'set_default',
