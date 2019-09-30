@@ -301,6 +301,38 @@ class block_edusupport_external extends external_api {
         return new external_value(PARAM_RAW, 'Returns a json encoded array containing potential supporters.');
     }
 
+    public static function set_archive_parameters() {
+        return new external_function_parameters(array(
+            'forumid' => new external_value(PARAM_INT, 'ForumID of archive'),
+        ));
+    }
+    public static function set_archive($forumid) {
+        global $CFG, $DB, $PAGE;
+
+        $params = self::validate_parameters(self::set_archive_parameters(), array('forumid' => $forumid));
+        require_once($CFG->dirroot . '/blocks/edusupport/block_edusupport.php');
+
+        $forum = $DB->get_record('forum', array('id' => $params['forumid']));
+        if (empty($forum->id)) return -1;
+
+        if (block_edusupport::can_config_course($forum->course)){
+            $entry = $DB->get_record('block_edusupport', array('courseid' => $forum->course));
+            if (!empty($entry->courseid)) {
+                $entry->forumid = !empty($entry->forumid) ? $entry->forumid ? 0;
+                $entry->archiveid = $forum->id;
+                $DB->update_record('block_edusupport', $entry);
+            } else {
+                $entry = (object) array('courseid' => $forum->course, 'forumid' => $forum->id, 'archiveid' => 0);
+                $DB->insert_record('block_edusupport', $entry);
+            }
+            return 1;
+        }
+        return 0;
+    }
+    public static function set_archive_returns() {
+        return new external_value(PARAM_INT, 'Returns 1 if successful');
+    }
+
     public static function set_currentsupporter_parameters() {
         return new external_function_parameters(
             array(

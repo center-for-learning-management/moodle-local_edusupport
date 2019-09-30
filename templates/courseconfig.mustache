@@ -33,6 +33,7 @@
         <tr>
             {{#canconfigglobal}} <th>{{#str}} coresystem {{/str}}<sup>1)</sup></th> {{/canconfigglobal}}
             <th>{{#str}} course {{/str}}</th>
+            <th>{{#str}} archive {{/str}}</th>
             <th>{{#str}} name {{/str}}</th>
         </tr>
     </thead>
@@ -61,6 +62,14 @@
                             <a href="#" class="btn btn-secondary" onclick="require(['block_edusupport/courseconfig'], function(COURSE) { COURSE.setDefault('{{uniqid}}', {{id}}); });">{{#str}} select {{/str}}</a>
                         {{/selectedforcourse}}
                     {{/selectedforglobal}}
+                </td>
+                <td>
+                    {{#selectedforarchive}}
+                        {{#pix}} /t/approve, core, {{#str}} select_isselected, block_edusupport {{/str}} {{/pix}}
+                    {{/selectedforarchive}}
+                    {{^selectedforarchive}}
+                        <a href="#" class="btn btn-secondary" onclick="require(['block_edusupport/courseconfig'], function(COURSE) { COURSE.setArchive('{{uniqid}}', {{id}}); });">{{#str}} select {{/str}}</a>
+                    {{/selectedforarchive}}
                 </td>
                 <td>{{name}}</td>
             </tr>

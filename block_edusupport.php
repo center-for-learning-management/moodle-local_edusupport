@@ -204,6 +204,16 @@ class block_edusupport extends block_base {
 
             $log = (object) array('issueid' => $issue->id, 'userid' => $USER->id, 'supportlevel' => $supportlevel, 'created' => time());
             $DB->insert_record('block_edusupport_supportlog', $log);
+
+            // Check if there is an archive.
+            $entry = $DB->get_record('edusupport', array('courseid' => $dforum->course));
+            if (!empty($entry->archiveid)) {
+                forum_move_attachments($discussion, $discussion->forum, $entry->archiveid);
+                $DB->set_field('forum_discussions', 'forum', $entry->archiveid, array('id' => $discussion->id));
+                $DB->set_field('forum_read', 'forumid', $entry->archiveid, array('discussionid' => $discussion->id));
+            }
+
+
             return 1;
         } else {
             return 'no permission';

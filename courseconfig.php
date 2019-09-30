@@ -45,9 +45,12 @@ foreach($cms AS &$cm) {
     if ($forum->id == $targetforum) {
         $forum->selectedforglobal = 1;
     } else {
-        $chk = $DB->get_record('block_edusupport', array('courseid' => $COURSE->id, 'forumid' => $forum->id));
+        $chk = $DB->get_record('block_edusupport', array('courseid' => $COURSE->id));
         if (!empty($chk->forumid) && $chk->forumid == $forum->id) {
             $forum->selectedforcourse = 1;
+        }
+        if (!empty($chk->archiveid) && $chk->archiveid == $forum->id) {
+            $forum->selectedforarchive = 1;
         }
     }
     $forums[] = $forum;

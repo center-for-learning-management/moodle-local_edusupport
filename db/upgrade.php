@@ -105,5 +105,20 @@ function xmldb_block_edusupport_upgrade($oldversion) {
       upgrade_block_savepoint(true, 2019011000, 'edusupport');
     }
 
+    if ($oldversion < 2019093000) {
+        // Define field archiveid to be added to block_edusupport.
+        $table = new xmldb_table('block_edusupport');
+        $field = new xmldb_field('archiveid', XMLDB_TYPE_INTEGER, '20', null, XMLDB_NOTNULL, null, '0', 'forumid');
+
+        // Conditionally launch add field archiveid.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Edusupport savepoint reached.
+        upgrade_block_savepoint(true, 2019093000, 'edusupport');
+    }
+
+
     return true;
 }
