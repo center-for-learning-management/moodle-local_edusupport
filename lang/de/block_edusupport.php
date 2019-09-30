@@ -26,6 +26,7 @@ $string['edusupport:addinstance'] = 'eduSupport Block hinzufügen';
 $string['edusupport:manage'] = 'eduSupport Manage Capability';
 $string['edusupport:myaddinstance'] = 'eduSupport Block hinzufügen';
 
+$string['archive'] = 'Archiv';
 $string['autocreate_orggroup'] = 'Automatisch Gruppen für eduvidual-Organisationen anlegen';
 $string['autocreate_usergroup'] = 'Automatisch private Gruppen für Nutzer/innen anlegen';
 $string['be_more_accurate'] = 'Bitte beschreiben Sie das Problem genauer!';

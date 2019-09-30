@@ -163,7 +163,7 @@ class block_edusupport extends block_base {
      * Close an issue.
     **/
     public static function close_issue($discussionid) {
-        global $DB, $USER;
+        global $CFG, $DB, $USER;
         $issue = self::get_issue($discussionid);
         $discussion = $DB->get_record('forum_discussions', array('id' => $discussionid));
 
@@ -206,8 +206,9 @@ class block_edusupport extends block_base {
             $DB->insert_record('block_edusupport_supportlog', $log);
 
             // Check if there is an archive.
-            $entry = $DB->get_record('edusupport', array('courseid' => $dforum->course));
+            $entry = $DB->get_record('block_edusupport', array('courseid' => $forum->course));
             if (!empty($entry->archiveid)) {
+                require_once($CFG->dirroot . '/mod/forum/lib.php');
                 forum_move_attachments($discussion, $discussion->forum, $entry->archiveid);
                 $DB->set_field('forum_discussions', 'forum', $entry->archiveid, array('id' => $discussion->id));
                 $DB->set_field('forum_read', 'forumid', $entry->archiveid, array('discussionid' => $discussion->id));

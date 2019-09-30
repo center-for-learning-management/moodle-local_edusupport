@@ -31,9 +31,9 @@
 <table border="0">
     <thead>
         <tr>
-            {{#canconfigglobal}} <th>{{#str}} coresystem {{/str}}<sup>1)</sup></th> {{/canconfigglobal}}
-            <th>{{#str}} course {{/str}}</th>
-            <th>{{#str}} archive {{/str}}</th>
+            {{#canconfigglobal}} <th align="center">{{#str}} coresystem {{/str}}<sup>1)</sup></th> {{/canconfigglobal}}
+            <th align="center">{{#str}} course {{/str}}</th>
+            <th align="center">{{#str}} archive, block_edusupport {{/str}}</th>
             <th>{{#str}} name {{/str}}</th>
         </tr>
     </thead>
@@ -41,7 +41,7 @@
         {{#forums}}
             <tr id="{{uniqid}}-forum-{{id}}">
                 {{#canconfigglobal}}
-                    <td>
+                    <td align="center">
                         {{#selectedforglobal}}
                             {{#pix}} /t/approve, core, {{#str}} select_isselected, block_edusupport {{/str}} {{/pix}}
                         {{/selectedforglobal}}
@@ -50,7 +50,7 @@
                         {{/selectedforglobal}}
                     </td>
                 {{/canconfigglobal}}
-                <td>
+                <td align="center">
                     {{#selectedforglobal}}
                         {{#pix}} /t/delete, core, {{#str}} select_unavailable, block_edusupport {{/str}} {{/pix}}
                     {{/selectedforglobal}}
@@ -63,7 +63,7 @@
                         {{/selectedforcourse}}
                     {{/selectedforglobal}}
                 </td>
-                <td>
+                <td align="center">
                     {{#selectedforarchive}}
                         {{#pix}} /t/approve, core, {{#str}} select_isselected, block_edusupport {{/str}} {{/pix}}
                     {{/selectedforarchive}}

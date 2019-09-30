@@ -42,6 +42,7 @@ $forums = array();
 $targetforum = get_config('block_edusupport', 'targetforum');
 foreach($cms AS &$cm) {
     $forum = $DB->get_record('forum', array('id' => $cm->instance));
+    if (empty($forum->type) || $forum->type != 'general') continue;
     if ($forum->id == $targetforum) {
         $forum->selectedforglobal = 1;
     } else {

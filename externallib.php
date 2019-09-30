@@ -318,7 +318,7 @@ class block_edusupport_external extends external_api {
         if (block_edusupport::can_config_course($forum->course)){
             $entry = $DB->get_record('block_edusupport', array('courseid' => $forum->course));
             if (!empty($entry->courseid)) {
-                $entry->forumid = !empty($entry->forumid) ? $entry->forumid ? 0;
+                $entry->forumid = !empty($entry->forumid) ? $entry->forumid : 0;
                 $entry->archiveid = $forum->id;
                 $DB->update_record('block_edusupport', $entry);
             } else {

@@ -25,6 +25,7 @@ $string['pluginname'] = 'Help';
 $string['edusupport:addinstance'] = 'Add eduSupport block';
 $string['edusupport:myaddinstance'] = 'Add eduSupport block';
 
+$string['archive'] = 'Archive';
 $string['autocreate_orggroup'] = 'Automatically create groups for eduvidual-Organizations';
 $string['autocreate_usergroup'] = 'Automatically create a private group for user';
 $string['be_more_accurate'] = 'Please be more accurate when describing your problem!';
