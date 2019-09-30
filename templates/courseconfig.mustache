@@ -46,7 +46,7 @@
                             {{#pix}} /t/approve, core, {{#str}} select_isselected, block_edusupport {{/str}} {{/pix}}
                         {{/selectedforglobal}}
                         {{^selectedforglobal}}
-                            <a href="#" class="btn btn-secondary" onclick="require(['block_edusupport/courseconfig'], function(COURSE) { COURSE.setDefault('{{uniqid}}', {{id}}, 1); });">{{#str}} select {{/str}}</a>
+                            <a href="#" class="btn btn-secondary" onclick="require(['block_edusupport/courseconfig'], function(COURSE) { COURSE.setDefault('{{uniqid}}', {{id}}, 1); }); return false;">{{#str}} select {{/str}}</a>
                         {{/selectedforglobal}}
                     </td>
                 {{/canconfigglobal}}
@@ -59,7 +59,7 @@
                             {{#pix}} /t/approve, core, {{#str}} select_isselected, block_edusupport {{/str}} {{/pix}}
                         {{/selectedforcourse}}
                         {{^selectedforcourse}}
-                            <a href="#" class="btn btn-secondary" onclick="require(['block_edusupport/courseconfig'], function(COURSE) { COURSE.setDefault('{{uniqid}}', {{id}}); });">{{#str}} select {{/str}}</a>
+                            <a href="#" class="btn btn-secondary" onclick="require(['block_edusupport/courseconfig'], function(COURSE) { COURSE.setDefault('{{uniqid}}', {{id}}); }); return false;">{{#str}} select {{/str}}</a>
                         {{/selectedforcourse}}
                     {{/selectedforglobal}}
                 </td>
@@ -68,7 +68,7 @@
                         {{#pix}} /t/approve, core, {{#str}} select_isselected, block_edusupport {{/str}} {{/pix}}
                     {{/selectedforarchive}}
                     {{^selectedforarchive}}
-                        <a href="#" class="btn btn-secondary" onclick="require(['block_edusupport/courseconfig'], function(COURSE) { COURSE.setArchive('{{uniqid}}', {{id}}); });">{{#str}} select {{/str}}</a>
+                        <a href="#" class="btn btn-secondary" onclick="require(['block_edusupport/courseconfig'], function(COURSE) { COURSE.setArchive('{{uniqid}}', {{id}}); }); return false;">{{#str}} select {{/str}}</a>
                     {{/selectedforarchive}}
                 </td>
                 <td>{{name}}</td>
