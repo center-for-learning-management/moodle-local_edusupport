@@ -23,8 +23,14 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-$plugin->version  = 2019100100;
-$plugin->requires = 2014051200;
-$plugin->component = 'block_edusupport';
-$plugin->release = '1.3(Build: 2019100100)';
-$plugin->maturity = MATURITY_STABLE;
+$tasks = array(
+    array(
+        'classname' => 'block_edusupport\task\reminder',
+        'blocking' => 0,
+        'minute' => '0',
+        'hour' => '8',
+        'day' => '*',
+        'dayofweek' => '0',
+        'month' => '*',
+    ),
+);

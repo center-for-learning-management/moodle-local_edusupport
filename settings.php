@@ -25,6 +25,7 @@ if ($ADMIN->fulltree) {
     //$settings->add(new admin_setting_configtext('block_edusupport/targetforum', get_string('targetforum', 'block_edusupport'), '', '', PARAM_INT));
 
     $settings->add(new admin_setting_configcheckbox('block_edusupport/autocreate_usergroup', get_string('autocreate_usergroup', 'block_edusupport'), '', '', PARAM_INT));
+    $settings->add(new admin_setting_configcheckbox('block_edusupport/sendreminders', get_string('cron:reminder:title', 'block_edusupport'), '', '', PARAM_INT));
 
     // Attention: This refers to a plugin that is currently not public!
     // It will not be available to others.
