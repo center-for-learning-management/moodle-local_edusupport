@@ -12,3 +12,9 @@ For that purpose eduSupport creates a group for each user to ensure a private co
 * Assign the support team by specifying a support level. You can use any label here.
 * Select the desired forum by clicking the "Select"-Button in the column "System"
 * Optionally you can set another forum as archive. Closed issues will be automatically moved there.
+
+## Reminder
+
+If the "reminder"-Function is enabled in admin-settings the plugin will send a friendly reminder to supporters every Monday at 8am a list of open issues.
+
+You can specify other times by modifying the task in Website-Administration.

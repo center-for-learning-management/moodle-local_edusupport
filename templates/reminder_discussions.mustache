@@ -15,13 +15,20 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 
+<html>
+<head>
+    <title>{{#str}} cron:reminder:title, block_edusupport {{/str}}</title>
+</head>
+<body>
 <h3>{{#str}} cron:reminder:title, block_edusupport {{/str}}</h3>
 <p>{{#str}} cron:reminder:intro, block_edusupport {{/str}}</p>
 <ul>
     {{#discussions}}
         <li>
-            <a href="{{wwwroot}}/mod/forum/discuss.php?d={{id}}" target="_blank">{{name}}</a>,
+            {{userfullname}}: <a href="{{wwwroot}}/mod/forum/discuss.php?d={{id}}" target="_blank">{{name}}</a>,
             {{#userdate}} {{timemodified}}, %d. %B %Y, %H:%m {{/userdate}}
         </li>
     {{/discussions}}
 </ul>
+</body>
+</html>

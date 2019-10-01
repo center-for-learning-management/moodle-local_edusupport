@@ -428,12 +428,6 @@ class block_edusupport extends block_base {
         );
         $options = array();
 
-        if (optional_param('edusupport_testreminder', '', PARAM_INT) == 1) {
-            require_once($CFG->dirroot . '/blocks/edusupport/classes/task/reminder.php');
-            $reminder = new \block_edusupport\task\reminder();
-            $reminder->execute();
-        }
-
         $targetforum = self::get_target();
         $forum = $DB->get_record('forum', array('id' => $targetforum));
         $supportlevel = self::get_supporter_level($forum->course, $USER->id);

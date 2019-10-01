@@ -31,10 +31,9 @@ class reminder extends \core\task\scheduled_task {
         return get_string('cron:reminder:title', 'block_edusupport');
     }
 
-    public function execute() {
-        $sendreminders = get_config('block_edusupport', 'sendreminders');
-        if (empty($sendreminders) || $sendreminders == 0) return;
-
+    public function execute($debug=false) {
+        if (!get_config('block_edusupport', 'sendreminders')) return;
+        echo "Sending";
         global $DB;
         $sql = "SELECT discussionid,currentsupporter
                     FROM {block_edusupport_issues}
@@ -42,11 +41,14 @@ class reminder extends \core\task\scheduled_task {
                         AND currentsupporter>0
                     ORDER BY currentsupporter ASC";
         $issues = $DB->get_records_sql($sql, array());
+        if ($debug) {
+            print_r($issues);
+        }
         $currentsupporter = new \stdClass();
 
         foreach ($issues AS $issue) {
             if (!empty($currentsupporter->id) && $issue->currentsupporter != $currentsupporter->id) {
-                $this->send($currentsupporter, $reminders);
+                $this->send($currentsupporter, $reminders, $debug);
                 $reminders = array();
                 $currentsupporter = $issue->currentsupporter;
             }
@@ -54,17 +56,26 @@ class reminder extends \core\task\scheduled_task {
             $discussion = $DB->get_record('forum_discussions', array('id' => $issue->discussionid));
             if (!empty($discussion->firstpost)) {
                 $post = $DB->get_record('forum_posts', array('id' => $discussion->firstpost));
+                $user = $DB->get_record('users', array('id' => $discussion->userid));
+                $discussion->message = $post->message;
+                $discussion->userfullname = userfullname($user);
+                $discussion->useremail = $user->email;
                 $reminders[] = $discussion;
             }
         }
-        $this->send($currentsupporter, $reminders);
+        $this->send($currentsupporter, $reminders, $debug);
     }
-    private function send($supporter, $reminders = array()) {
+    private function send($supporter, $reminders = array(), $debug=false) {
         global $CFG, $OUTPUT;
         if (!empty($supporter->id) && $supporter->id > 0 && count($reminders) > 0) {
             $subject = $this->get_name();
             $mailhtml =  $OUTPUT->render_from_template('block_edusupport/reminder_discussions', array('discussions' => $reminders, 'wwwroot' => $CFG->wwwroot));
             $mailtext = html_to_text($mailhtml);
+
+            if ($debug) {
+                echo "# Mail to " . $supporter->email;
+                print_r($mailhtml);
+            }
 
             $fromuser = \core_user::get_support_user();
             \email_to_user($supporter, $fromuser, $subject, $mailtext, $mailhtml, "", true);
