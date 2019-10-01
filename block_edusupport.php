@@ -29,6 +29,7 @@ require_once($CFG->dirroot . '/blocks/moodleblock.class.php');
 class block_edusupport extends block_base {
     public static $STYLE_UNASSIGNED = 'font-weight: bold; background-color: rgba(255, 0, 0, 0.3);';
     public static $STYLE_OPENED = 'background-color: rgba(255,246,143, 0.6)';
+    public static $STYLE_MINE = 'background-color: rgba(200, 140, 20, 0.6)';
     public static $STYLE_CLOSED = 'background-color: rgba(0, 255, 0, 0.3)';
 
     public static function can_config_course($courseid){

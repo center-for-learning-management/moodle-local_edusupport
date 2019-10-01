@@ -52,7 +52,7 @@ class block_edusupport_external extends external_api {
         );
     }
     public static function colorize($discussionids) {
-        global $CFG, $DB;
+        global $CFG, $DB, $USER;
         $params = self::validate_parameters(self::colorize_parameters(), array('discussionids' => $discussionids));
 
         require_once($CFG->dirroot . '/blocks/edusupport/block_edusupport.php');
@@ -71,6 +71,8 @@ class block_edusupport_external extends external_api {
             $issue = block_edusupport::get_issue($discussionid);
             if (empty($issue->currentsupporter)) {
                 $styles[$discussionid] = block_edusupport::$STYLE_UNASSIGNED;
+            } elseif ($issue->currentsupporter == $USER->id) {
+                $styles[$discussionid] = block_edusupport::$STYLE_MINE;
             } elseif ($issue->opened == 1) {
                 $styles[$discussionid] = block_edusupport::$STYLE_OPENED;
             } elseif ($issue->opened == 0) {
