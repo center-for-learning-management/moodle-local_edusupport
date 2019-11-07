@@ -477,13 +477,15 @@ class block_edusupport extends block_base {
             }
 
             self::get_groups();
-            $options[] = array(
-                "title" => get_string('create_issue', 'block_edusupport'),
-                "href" => '#',
-                "id" => 'btn-block_edusupport_create_issue',
-                "onclick" => 'require(["block_edusupport/main"], function(MAIN){ MAIN.showBox(' . $targetforum . '); }); return false;',
-                "icon" => '/pix/t/messages.svg',
-            );
+            if (isloggedin() && !isguestuser($USER)) {
+                $options[] = array(
+                    "title" => get_string('create_issue', 'block_edusupport'),
+                    "href" => '#',
+                    "id" => 'btn-block_edusupport_create_issue',
+                    "onclick" => 'require(["block_edusupport/main"], function(MAIN){ MAIN.showBox(' . $targetforum . '); }); return false;',
+                    "icon" => '/pix/t/messages.svg',
+                );
+            }
             $cm = $DB->get_record('course_modules', array('course' => $forum->course, 'instance' => $targetforum));
             $options[] = array(
                 "title" => get_string('goto_targetforum', 'block_edusupport'),
