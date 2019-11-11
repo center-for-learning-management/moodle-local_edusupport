@@ -216,6 +216,10 @@ class block_edusupport_external extends external_api {
         $event = \mod_forum\event\discussion_created::create($eventparams);
         $event->add_record_snapshot('forum_discussions', $discussion);
         $event->trigger();
+
+        // Create the issue itself.
+        block_edusupport::get_issue($post->discussion);
+
         return $post->discussion;
     }
     /**
