@@ -120,6 +120,7 @@ class block_edusupport extends block_base {
             if (empty($group->id)) {
                 $group = (object) array('courseid' => $cm->course, 'idnumber' => 'user-' . $USER->id, 'name' => '#' . $USER->id . ', ' . $USER->firstname . ' ' . $USER->lastname . ' (' . get_string('only_you', 'block_edusupport') . ')', 'timecreated' => time(), 'timemodified' => time());
                 $group->id = groups_create_group($group, false);
+                $group = groups_get_group_by_idnumber($cm->course, 'user-' . $USER->id);
             } else {
                 // Ensure group has the correct name.
                 $group->name = '#' . $USER->id . ', ' . $USER->firstname . ' ' . $USER->lastname . ' (' . get_string('only_you', 'block_edusupport') . ')';
