@@ -159,34 +159,6 @@ class block_edusupport_external extends external_api {
         }
         $message .= $params['description'];
 
-        $attachments = 0;
-        if (!empty($params['image'])) {
-            $attachments = file_get_submitted_draft_itemid('attachments');
-            // Write image to a temporary file
-            $x = explode(",", $params['image']);
-            $f = tmpfile();
-            fwrite($f, base64_decode($x[1]));
-
-            // Get mimetype (e.g. png)
-            $type = str_replace('data:image/', '', $x[0]);
-            $type = str_replace(';base64', '', $type);
-            $filepath = stream_get_meta_data($f)['uri'];
-            $filename = 'screenshot_' . date('Y-m-d_H_i_s') . '.' . $type;
-
-            $fs = get_file_storage();
-            // Scan for viruses.
-            \core\antivirus\manager::scan_file($filepath, $filename, true);
-
-            // Load the image to the users draft area.
-            $fr = $DB->get_record('files', array('itemid' => $draftitemid, 'component' => 'user', 'userid' => $USER->id));
-            $fr->filename  = $filename;
-            $fr->license   = $CFG->sitedefaultlicense;
-            $fr->author    = fullname($USER);
-            $fr->source    = serialize((object)array('source' => $filename));
-
-            $fs->create_file_from_pathname($fr, $filepath);
-        }
-
         // Create the discussion.
         $discussion = new stdClass();
         $discussion->course = $course->id;
@@ -202,17 +174,49 @@ class block_edusupport_external extends external_api {
         $discussion->timestart = 0;
         $discussion->timeend = 0;
         $discussion->timelocked = 0;
-        $discussion->attachments = $attachments;
+        $discussion->attachment = 0;
 
         if (has_capability('mod/forum:pindiscussions', $context) && $options['discussionpinned']) {
             $discussion->pinned = FORUM_DISCUSSION_PINNED;
         } else {
             $discussion->pinned = FORUM_DISCUSSION_UNPINNED;
         }
-        $fakemform = $attachments;
+
         if ($discussionid = forum_add_discussion($discussion, $fakemform)) {
 
             $discussion->id = $discussionid;
+
+            if (!empty($params['image'])) {
+                // Write image to a temporary file
+                $x = explode(",", $params['image']);
+                $f = tmpfile();
+                fwrite($f, base64_decode($x[1]));
+
+                // Get mimetype (e.g. png)
+                $type = str_replace('data:image/', '', $x[0]);
+                $type = str_replace(';base64', '', $type);
+                $filepath = stream_get_meta_data($f)['uri'];
+                $filename = 'screenshot_' . date('Y-m-d_H_i_s') . '.' . $type;
+
+                $fs = get_file_storage();
+                // Scan for viruses.
+                \core\antivirus\manager::scan_file($filepath, $filename, true);
+
+                $fr = new stdClass;
+                $fr->component = 'mod_forum';
+                $fr->contextid = $context->id;
+                $fr->userid    = $USER->id;
+                $fr->filearea  = 'attachment';
+                $fr->filename  = $filename;
+                $fr->filepath  = '/';
+                $fr->itemid    = $discussion->firstpost;
+                $fr->license   = $CFG->sitedefaultlicense;
+                $fr->author    = fullname($USER);
+                $fr->source    = serialize((object)array('source' => $filename));
+
+                $fs->create_file_from_pathname($fr, $filepath);
+                $DB->set_field('forum_posts', 'attachment', 1, array('id'=>$discussion->firstpost));
+            }
 
             // Trigger events and completion.
 
