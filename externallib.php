@@ -113,6 +113,141 @@ class block_edusupport_external extends external_api {
         $targetforum = block_edusupport::get_target();
         if ($targetforum < 0) return -1;
 
+        // Mainly copied from mod/forum/externallib.php > add_discussion()
+        $warnings = array();
+
+        // Request and permission validation.
+        $forum = $DB->get_record('forum', array('id' => $targetforum), '*', MUST_EXIST);
+        list($course, $cm) = get_course_and_cm_from_instance($forum, 'forum');
+
+        $context = context_module::instance($cm->id);
+        self::validate_context($context);
+
+        // Validate options.
+        $options = array(
+            'discussionsubscribe' => true,
+            'discussionpinned' => false,
+            'inlineattachmentsid' => 0,
+            'attachmentsid' => null
+        );
+
+        // Normalize group.
+        if (!groups_get_activity_groupmode($cm)) {
+            // Groups not supported, force to -1.
+            $to_group = -1;
+        } else {
+            // Check if we receive the default or and empty value for groupid,
+            // in this case, get the group for the user in the activity.
+            if (empty($params['to_group'])) {
+                $to_group = groups_get_activity_group($cm);
+            } else {
+                // Here we rely in the group passed, forum_user_can_post_discussion will validate the group.
+                $to_group = $params['to_group'];
+            }
+        }
+
+        if (!forum_user_can_post_discussion($forum, $to_group, -1, $cm, $context)) {
+            throw new moodle_exception('cannotcreatediscussion', 'forum');
+        }
+
+        $thresholdwarning = forum_check_throttling($forum, $cm);
+        forum_check_blocking_threshold($thresholdwarning);
+
+        $message = '<p>URL: <a href="' . $params['url'] . '" target="_blank">' . $params['url'] . '</a></p>';
+        if (!empty($params['contactphone'])) {
+            $message .= '<p><a href="tel:' . $params['contactphone'] . '">' . $params['contactphone'] . '</a></p>';
+        }
+        $message .= $params['description'];
+
+        $attachments = 0;
+        if (!empty($params['image'])) {
+            $attachments = file_get_submitted_draft_itemid('attachments');
+            // Write image to a temporary file
+            $x = explode(",", $params['image']);
+            $f = tmpfile();
+            fwrite($f, base64_decode($x[1]));
+
+            // Get mimetype (e.g. png)
+            $type = str_replace('data:image/', '', $x[0]);
+            $type = str_replace(';base64', '', $type);
+            $filepath = stream_get_meta_data($f)['uri'];
+            $filename = 'screenshot_' . date('Y-m-d_H_i_s') . '.' . $type;
+
+            $fs = get_file_storage();
+            // Scan for viruses.
+            \core\antivirus\manager::scan_file($filepath, $filename, true);
+
+            // Load the image to the users draft area.
+            $fr = $DB->get_record('files', array('itemid' => $draftitemid, 'component' => 'user', 'userid' => $USER->id));
+            $fr->filename  = $filename;
+            $fr->license   = $CFG->sitedefaultlicense;
+            $fr->author    = fullname($USER);
+            $fr->source    = serialize((object)array('source' => $filename));
+
+            $fs->create_file_from_pathname($fr, $filepath);
+        }
+
+        // Create the discussion.
+        $discussion = new stdClass();
+        $discussion->course = $course->id;
+        $discussion->forum = $forum->id;
+        $discussion->message = $message;
+        $discussion->messageformat = FORMAT_HTML;   // Force formatting for now.
+        $discussion->messagetrust = trusttext_trusted($context);
+        $discussion->itemid = 0; //$options['inlineattachmentsid'];
+        $discussion->groupid = $to_group;
+        $discussion->mailnow = 1;
+        $discussion->subject = $params['subject'];
+        $discussion->name = $discussion->subject;
+        $discussion->timestart = 0;
+        $discussion->timeend = 0;
+        $discussion->timelocked = 0;
+        $discussion->attachments = $attachments;
+
+        if (has_capability('mod/forum:pindiscussions', $context) && $options['discussionpinned']) {
+            $discussion->pinned = FORUM_DISCUSSION_PINNED;
+        } else {
+            $discussion->pinned = FORUM_DISCUSSION_UNPINNED;
+        }
+        $fakemform = $attachments;
+        if ($discussionid = forum_add_discussion($discussion, $fakemform)) {
+
+            $discussion->id = $discussionid;
+
+            // Trigger events and completion.
+
+            $params = array(
+                'context' => $context,
+                'objectid' => $discussion->id,
+                'other' => array(
+                    'forumid' => $forum->id,
+                )
+            );
+            $event = \mod_forum\event\discussion_created::create($params);
+            $event->add_record_snapshot('forum_discussions', $discussion);
+            $event->trigger();
+
+            $completion = new completion_info($course);
+            if ($completion->is_enabled($cm) &&
+                    ($forum->completiondiscussions || $forum->completionposts)) {
+                $completion->update_state($cm, COMPLETION_COMPLETE);
+            }
+
+            $settings = new stdClass();
+            $settings->discussionsubscribe = $options['discussionsubscribe'];
+            forum_post_subscription($settings, $forum, $discussion);
+        } else {
+            throw new moodle_exception('couldnotadd', 'forum');
+        }
+
+        // Create the issue itself.
+        block_edusupport::get_issue($discussionid);
+
+        return $discussionid;
+
+        /*
+        // FROM HERE ON OLD VERSION
+
         $forum = $DB->get_record('forum', array('id'=>$targetforum));
         $cm    = get_coursemodule_from_instance('forum', $forum->id);
         if (!isset($cm->id) || $cm->id == 0) return -1;
@@ -221,6 +356,7 @@ class block_edusupport_external extends external_api {
         block_edusupport::get_issue($post->discussion);
 
         return $post->discussion;
+        */
     }
     /**
      * Return definition.
