@@ -91,7 +91,7 @@ class block_edusupport_external extends external_api {
     public static function create_issue_parameters() {
         return new external_function_parameters(array(
             'subject' => new external_value(PARAM_TEXT, 'subject of this issue'),
-            'description' => new external_value(PARAM_TEXT, 'default for whole package otherwise channel name'),
+            'description' => new external_value(PARAM_RAW, 'default for whole package otherwise channel name'),
             'forumid' => new external_value(PARAM_INT, 'Forum-ID to post to.'),
             'to_group' => new external_value(PARAM_INT, 'Group-ID to post to.'),
             'image' => new external_value(PARAM_RAW, 'base64 encoded image as data url or empty string'),
