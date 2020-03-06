@@ -15,11 +15,11 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_edusupport
- * @copyright  2019 Digital Education Society (http://www.dibig.at)
- * @author     Robert Schrenk
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
+* @package    block_edusupport
+* @copyright  2019 Digital Education Society (http://www.dibig.at)
+* @author     Robert Schrenk
+* @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+*/
 
 defined('MOODLE_INTERNAL') || die;
 
@@ -47,62 +47,62 @@ function xmldb_block_edusupport_upgrade($oldversion) {
         }
 
 
-      // Define table block_edusupport_issues to be created.
-      $table = new xmldb_table('block_edusupport_issues');
+        // Define table block_edusupport_issues to be created.
+        $table = new xmldb_table('block_edusupport_issues');
 
-      // Adding fields to table block_edusupport_issues.
-      $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
-      $table->add_field('courseid', XMLDB_TYPE_INTEGER, '20', null, XMLDB_NOTNULL, null, null);
-      $table->add_field('discussionid', XMLDB_TYPE_INTEGER, '20', null, XMLDB_NOTNULL, null, null);
-      $table->add_field('currentlevel', XMLDB_TYPE_INTEGER, '4', null, XMLDB_NOTNULL, null, '1');
-      $table->add_field('currentsupporter', XMLDB_TYPE_INTEGER, '20', null, null, null, null);
-      $table->add_field('opened', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '1');
+        // Adding fields to table block_edusupport_issues.
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('courseid', XMLDB_TYPE_INTEGER, '20', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('discussionid', XMLDB_TYPE_INTEGER, '20', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('currentlevel', XMLDB_TYPE_INTEGER, '4', null, XMLDB_NOTNULL, null, '1');
+        $table->add_field('currentsupporter', XMLDB_TYPE_INTEGER, '20', null, null, null, null);
+        $table->add_field('opened', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '1');
 
-      // Adding keys to table block_edusupport_issues.
-      $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+        // Adding keys to table block_edusupport_issues.
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
 
-      // Conditionally launch create table for block_edusupport_issues.
-      if (!$dbman->table_exists($table)) {
-          $dbman->create_table($table);
-      }
+        // Conditionally launch create table for block_edusupport_issues.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
 
-      // Define table block_edusupport_supportlog to be created.
-      $table = new xmldb_table('block_edusupport_supportlog');
+        // Define table block_edusupport_supportlog to be created.
+        $table = new xmldb_table('block_edusupport_supportlog');
 
-      // Adding fields to table block_edusupport_supportlog.
-      $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
-      $table->add_field('issueid', XMLDB_TYPE_INTEGER, '20', null, XMLDB_NOTNULL, null, null);
-      $table->add_field('userid', XMLDB_TYPE_INTEGER, '20', null, XMLDB_NOTNULL, null, null);
-      $table->add_field('supportlevel', XMLDB_TYPE_INTEGER, '4', null, XMLDB_NOTNULL, null, null);
-      $table->add_field('created', XMLDB_TYPE_INTEGER, '20', null, XMLDB_NOTNULL, null, null);
+        // Adding fields to table block_edusupport_supportlog.
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('issueid', XMLDB_TYPE_INTEGER, '20', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('userid', XMLDB_TYPE_INTEGER, '20', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('supportlevel', XMLDB_TYPE_INTEGER, '4', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('created', XMLDB_TYPE_INTEGER, '20', null, XMLDB_NOTNULL, null, null);
 
-      // Adding keys to table block_edusupport_supportlog.
-      $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+        // Adding keys to table block_edusupport_supportlog.
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
 
-      // Conditionally launch create table for block_edusupport_supportlog.
-      if (!$dbman->table_exists($table)) {
-          $dbman->create_table($table);
-      }
+        // Conditionally launch create table for block_edusupport_supportlog.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
 
-      // Define table block_edusupport_supporters to be created.
-      $table = new xmldb_table('block_edusupport_supporters');
+        // Define table block_edusupport_supporters to be created.
+        $table = new xmldb_table('block_edusupport_supporters');
 
-      // Adding fields to table block_edusupport_supporters.
-      $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
-      $table->add_field('courseid', XMLDB_TYPE_INTEGER, '20', null, XMLDB_NOTNULL, null, null);
-      $table->add_field('userid', XMLDB_TYPE_INTEGER, '20', null, XMLDB_NOTNULL, null, null);
-      $table->add_field('supportlevel', XMLDB_TYPE_CHAR, '20', null, XMLDB_NOTNULL, null, null);
+        // Adding fields to table block_edusupport_supporters.
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('courseid', XMLDB_TYPE_INTEGER, '20', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('userid', XMLDB_TYPE_INTEGER, '20', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('supportlevel', XMLDB_TYPE_CHAR, '20', null, XMLDB_NOTNULL, null, null);
 
-      // Adding keys to table block_edusupport_supporters.
-      $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+        // Adding keys to table block_edusupport_supporters.
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
 
-      // Conditionally launch create table for block_edusupport_supporters.
-      if (!$dbman->table_exists($table)) {
-          $dbman->create_table($table);
-      }
+        // Conditionally launch create table for block_edusupport_supporters.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
 
-      // Edusupport savepoint reached.
-      upgrade_block_savepoint(true, 2019011000, 'edusupport');
+        // Edusupport savepoint reached.
+        upgrade_block_savepoint(true, 2019011000, 'edusupport');
     }
 
     if ($oldversion < 2019093000) {
@@ -117,6 +117,48 @@ function xmldb_block_edusupport_upgrade($oldversion) {
 
         // Edusupport savepoint reached.
         upgrade_block_savepoint(true, 2019093000, 'edusupport');
+    }
+
+    if ($oldversion < 2020030600) {
+        $table = new xmldb_table('block_edusupport_issues');
+        $fields = array(
+            new xmldb_field('currentlevel'),
+            new xmldb_field('opened'),
+        );
+        foreach ($fields AS $field) {
+            if ($dbman->field_exists($table, $field)) {
+                $dbman->drop_field($table, $field);
+            }
+        }
+        $field = new xmldb_field('created', XMLDB_TYPE_INTEGER, '10', null, null, null, null, 'discussionid');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        $table = new xmldb_table('block_edusupport_supportlog');
+        if ($dbman->table_exists($table)) {
+            $dbman->drop_table($table);
+        }
+        $table = new xmldb_table('block_edusupport_supporters');
+        $fields = array(
+            new xmldb_field('courseid'),
+        );
+        foreach ($fields AS $field) {
+            if ($dbman->field_exists($table, $field)) {
+                $dbman->drop_field($table, $field);
+            }
+        }
+        $table = new xmldb_table('block_edusupport_assignments');
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('issueid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('discussionid', XMLDB_TYPE_INTEGER, '20', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('userid', XMLDB_TYPE_INTEGER, '20', null, XMLDB_NOTNULL, null, '0');
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+
+        upgrade_block_savepoint(true, 2020030600, 'edusupport');
     }
 
 

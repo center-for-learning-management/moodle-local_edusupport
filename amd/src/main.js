@@ -118,8 +118,7 @@ define(
             var subject = $('#block_edusupport_create_form #id_subject').val();
             var contactphone = $('#block_edusupport_create_form #id_contactphone').val();
             var description = $('#block_edusupport_create_form #id_description').val();
-            var forumid = $('#block_edusupport_create_form input[name="forumid"]').val();
-            var to_group = $('#block_edusupport_create_form #id_to_group').val();
+            var forum_group = $('#block_edusupport_create_form #id_to_group').val();
             var post_screenshot = $('#block_edusupport_create_form #id_postscreenshot').is(':checked');
             var screenshot = $('#block_edusupport_create_form img#screenshot').attr('src');
             var url = top.location.href;
@@ -138,7 +137,7 @@ define(
             console.log('block_edusupport_create_issue', { subject: subject, description: description, forumid: forumid, to_group: to_group, image: imagedataurl, url: url });
             AJAX.call([{
                 methodname: 'block_edusupport_create_issue',
-                args: { subject: subject, description: description, forumid: forumid, to_group: to_group, image: imagedataurl, url: url, contactphone: contactphone },
+                args: { subject: subject, description: description, forum_group: forum_group, image: imagedataurl, url: url, contactphone: contactphone },
                 done: function(result) {
                     // result is the discussion id or -1. if > 0 show confirm box that redirects to post. if -1 show error.
                     console.log(result);

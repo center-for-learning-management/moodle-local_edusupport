@@ -64,12 +64,21 @@ class issue_create_form extends moodleform {
         $mform->addRule('description', get_string('description_missing', 'block_edusupport'), 'required', null, 'server');
 
         // This ensures, that there will exist at least one group to show!
-        require_once($CFG->dirroot . '/blocks/edusupport/block_edusupport.php');
-        $groups = block_edusupport::get_groups();
+        require_once($CFG->dirroot . '/blocks/edusupport/locallib.php');
+        $potentialtargets = block_edusupport\lib::get_potentialtargets();
+
+        // If there are not potentialtargets we don't care. We will send a mail to the Moodle default support contact.
         $options = array();
-        foreach($groups AS $group) {
-            $options[$group->id] = $group->name;
+        foreach ($potentialtargets AS $pt) {
+            if (empty($pt->potentialgroups)) {
+                $options[$pt->id . '_0'] = $pt->name;
+            } else {
+                foreach($groups AS $group) {
+                    $options[$pt->id . '_' . $group->id] = $group->name;
+                }
+            }
         }
+
         $mform->addElement('select', 'to_group', get_string('to_group', 'block_edusupport'), $options);
         $mform->setType('to_group', PARAM_INT);
 
@@ -77,8 +86,6 @@ class issue_create_form extends moodleform {
         $mform->setType('postscreenshot', PARAM_BOOL);
         $mform->setDefault('postscreenshot', 1);
         $mform->addElement('html', '<div style="text-align: center;"><img id="screenshot" src="" alt="Screenshot" style="max-width: 50%;"/></div>');
-
-
         //$this->add_action_buttons();
     }
 

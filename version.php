@@ -22,7 +22,7 @@
  */
 
 defined('MOODLE_INTERNAL') || die;
-
+// at least 2020030600
 $plugin->version  = 2019100100;
 $plugin->requires = 2014051200;
 $plugin->component = 'block_edusupport';

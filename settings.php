@@ -22,21 +22,8 @@
 
 defined('MOODLE_INTERNAL') || die;
 if ($ADMIN->fulltree) {
-    //$settings->add(new admin_setting_configtext('block_edusupport/targetforum', get_string('targetforum', 'block_edusupport'), '', '', PARAM_INT));
-
     $settings->add(new admin_setting_configcheckbox('block_edusupport/autocreate_usergroup', get_string('autocreate_usergroup', 'block_edusupport'), '', '', PARAM_INT));
     $settings->add(new admin_setting_configcheckbox('block_edusupport/sendreminders', get_string('cron:reminder:title', 'block_edusupport'), '', '', PARAM_INT));
 
-    // Attention: This refers to a plugin that is currently not public!
-    // It will not be available to others.
-    // This is not nice, but currently there is no other way.
-    if (file_exists($CFG->dirroot . '/blocks/eduvidual/block_eduvidual.php')) {
-        $settings->add(new admin_setting_configcheckbox('block_edusupport/autocreate_orggroup', get_string('autocreate_orggroup', 'block_edusupport'), '', '', PARAM_INT));
-    }
-    // End of the code for the unavailable plugin.
-
     $settings->add(new admin_setting_configtext('block_edusupport/relativeurlsupportarea', get_string('relativeurlsupportarea', 'block_edusupport'), '', '', PARAM_URL));
-
-
-    //$ADMIN->add('blocksettings', $settings);
 }
