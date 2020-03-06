@@ -180,6 +180,46 @@ class lib {
     }
 
     /**
+     * Send an issue to 2nd level support.
+     * @param discussionid.
+     */
+    public static function set_2nd_level($discussionid) {
+        global $CFG, $DB, $USER;
+
+        $discussion = $DB->get_record('forum_discussions', array('id' => $discussionid));
+        $issue = self::get_issue($discussionid);
+        if (!self::is_supportforum($discussion->forum)) {
+            return false;
+        }
+
+        $supporters = $DB->get_records('block_edusupport_supporters', array('supportlevel' => ''));
+        foreach ($supporters AS $supporter) {
+            $chk = $DB->get_record('forum_discussion_subs', array('discussion' => $issue->discussionid, 'userid' => $supporter->userid));
+            if (empty($chk->id)) {
+                $sub = (object) array(
+                    'forum' => $discussion->forum,
+                    'userid' => $supporter->userid,
+                    'discussion' => $issue->discussionid,
+                    'preference' => time(),
+                );
+                $DB->insert_record('forum_discussion_subs', $sub);
+            }
+            $chk = $DB->get_record('block_edusupport_assignments', array('discussionid' => $issue->discussionid, 'userid' => $supporter->userid));
+            if (empty($chk->id)) {
+                $assignment = (object) array(
+                    'issueid' => $issue->id,
+                    'discussionid' => $issue->discussionid,
+                    'userid' => $supporter->userid,
+                );
+                $DB->insert_record('block_edusupport_assignments', $assignment);
+            }
+            self::create_post($issue->discussionid, get_string('issue_assign_nextlevel:post', 'block_edusupport', array('userfullname' => userfullname($USER))));
+            // @TODO We hope that this sends a message to the supportteam, although they are probably not enrolle in the course. If that does not work, we have to send by mail on our own.
+        }
+        return true;
+    }
+
+    /**
      * Used by 2nd-level support to assign an issue to a particular person from 3rd level.
      * @param discussionid.
      * @param userid.
@@ -207,10 +247,6 @@ class lib {
         $issue->currentsupporter = $userid;
         $DB->update_record('block_edusupport_issues', $issue);
         return true;
-    }
-
-    public static function set_forum_as_supportforum($forumid) {
-
     }
 
     /**

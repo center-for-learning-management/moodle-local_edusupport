@@ -49,6 +49,8 @@ $string['goto_targetforum'] = 'Supportforum';
 $string['edusupport:manage'] = 'Verwalten';
 $string['header'] = 'Hilfe in <i>{$a}</i> anfordern';
 $string['issue_assign'] = 'Zuordnen';
+$string['issue_assign_nextlevel'] = 'Dieses Ticket dem nächsthöheren Supportlevel zuweisen';
+$string['issue_assign_nextlevel:post'] = '{$a->userfullname} hat dieses Ticket dem nächsthöheren Supportlevel zugewiesen!';
 $string['issue_assigned:subject'] = 'Supportanfrage zugeordnet';
 $string['issue_assigned:text'] = 'Die Supportanfrage wurde <a href="{$a->wwwroot}/profile/view.php?{$a->id}">{$a->firstname} {$a->lastname}</a> zugeordnet!';
 $string['issue_close'] = 'Anfrage schließen';

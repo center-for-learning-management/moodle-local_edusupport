@@ -48,6 +48,8 @@ $string['goto_targetforum'] = 'Supportforum';
 $string['edusupport:manage'] = 'Manage';
 $string['header'] = 'Request for help in <i>{$a}</i>';
 $string['issue_assign'] = 'Assign issue';
+$string['issue_assign_nextlevel'] = 'Forward this ticket to next supportlevel';
+$string['issue_assign_nextlevel:post'] = '{$a->userfullname} forwarded this ticket to next supportlevel';
 $string['issue_assigned:subject'] = 'Supportissue assigned';
 $string['issue_assigned:text'] = 'The support issue was assigned to <a href="{$a->wwwroot}/profile/view.php?{$a->id}">{$a->firstname} {$a->lastname}</a>!';
 $string['issue_close'] = 'Close issue';

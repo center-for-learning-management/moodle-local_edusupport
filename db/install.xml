@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="blocks/edusupport/db" VERSION="20190110" COMMENT="XMLDB file for Moodle blocks/edusupport"
+<XMLDB PATH="blocks/edusupport/db" VERSION="20200307" COMMENT="XMLDB file for Moodle blocks/edusupport"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
@@ -7,9 +7,9 @@
     <TABLE NAME="block_edusupport" COMMENT="Default comment for block_edusupport, please edit me">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-        <FIELD NAME="courseid" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false" />
-        <FIELD NAME="forumid" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="Forum-ID for new Issues" />
-        <FIELD NAME="archiveid" TYPE="int" LENGTH="20" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Forum-ID for Archive" />
+        <FIELD NAME="courseid" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="forumid" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="Forum-ID for new Issues"/>
+        <FIELD NAME="archiveid" TYPE="int" LENGTH="20" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Forum-ID for Archive"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
@@ -32,6 +32,17 @@
         <FIELD NAME="courseid" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="userid" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="supportlevel" TYPE="char" LENGTH="20" NOTNULL="true" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="block_edusupport_assignments" COMMENT="n:m relations to relate discussions to support-users.">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="issueid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="discussionid" TYPE="int" LENGTH="20" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="20" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
