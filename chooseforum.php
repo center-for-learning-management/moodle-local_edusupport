@@ -37,10 +37,6 @@ $title = get_string('supportforum:choose', 'block_edusupport');
 $PAGE->set_title($title);
 $PAGE->set_heading($title);
 
-require_once($CFG->dirroot . '/blocks/edusupport/locallib.php');
-print_r(\block_edusupport\lib::get_potentialtargets());
-die();
-
 echo $OUTPUT->header();
 
 if (!is_siteadmin()) {
