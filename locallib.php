@@ -107,8 +107,8 @@ class lib {
                     WHERE cm.module=m.id
                         AND m.name='forum'
                         AND cm.instance=?";
-        $cms = $DB->get_records_sql($sql, array($forumid));
-        if (empty($cms[$forumid]->groupmode)) return array();
+        $cms = array_values($DB->get_records_sql($sql, array($forumid)));
+        if (empty($cms[0]->groupmode)) return array();
 
         $sql = "SELECT g.*
                     FROM {groups} g, {groups_members} gm
@@ -116,7 +116,7 @@ class lib {
                         AND gm.userid=?
                         AND g.courseid=?
                     ORDER BY g.name ASC";
-        $groups = $DB->get_records_sql($sql, array($USER->id, $cm->course));
+        $groups = array_values($DB->get_records_sql($sql, array($USER->id, $cms[0]->course)));
         return $groups;
     }
 
@@ -156,6 +156,7 @@ class lib {
         foreach ($forums AS &$forum) {
             $forum->potentialgroups = self::get_groups_for_user($forum->id);
         }
+
         return $forums;
     }
 

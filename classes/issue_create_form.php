@@ -17,6 +17,7 @@
 /**
  * @package    block_edupublisher
  * @copyright  2018 Digital Education Society (http://www.dibig.at)
+ * @copyright  2020 Center for Learningmanagement (www.lernmanagement.at)
  * @author     Robert Schrenk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -70,11 +71,11 @@ class issue_create_form extends moodleform {
         // If there are not potentialtargets we don't care. We will send a mail to the Moodle default support contact.
         $options = array();
         foreach ($potentialtargets AS $pt) {
-            if (empty($pt->potentialgroups)) {
+            if (empty($pt->potentialgroups) || count($pt->potentialgroups) == 0) {
                 $options[$pt->id . '_0'] = $pt->name;
             } else {
-                foreach($groups AS $group) {
-                    $options[$pt->id . '_' . $group->id] = $group->name;
+                foreach($pt->potentialgroups AS $group) {
+                    $options[$pt->id . '_' . $group->id] = $pt->name . ' > ' . $group->name;
                 }
             }
         }
