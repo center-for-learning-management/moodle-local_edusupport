@@ -113,7 +113,30 @@ class block_edusupport_external extends external_api {
 
         if (empty($forumid)) {
             // @todo fallback and send by mail!
+            $subject = $params['subject'];
+            $messagehtml = $OUTPUT->render_from_template("block_edusupport/issue_template", $params);
+            $messagetext = html_to_text($messagehtml);
 
+            $recipients = array(get_support_user());
+            $fromuser = $USER;
+            if (!empty($params['image'])) {
+                // Write image to a temporary file
+                $x = explode(",", $params['image']);
+                $f = tmpfile();
+                fwrite($f, base64_decode($x[1]));
+
+                // Get mimetype (e.g. png)
+                $type = str_replace('data:image/', '', $x[0]);
+                $type = str_replace(';base64', '', $type);
+                $filepath = stream_get_meta_data($f)['uri'];
+                foreach($recipients AS $recipient) {
+                    email_to_user($recipient, $fromuser, $subject, $messagetext, $messagehtml, $filepath, 'screenshot.' . $type);
+                }
+            } else {
+                foreach($recipients AS $recipient) {
+                    email_to_user($recipient, $fromuser, $subject, $messagetext, $messagehtml, "", true);
+                }
+            }
         } else {
             require_once($CFG->dirroot . '/blocks/edusupport/locallib.php');
             if (\block_edusupport\lib::is_supportforum($forumid)) {
