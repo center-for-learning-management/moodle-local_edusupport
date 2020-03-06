@@ -133,7 +133,7 @@ class lib {
                 'currentsupporter' => 0,
                 'created' => time()
             );
-            $issue->id = $DB->insert_record($issue);
+            $issue->id = $DB->insert_record('block_edusupport_issues', $issue);
         }
         return $issue;
     }
@@ -145,13 +145,14 @@ class lib {
     public static function get_potentialtargets($userid = 0) {
         global $DB, $USER;
         if (empty($userid)) $userid = $USER->id;
-        $courseids = array_keys(enrol_get_all_users_courses($userid));
-        $sql = "SELECT be.*
+        $courseids = implode(',', array_keys(enrol_get_all_users_courses($userid)));
+
+        $sql = "SELECT f.id,f.name,f.course
                     FROM {block_edusupport} be, {forum} f
-                    WHERE be.courseid IN (?)
+                    WHERE f.course IN ($courseids)
                         AND be.forumid=f.id
                     ORDER BY f.name ASC";
-        $forums = array_values($DB->get_records_sql($sql, array(implode(',', $courseids))));
+        $forums = array_values($DB->get_records_sql($sql, array()));
         foreach ($forums AS &$forum) {
             $forum->potentialgroups = self::get_groups_for_user($forum->id);
         }
@@ -165,7 +166,7 @@ class lib {
         global $DB, $USER;
         if (empty($userid)) $userid = $USER->id;
         $chk = $DB->get_record('block_edusupport_supporters', array('userid' => $userid));
-        return !empty($chk->userid));
+        return !empty($chk->userid);
     }
 
     /**
@@ -218,7 +219,7 @@ class lib {
      */
     public static function supportforum_disable($forumid) {
         global $DB;
-        $DB->delete_records('block_edusupport', $forumid);
+        $DB->delete_records('block_edusupport', array('forumid' => $forumid));
         // @TODO shall we check for orphaned discussions too?
     }
 
@@ -232,6 +233,12 @@ class lib {
         if (!is_siteadmin()) return false;
         $forum = $DB->get_record('forum', array('id' => $forumid));
         if (empty($forum->course)) return false;
+
+        $supportforum = (object) array(
+            'courseid' => $forum->course,
+            'forumid' => $forum->id,
+            'archiveid' => 0,
+        );
 
         $supportforum->id = $DB->insert_record('block_edusupport', $supportforum);
         if (!empty($supportforum->id)) return $supportforum;

@@ -79,14 +79,13 @@ class issue_create_form extends moodleform {
             }
         }
 
-        $mform->addElement('select', 'to_group', get_string('to_group', 'block_edusupport'), $options);
-        $mform->setType('to_group', PARAM_INT);
+        $mform->addElement('select', 'forum_group', get_string('to_group', 'block_edusupport'), $options);
+        $mform->setType('forum_group', PARAM_INT);
 
         $mform->addElement('checkbox', 'postscreenshot', get_string('screenshot', 'block_edusupport'), get_string('screenshot:description', 'block_edusupport'), array('onclick' => 'var c = this; require(["jquery"], function($) { $(c).closest("form").find("#screenshot").css("display", ($(c).is(":checked") ? "inline" : "none")); });'));
         $mform->setType('postscreenshot', PARAM_BOOL);
         $mform->setDefault('postscreenshot', 1);
         $mform->addElement('html', '<div style="text-align: center;"><img id="screenshot" src="" alt="Screenshot" style="max-width: 50%;"/></div>');
-        //$this->add_action_buttons();
     }
 
     //Custom validation should be added here

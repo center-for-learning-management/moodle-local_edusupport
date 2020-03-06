@@ -17,14 +17,15 @@
 /**
  * @package    block_edusupport
  * @copyright  2018 Digital Education Society (http://www.dibig.at)
+ * @copyright  2020 Center for Learningmanagement (www.lernmanagement.at)
  * @author     Robert Schrenk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die;
-// at least 2020030600
-$plugin->version  = 2019100100;
+
+$plugin->version  = 2020030601;
 $plugin->requires = 2014051200;
 $plugin->component = 'block_edusupport';
-$plugin->release = '1.3(Build: 2019100100)';
+$plugin->release = '1.3(Build: 2020030601)';
 $plugin->maturity = MATURITY_STABLE;

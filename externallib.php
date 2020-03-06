@@ -104,152 +104,159 @@ class block_edusupport_external extends external_api {
      * @return postid of created issue
      */
     public static function create_issue($subject, $description, $forum_group, $image, $url, $contactphone) {
-        global $CFG, $DB, $PAGE, $USER;
+        global $CFG, $DB, $OUTPUT, $PAGE, $USER;
         $params = self::validate_parameters(self::create_issue_parameters(), array('subject' => $subject, 'description' => $description, 'forum_group' => $forum_group, 'image' => $image, 'url' => $url, 'contactphone' => $contactphone));
 
         $tmp = explode('_', $forum_group);
         $forumid = $tmp[0];
         $groupid = $tmp[1];
 
-        require_once($CFG->dirroot . '/blocks/edusupport/locallib.php');
-        if (\block_edusupport\lib::is_supportforum($forumid)) {
-            // Mainly copied from mod/forum/externallib.php > add_discussion()
-            $warnings = array();
+        if (empty($forumid)) {
+            // @todo fallback and send by mail!
 
-            // Request and permission validation.
-            $forum = $DB->get_record('forum', array('id' => $targetforum), '*', MUST_EXIST);
-            list($course, $cm) = get_course_and_cm_from_instance($forum, 'forum');
-
-            $context = context_module::instance($cm->id);
-            self::validate_context($context);
-
-            // Validate options.
-            $options = array(
-                'discussionsubscribe' => true,
-                'discussionpinned' => false,
-                'inlineattachmentsid' => 0,
-                'attachmentsid' => null
-            );
-
-            // Normalize group.
-            if (!groups_get_activity_groupmode($cm)) {
-                // Groups not supported, force to -1.
-                $groupid = -1;
-            } else {
-                // Check if we receive the default or and empty value for groupid,
-                // in this case, get the group for the user in the activity.
-                if (empty($groupid)) {
-                    $groupid = groups_get_activity_group($cm);
-                }
-            }
-
-            if (!forum_user_can_post_discussion($forum, $groupid, -1, $cm, $context)) {
-                throw new moodle_exception('cannotcreatediscussion', 'forum');
-            }
-
-            $thresholdwarning = forum_check_throttling($forum, $cm);
-            forum_check_blocking_threshold($thresholdwarning);
-
-            $message = $OUTPUT->render_from_template("block_edusupport/issue_template", $params);
-
-            // Create the discussion.
-            $discussion = new stdClass();
-            $discussion->course = $course->id;
-            $discussion->forum = $forum->id;
-            $discussion->message = $message;
-            $discussion->messageformat = FORMAT_HTML;   // Force formatting for now.
-            $discussion->messagetrust = trusttext_trusted($context);
-            $discussion->itemid = 0; //$options['inlineattachmentsid'];
-            $discussion->groupid = $groupid;
-            $discussion->mailnow = 1;
-            $discussion->subject = $params['subject'];
-            $discussion->name = $discussion->subject;
-            $discussion->timestart = 0;
-            $discussion->timeend = 0;
-            $discussion->timelocked = 0;
-            $discussion->attachment = 0;
-
-            if (has_capability('mod/forum:pindiscussions', $context) && $options['discussionpinned']) {
-                $discussion->pinned = FORUM_DISCUSSION_PINNED;
-            } else {
-                $discussion->pinned = FORUM_DISCUSSION_UNPINNED;
-            }
-
-            if ($discussionid = forum_add_discussion($discussion, $fakemform)) {
-
-                $discussion->id = $discussionid;
-
-                if (!empty($params['image'])) {
-                    // Write image to a temporary file
-                    $x = explode(",", $params['image']);
-                    $f = tmpfile();
-                    fwrite($f, base64_decode($x[1]));
-
-                    // Get mimetype (e.g. png)
-                    $type = str_replace('data:image/', '', $x[0]);
-                    $type = str_replace(';base64', '', $type);
-                    $filepath = stream_get_meta_data($f)['uri'];
-                    $filename = 'screenshot_' . date('Y-m-d_H_i_s') . '.' . $type;
-
-                    $fs = get_file_storage();
-                    // Scan for viruses.
-                    \core\antivirus\manager::scan_file($filepath, $filename, true);
-
-                    $fr = new stdClass;
-                    $fr->component = 'mod_forum';
-                    $fr->contextid = $context->id;
-                    $fr->userid    = $USER->id;
-                    $fr->filearea  = 'attachment';
-                    $fr->filename  = $filename;
-                    $fr->filepath  = '/';
-                    $fr->itemid    = $discussion->firstpost;
-                    $fr->license   = $CFG->sitedefaultlicense;
-                    $fr->author    = fullname($USER);
-                    $fr->source    = serialize((object)array('source' => $filename));
-
-                    $fs->create_file_from_pathname($fr, $filepath);
-                    $DB->set_field('forum_posts', 'attachment', 1, array('id'=>$discussion->firstpost));
-                }
-
-                // Trigger events and completion.
-
-                $params = array(
-                    'context' => $context,
-                    'objectid' => $discussion->id,
-                    'other' => array(
-                        'forumid' => $forum->id,
-                    )
-                );
-                $event = \mod_forum\event\discussion_created::create($params);
-                $event->add_record_snapshot('forum_discussions', $discussion);
-                $event->trigger();
-
-                $completion = new completion_info($course);
-                if ($completion->is_enabled($cm) &&
-                        ($forum->completiondiscussions || $forum->completionposts)) {
-                    $completion->update_state($cm, COMPLETION_COMPLETE);
-                }
-
-                $settings = new stdClass();
-                $settings->discussionsubscribe = $options['discussionsubscribe'];
-                forum_post_subscription($settings, $forum, $discussion);
-            } else {
-                throw new moodle_exception('couldnotadd', 'forum');
-            }
-
-            // Create the issue itself.
-            \block_edusupport\lib::get_issue($discussionid);
-            return $discussionid;
         } else {
-            return -1;
+            require_once($CFG->dirroot . '/blocks/edusupport/locallib.php');
+            if (\block_edusupport\lib::is_supportforum($forumid)) {
+                // Mainly copied from mod/forum/externallib.php > add_discussion()
+                $warnings = array();
+
+                // Request and permission validation.
+                $forum = $DB->get_record('forum', array('id' => $forumid), '*', MUST_EXIST);
+                list($course, $cm) = get_course_and_cm_from_instance($forum, 'forum');
+
+                $context = context_module::instance($cm->id);
+                self::validate_context($context);
+
+                // Validate options.
+                $options = array(
+                    'discussionsubscribe' => true,
+                    'discussionpinned' => false,
+                    'inlineattachmentsid' => 0,
+                    'attachmentsid' => null
+                );
+
+                // Normalize group.
+                if (!groups_get_activity_groupmode($cm)) {
+                    // Groups not supported, force to -1.
+                    $groupid = -1;
+                } else {
+                    // Check if we receive the default or and empty value for groupid,
+                    // in this case, get the group for the user in the activity.
+                    if (empty($groupid)) {
+                        $groupid = groups_get_activity_group($cm);
+                    }
+                }
+
+                if (!forum_user_can_post_discussion($forum, $groupid, -1, $cm, $context)) {
+                    throw new moodle_exception('cannotcreatediscussion', 'forum');
+                }
+
+                $thresholdwarning = forum_check_throttling($forum, $cm);
+                forum_check_blocking_threshold($thresholdwarning);
+
+                $message = $OUTPUT->render_from_template("block_edusupport/issue_template", $params);
+
+                // Create the discussion.
+                $discussion = new stdClass();
+                $discussion->course = $course->id;
+                $discussion->forum = $forum->id;
+                $discussion->message = $message;
+                $discussion->messageformat = FORMAT_HTML;   // Force formatting for now.
+                $discussion->messagetrust = trusttext_trusted($context);
+                $discussion->itemid = 0; //$options['inlineattachmentsid'];
+                $discussion->groupid = $groupid;
+                $discussion->mailnow = 1;
+                $discussion->subject = $params['subject'];
+                $discussion->name = $discussion->subject;
+                $discussion->timestart = 0;
+                $discussion->timeend = 0;
+                $discussion->timelocked = 0;
+                $discussion->attachment = 0;
+
+                if (has_capability('mod/forum:pindiscussions', $context) && $options['discussionpinned']) {
+                    $discussion->pinned = FORUM_DISCUSSION_PINNED;
+                } else {
+                    $discussion->pinned = FORUM_DISCUSSION_UNPINNED;
+                }
+
+                if ($discussionid = forum_add_discussion($discussion, $fakemform)) {
+                    $discussion->id = $discussionid;
+
+                    if (!empty($params['image'])) {
+                        // Write image to a temporary file
+                        $x = explode(",", $params['image']);
+                        $f = tmpfile();
+                        fwrite($f, base64_decode($x[1]));
+
+                        // Get mimetype (e.g. png)
+                        $type = str_replace('data:image/', '', $x[0]);
+                        $type = str_replace(';base64', '', $type);
+                        $filepath = stream_get_meta_data($f)['uri'];
+                        $filename = 'screenshot_' . date('Y-m-d_H_i_s') . '.' . $type;
+
+                        $fs = get_file_storage();
+                        // Scan for viruses.
+                        \core\antivirus\manager::scan_file($filepath, $filename, true);
+
+                        $fr = new stdClass;
+                        $fr->component = 'mod_forum';
+                        $fr->contextid = $context->id;
+                        $fr->userid    = $USER->id;
+                        $fr->filearea  = 'attachment';
+                        $fr->filename  = $filename;
+                        $fr->filepath  = '/';
+                        $fr->itemid    = $discussion->firstpost;
+                        $fr->license   = $CFG->sitedefaultlicense;
+                        $fr->author    = fullname($USER);
+                        $fr->source    = serialize((object)array('source' => $filename));
+
+                        $fs->create_file_from_pathname($fr, $filepath);
+                        $DB->set_field('forum_posts', 'attachment', 1, array('id'=>$discussion->firstpost));
+                    }
+
+                    // Trigger events and completion.
+
+                    $params = array(
+                        'context' => $context,
+                        'objectid' => $discussion->id,
+                        'other' => array(
+                            'forumid' => $forum->id,
+                        )
+                    );
+                    $event = \mod_forum\event\discussion_created::create($params);
+                    $event->add_record_snapshot('forum_discussions', $discussion);
+                    $event->trigger();
+
+                    $completion = new completion_info($course);
+                    if ($completion->is_enabled($cm) &&
+                            ($forum->completiondiscussions || $forum->completionposts)) {
+                        $completion->update_state($cm, COMPLETION_COMPLETE);
+                    }
+
+                    $settings = new stdClass();
+                    $settings->discussionsubscribe = $options['discussionsubscribe'];
+                    forum_post_subscription($settings, $forum, $discussion);
+                    // Create the issue itself.
+                    \block_edusupport\lib::get_issue($discussion->id);
+                    return $discussionid;
+                } else {
+                    throw new moodle_exception('couldnotadd', 'forum');
+                }
+                return -2;
+
+            } else {
+                return -1;
+            }
         }
+
+
     }
     /**
      * Return definition.
      * @return external_value
      */
     public static function create_issue_returns() {
-        return new external_value(PARAM_INT, 'Returns the post id of the created issue, or -1');
+        return new external_value(PARAM_INT, 'Returns the discussion id of the created issue, or -1');
     }
 
     /**
@@ -273,7 +280,10 @@ class block_edusupport_external extends external_api {
 
         $params = self::validate_parameters(self::create_form_parameters(), array('url' => $url, 'image' => $image, 'forumid' => $forumid));
 
+        $PAGE->set_context(context_system::instance());
+
         require_once($CFG->dirroot . '/blocks/edusupport/locallib.php');
+
         if (\block_edusupport\lib::is_supportforum($forumid)) {
             require_once($CFG->dirroot . '/blocks/edusupport/classes/issue_create_form.php');
             $params['contactphone'] = $USER->phone1;

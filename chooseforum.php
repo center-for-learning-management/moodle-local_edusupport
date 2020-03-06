@@ -24,39 +24,47 @@
 require_once('../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
 
-required_param('cmid', PARAM_INT);
-required_param('forumid', PARAM_INT);
-required_param('state', PARAM_INT);
+$courseid = required_param('courseid', PARAM_INT);
+$forumid = optional_param('forumid', 0, PARAM_INT);
+$state = optional_param('state', 0, PARAM_INT);
 
-$context = context_module::instance($cmid);
+$context = context_course::instance($courseid);
 $PAGE->set_context($context);
-require_login();
-$PAGE->set_url(new moodle_url('blocks/edusupport/toggleforum.php', array('cmid' => $cmid, 'forumid' => $forumid, 'state' => $state)));
+require_login($courseid);
+$PAGE->set_url(new moodle_url('/blocks/edusupport/chooseforum.php', array('courseid' => $courseid)));
 
-$title = get_string(!empty($state) ? 'supportforum:enable': 'supportforum:disable', 'block_edusupport');
+$title = get_string('supportforum:choose', 'block_edusupport');
 $PAGE->set_title($title);
 $PAGE->set_heading($title);
 
-$tocmurl = new moodle_url('mod/forum/view.php', array('id' => 7716));
+echo $OUTPUT->header();
 
 if (!is_siteadmin()) {
-    echo $OUTPUT->header();
+    $tocmurl = new moodle_url('/course/view.php', array('id' => $courseid));
     echo $OUTPUT->render_from_template('block_edusupport/alert', array(
         'content' => get_string('missing_permission', 'block_edusupport'),
         'type' => 'danger',
         'url' => $tocmurl->__toString(),
     ));
-    echo $OUTPUT->footer();
-}
-$context = context_system::instance();
-
-require_once($CFG->dirroot . '/blocks/edusupport/locallib.php');
-
-if (!empty($state)) {
-    // We want to enable.
-    $chk = \block_edusupport\lib::supportforum_enable($forumid);
 } else {
-    //We want to disable.
-    $chk = \block_edusupport\lib::supportforum_disable($forumid);
+    if (!empty($forumid)) {
+        require_once($CFG->dirroot . '/blocks/edusupport/locallib.php');
+        switch($state) {
+            case 1: \block_edusupport\lib::supportforum_enable($forumid); break;
+            case -1: \block_edusupport\lib::supportforum_disable($forumid); break;
+        }
+    }
+
+    $sql = "SELECT id,name,course
+                FROM {forum}
+                WHERE course=?
+                ORDER BY name ASC";
+    $forums = array_values($DB->get_records_sql($sql, array($courseid)));
+    foreach ($forums AS &$forum) {
+        $state = $DB->get_record('block_edusupport', array('forumid' => $forum->id));
+        $forum->state = (!empty($state->id));
+    }
+    echo $OUTPUT->render_from_template('block_edusupport/chooseforum', array('forums' => $forums));
 }
-redirect($tocmurl->__toString());
+
+echo $OUTPUT->footer();

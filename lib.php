@@ -31,10 +31,10 @@ defined('MOODLE_INTERNAL') || die;
  * $settings is unused, but API requires it. Suppress PHPMD warning.
  *
  */
-function block_edusupport_extend_settings_navigation(settings_navigation $settings,
-        navigation_node $modnode) {
+function block_edusupport_before_standard_html_head(){
 
-    // If we are not site admin return.
+}
+function block_edusupport_extend_navigation_course($parentnode, $course, $context) {
     if (!is_siteadmin()) return;
 
     global $DB, $PAGE;
@@ -43,14 +43,13 @@ function block_edusupport_extend_settings_navigation(settings_navigation $settin
     $cmid = $PAGE->cm->id;
     $cm = $PAGE->cm;
     $course = $PAGE->course;
-    print_r(array($cm, $course); die();
-
     $forumid = $cm->instance;
     $courseid = $course->id;
 
     // We want to add these new nodes after the Edit settings node, and before the
     // Locally assigned roles node. Of course, both of those are controlled by capabilities.
-    $keys = $modnode->get_children_key_list();
+    $keys = $parentnode->get_children_key_list();
+
     $beforekey = null;
     $i = array_search('modedit', $keys);
     if (($i === false) && array_key_exists(0, $keys)) {
@@ -59,26 +58,10 @@ function block_edusupport_extend_settings_navigation(settings_navigation $settin
         $beforekey = $keys[$i + 1];
     }
 
-    $chk = $DB->get_record('block_edusupport', array('forumid' => $forumid));
-    if (!empty($chk->id)) {
-        if ($chk->courseid != $courseid) {
-            $DB->set_field('block_edusupport', 'courseid', $courseid, array('id' => $chk->id));
-        }
-        // Add link to disable this supportforum.
-        $url = '/block/edusupport/toggleforum.php';
-        $node = navigation_node::create(get_string('supportforum:disable'),
-            new moodle_url($url, array('cmid' => $cm->id, 'forumid' => $forumid, 'state' => '0')),
-            navigation_node::TYPE_SETTING, null, 'advancedsettings',
-            new pix_icon('t/eye', ''));
-        $modnode->add_node($node, $beforekey);
-    } else {
-        // Add link to enable this forum as supportforum.
-        // Add link to disable this supportforum.
-        $url = '/block/edusupport/toggleforum.php';
-        $node = navigation_node::create(get_string('supportforum:enable'),
-            new moodle_url($url, array('cmid' => $cm->id, 'forumid' => $forumid, 'state' => '1')),
-            navigation_node::TYPE_SETTING, null, 'advancedsettings',
-            new pix_icon('t/eye', ''));
-        $modnode->add_node($node, $beforekey);
-    }
+    $url = '/blocks/edusupport/chooseforum.php';
+    $node = navigation_node::create(get_string('supportforum:choose', 'block_edusupport'),
+        new moodle_url($url, array('courseid' => $courseid)),
+        navigation_node::TYPE_SETTING, null, 'advancedsettings',
+        new pix_icon('t/eye', ''));
+    $parentnode->add_node($node, $beforekey);
 }

@@ -118,7 +118,7 @@ define(
             var subject = $('#block_edusupport_create_form #id_subject').val();
             var contactphone = $('#block_edusupport_create_form #id_contactphone').val();
             var description = $('#block_edusupport_create_form #id_description').val();
-            var forum_group = $('#block_edusupport_create_form #id_to_group').val();
+            var forum_group = $('#block_edusupport_create_form #id_forum_group').val();
             var post_screenshot = $('#block_edusupport_create_form #id_postscreenshot').is(':checked');
             var screenshot = $('#block_edusupport_create_form img#screenshot').attr('src');
             var url = top.location.href;
@@ -134,7 +134,7 @@ define(
             MAIN.is_sending = true;
 
             var imagedataurl = (post_screenshot && typeof screenshot !== 'undefined' ) ? screenshot : '';
-            console.log('block_edusupport_create_issue', { subject: subject, description: description, forumid: forumid, to_group: to_group, image: imagedataurl, url: url });
+            console.log('block_edusupport_create_issue', { subject: subject, description: description, forum_group: forum_group, image: imagedataurl, url: url });
             AJAX.call([{
                 methodname: 'block_edusupport_create_issue',
                 args: { subject: subject, description: description, forum_group: forum_group, image: imagedataurl, url: url, contactphone: contactphone },
@@ -171,8 +171,8 @@ define(
             console.log('Showing modal');
             var MAIN = this;
             var body = $(MAIN.modal.body);
-            if (body.find('#id_to_group>option').length <= 1) {
-                body.find('#id_to_group').parent().parent().css('display', 'none');
+            if (body.find('#id_forum_group>option').length <= 1) {
+                body.find('#id_forum_group').parent().parent().css('display', 'none');
             }
 
             MAIN.modal.setLarge();

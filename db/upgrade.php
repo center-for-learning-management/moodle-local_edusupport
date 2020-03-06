@@ -160,6 +160,20 @@ function xmldb_block_edusupport_upgrade($oldversion) {
 
         upgrade_block_savepoint(true, 2020030600, 'edusupport');
     }
+    if ($oldversion < 2020030601) {
+        $table = new xmldb_table('block_edusupport_issues');
+        $fields = array(
+            new xmldb_field('courseid'),
+        );
+        foreach ($fields AS $field) {
+            if ($dbman->field_exists($table, $field)) {
+                $dbman->drop_field($table, $field);
+            }
+        }
+
+
+        upgrade_block_savepoint(true, 2020030601, 'edusupport');
+    }
 
 
     return true;
