@@ -111,15 +111,18 @@ class block_edusupport_external extends external_api {
         $forumid = $tmp[0];
         $groupid = $tmp[1];
 
-        if (empty($forumid)) {
-            // @todo fallback and send by mail!
+        $PAGE->set_context(\context_system::instance());
+
+        if ($forum_group == 'mail' || empty($forumid)) {
+            // fallback and send by mail!
             $subject = $params['subject'];
             $messagehtml = $OUTPUT->render_from_template("block_edusupport/issue_template", $params);
             $messagetext = html_to_text($messagehtml);
 
-            $recipients = array(get_support_user());
+            $recipients = array(\core_user::get_support_user());
             $fromuser = $USER;
             if (!empty($params['image'])) {
+                // @TODO attachments were not tested, as the production server does not send mails by configuration!
                 // Write image to a temporary file
                 $x = explode(",", $params['image']);
                 $f = tmpfile();
@@ -137,6 +140,7 @@ class block_edusupport_external extends external_api {
                     email_to_user($recipient, $fromuser, $subject, $messagetext, $messagehtml, "", true);
                 }
             }
+            return -999;
         } else {
             require_once($CFG->dirroot . '/blocks/edusupport/locallib.php');
             if (\block_edusupport\lib::is_supportforum($forumid)) {
@@ -279,7 +283,7 @@ class block_edusupport_external extends external_api {
      * @return external_value
      */
     public static function create_issue_returns() {
-        return new external_value(PARAM_INT, 'Returns the discussion id of the created issue, or -1');
+        return new external_value(PARAM_INT, 'Returns the discussion id of the created issue, -999 when mail was sent, or -1 on error');
     }
 
     /**

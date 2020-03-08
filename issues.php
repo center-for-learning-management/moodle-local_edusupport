@@ -22,24 +22,20 @@
  */
 
 require_once('../../config.php');
-require_once($CFG->libdir . '/adminlib.php');
+require_once($CFG->dirroot . '/blocks/edusupport/locallib.php');
 
-$courseid = required_param('courseid', PARAM_INT);
-$forumid = optional_param('forumid', 0, PARAM_INT);
-$state = optional_param('state', 0, PARAM_INT);
-
-$context = context_course::instance($courseid);
+$context = \context_system::instance();
 $PAGE->set_context($context);
-require_login($courseid);
-$PAGE->set_url(new moodle_url('/blocks/edusupport/chooseforum.php', array('courseid' => $courseid)));
+require_login();
+$PAGE->set_url(new moodle_url('/blocks/edusupport/issues.php', array()));
 
-$title = get_string('supportforum:choose', 'block_edusupport');
+$title = get_string('issues', 'block_edusupport');
 $PAGE->set_title($title);
 $PAGE->set_heading($title);
 
 echo $OUTPUT->header();
 
-if (!is_siteadmin()) {
+if (false && !\block_edusupport\lib::is_supporteam()) {
     $tocmurl = new moodle_url('/course/view.php', array('id' => $courseid));
     echo $OUTPUT->render_from_template('block_edusupport/alert', array(
         'content' => get_string('missing_permission', 'block_edusupport'),
@@ -47,24 +43,22 @@ if (!is_siteadmin()) {
         'url' => $tocmurl->__toString(),
     ));
 } else {
-    if (!empty($forumid)) {
-        require_once($CFG->dirroot . '/blocks/edusupport/locallib.php');
-        switch($state) {
-            case 1: \block_edusupport\lib::supportforum_enable($forumid); break;
-            case -1: \block_edusupport\lib::supportforum_disable($forumid); break;
+    $sql = "SELECT fd.id,fd.name
+                FROM {block_edusupport_assignments} bea,
+                    {forum_discussions} fd
+                WHERE bea.discussionid=fd.id
+                    AND bea.userid=?
+                ORDER BY fd.timemodified DESC";
+    $issues = array_values($DB->get_records_sql($sql, array($USER->id)));
+    foreach ($issues AS &$issue) {
+        if (!empty($issue->currentsupporter)) {
+            $cs = \get_user($issue->currentsupporter);
+            $issue->currentsupportername = \userfullname($cs);
+        } else {
+            $issue->currentsupportername = "2nd Level";
         }
     }
-
-    $sql = "SELECT id,name,course
-                FROM {forum}
-                WHERE course=?
-                ORDER BY name ASC";
-    $forums = array_values($DB->get_records_sql($sql, array($courseid)));
-    foreach ($forums AS &$forum) {
-        $state = $DB->get_record('block_edusupport', array('forumid' => $forum->id));
-        $forum->state = (!empty($state->id));
-    }
-    echo $OUTPUT->render_from_template('block_edusupport/chooseforum', array('forums' => $forums, 'wwwroot' => $CFG->wwwroot));
+    echo $OUTPUT->render_from_template('block_edusupport/issues', array('issues' => $issues, 'wwwroot' => $CFG->wwwroot));
 }
 
 echo $OUTPUT->footer();

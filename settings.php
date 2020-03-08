@@ -26,4 +26,9 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configcheckbox('block_edusupport/sendreminders', get_string('cron:reminder:title', 'block_edusupport'), '', '', PARAM_INT));
 
     $settings->add(new admin_setting_configtext('block_edusupport/relativeurlsupportarea', get_string('relativeurlsupportarea', 'block_edusupport'), '', '', PARAM_URL));
+    $settings->add(new admin_externalpage(
+        'block_edusupport_supporters',
+        get_string('supporters', 'block_edusupport'),
+        $CFG->wwwroot . '/blocks/edusupport/choosesupporters.php'
+    ));
 }

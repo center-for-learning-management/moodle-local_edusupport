@@ -139,10 +139,20 @@ define(
                 methodname: 'block_edusupport_create_issue',
                 args: { subject: subject, description: description, forum_group: forum_group, image: imagedataurl, url: url, contactphone: contactphone },
                 done: function(result) {
-                    // result is the discussion id or -1. if > 0 show confirm box that redirects to post. if -1 show error.
+                    // result is the discussion id, -999 if sent by mail, or -1. if > 0 show confirm box that redirects to post. if -1 show error.
                     console.log(result);
                     modal.hide();
-                    if (parseInt(result) > 0) {
+                    if (parseInt(result) == -999) {
+                        // confirmation, was sent by mail.
+                        STR.get_strings([
+                            {'key' : 'create_issue_success_title', component: 'block_edusupport' },
+                            {'key' : 'create_issue_success_description_mail', component: 'block_edusupport' },
+                            {'key' : 'create_issue_success_close', component: 'block_edusupport' },
+                            ]).done(function(s) {
+                                NOTIFICATION.alert(s[0], s[1], s[2]);
+                            }
+                        ).fail(NOTIFICATION.exception);
+                    } else if (parseInt(result) > 0) {
                         // confirmation
                         STR.get_strings([
                             {'key' : 'create_issue_success_title', component: 'block_edusupport' },

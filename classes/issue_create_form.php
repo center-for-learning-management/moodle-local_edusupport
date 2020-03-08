@@ -79,6 +79,8 @@ class issue_create_form extends moodleform {
                 }
             }
         }
+        $supportuser = \core_user::get_support_user();
+        $options['mail'] = get_string('email_to_xyz', 'block_edusupport', array('email' => $supportuser->email));
 
         $mform->addElement('select', 'forum_group', get_string('to_group', 'block_edusupport'), $options);
         $mform->setType('forum_group', PARAM_INT);
