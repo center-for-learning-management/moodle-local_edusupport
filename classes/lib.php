@@ -28,19 +28,25 @@ defined('MOODLE_INTERNAL') || die;
 require_once($CFG->libdir . '/adminlib.php');
 
 class lib {
-    public static function assign_role($contextid, $assign) {
+    /**
+     * Assigns the teacher role within this script.
+     * Resets cardinality of primary key to avoid bumping the pk.
+     * @param context course_context instance.
+     * @param assign true if we assign the role, false if we unassign it.
+     */
+    public static function assign_role($context, $assign) {
         global $DB, $USER;
 
         if (!empty($assign) && $assign) {
-            \role_assign(5, $USER->id, $contextid);
+            \role_assign(5, $USER->id, $context);
         } else {
-            \role_unassign(5, $USER->id, $contextid);
+            \role_unassign(5, $USER->id, $context->id);
             // Reset cardinality of auto increment.
-            $sql = "SELECT 1,MAX(id) AS id
+            $sql = "SELECT 0,MAX(id) AS id
                         FROM {role_assignments}";
             $max = $DB->get_records_sql($sql, array());
             $sql = "ALTER TABLE {role_assignments}
-                        AUTO_INCREMENT=" . ($max[1]->id+1);
+                        AUTO_INCREMENT=" . ($max[0]->id+1);
             $DB->execute($sql, array());
         }
     }

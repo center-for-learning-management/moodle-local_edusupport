@@ -46,10 +46,9 @@ class block_edusupport extends block_base {
             'text' => '',
             'footer' => array()
         );
-        require_once($CFG->dirroot . '/blocks/edusupport/locallib.php');
+        require_once($CFG->dirroot . '/blocks/edusupport/classes/lib.php');
 
         $options = array();
-
 
         if (isloggedin() && !isguestuser($USER)) {
             $options[] = array(

@@ -74,17 +74,11 @@ if (false && !\block_edusupport\lib::is_supporteam()) {
 
     echo $OUTPUT->header();
 
-    \block_edusupport\lib::assign_role($coursecontext->id, true);
-
-    // Disabled, check was done before (we belong to the supportteam)
-    //require_course_login($course, true, $cm);
+    \block_edusupport\lib::assign_role($coursecontext, true);
 
     // move this down fix for MDL-6926
     require_once($CFG->dirroot.'/mod/forum/lib.php');
 
-    $modcontext = context_module::instance($cm->id);
-    // We do not require this capability. We belong to the supportteam.
-    //require_capability('mod/forum:viewdiscussion', $modcontext, NULL, true, 'noviewdiscussionspermission', 'forum');
     // Trigger discussion viewed event.
     forum_discussion_view($modcontext, $forum, $discussion);
 
@@ -112,7 +106,6 @@ if (false && !\block_edusupport\lib::is_supporteam()) {
     if (!forum_user_can_see_post($forum, $discussion, $post, null, $cm, false)) {
         print_error('noviewdiscussionspermission', 'forum', "$CFG->wwwroot/mod/forum/view.php?id=$forum->id");
     }
-
     if ($mark == 'read' or $mark == 'unread') {
         if ($CFG->forum_usermarksread && forum_tp_can_track_forums($forum) && forum_tp_is_tracked($forum)) {
             if ($mark == 'read') {
@@ -178,7 +171,7 @@ if (false && !\block_edusupport\lib::is_supporteam()) {
 
     $out = ob_get_contents();
     ob_end_clean();
-    \block_edusupport\lib::assign_role($coursecontext->id, false);
+    \block_edusupport\lib::assign_role($coursecontext, false);
     $out = str_replace($CFG->wwwroot . '/mod/forum/discuss.php', $CFG->wwwroot . '/blocks/edusupport/issue.php', $out);
     $starts = array(
         //'<div class="singleselect d-inline-block">',
@@ -218,7 +211,8 @@ if (false && !\block_edusupport\lib::is_supporteam()) {
         'edit' => $edit), 'post', '', array('id' => 'mformforum')
     );
     $draftitemid = \file_get_submitted_draft_itemid('attachments');
-    \file_prepare_draft_area($draftitemid, $modcontext->id, 'mod_forum', 'attachment', empty($post->id)?null:$post->id, \mod_forum_post_form::attachment_options($forum));
+    //\file_prepare_draft_area($draftitemid, $modcontext->id, 'mod_forum', 'attachment', empty($post->id)?null:$post->id, \mod_forum_post_form::attachment_options($forum));
+    \file_prepare_draft_area($draftitemid, $modcontext->id, 'mod_forum', 'attachment', null, \mod_forum_post_form::attachment_options($forum));
 
     $formheading = '';
     if (!empty($parent)) {
@@ -238,7 +232,7 @@ if (false && !\block_edusupport\lib::is_supporteam()) {
 
     $mform_post->set_data(
         array(
-            //'attachments'=>$draftitemid,
+            'attachments'=>$draftitemid,
             'general'=>$heading,
             'subject'=> 'Re: ' . $post->subject,
             'message'=>array(
