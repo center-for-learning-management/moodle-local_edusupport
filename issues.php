@@ -22,7 +22,7 @@
  */
 
 require_once('../../config.php');
-require_once($CFG->dirroot . '/blocks/edusupport/locallib.php');
+require_once($CFG->dirroot . '/blocks/edusupport/classes/lib.php');
 
 $context = \context_system::instance();
 $PAGE->set_context($context);

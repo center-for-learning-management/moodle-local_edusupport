@@ -22,7 +22,7 @@
 */
 
 require_once('../../config.php');
-require_once($CFG->dirroot . '/blocks/edusupport/locallib.php');
+require_once($CFG->dirroot . '/blocks/edusupport/classes/lib.php');
 
 // We fake a forum discussion here.
 // This code is mainly taken from /mod/forum/discuss.php.
@@ -73,6 +73,8 @@ if (false && !\block_edusupport\lib::is_supporteam()) {
     $PAGE->set_heading($course->fullname);
 
     echo $OUTPUT->header();
+
+    \block_edusupport\lib::assign_role($coursecontext->id, true);
 
     // Disabled, check was done before (we belong to the supportteam)
     //require_course_login($course, true, $cm);
@@ -174,9 +176,9 @@ if (false && !\block_edusupport\lib::is_supporteam()) {
 
     forum_print_discussion($course, $cm, $forum, $discussion, $post, $displaymode, $canreply, $canrate);
 
-
     $out = ob_get_contents();
     ob_end_clean();
+    \block_edusupport\lib::assign_role($coursecontext->id, false);
     $out = str_replace($CFG->wwwroot . '/mod/forum/discuss.php', $CFG->wwwroot . '/blocks/edusupport/issue.php', $out);
     $starts = array(
         //'<div class="singleselect d-inline-block">',
@@ -236,7 +238,7 @@ if (false && !\block_edusupport\lib::is_supporteam()) {
 
     $mform_post->set_data(
         array(
-            'attachments'=>$draftitemid,
+            //'attachments'=>$draftitemid,
             'general'=>$heading,
             'subject'=> 'Re: ' . $post->subject,
             'message'=>array(

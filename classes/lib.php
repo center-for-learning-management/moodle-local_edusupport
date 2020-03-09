@@ -28,6 +28,22 @@ defined('MOODLE_INTERNAL') || die;
 require_once($CFG->libdir . '/adminlib.php');
 
 class lib {
+    public static function assign_role($contextid, $assign) {
+        global $DB, $USER;
+
+        if (!empty($assign) && $assign) {
+            \role_assign(5, $USER->id, $contextid);
+        } else {
+            \role_unassign(5, $USER->id, $contextid);
+            // Reset cardinality of auto increment.
+            $sql = "SELECT 1,MAX(id) AS id
+                        FROM {role_assignments}";
+            $max = $DB->get_records_sql($sql, array());
+            $sql = "ALTER TABLE {role_assignments}
+                        AUTO_INCREMENT=" . ($max[1]->id+1);
+            $DB->execute($sql, array());
+        }
+    }
     public static function can_config_course($courseid){
         global $USER;
         if (self::can_config_global()) return true;
