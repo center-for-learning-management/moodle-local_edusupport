@@ -21,6 +21,7 @@
                 <td width="200">#</td>
                 <td>{{#str}} issue, block_edusupport {{/str}}</td>
                 <td>{{#str}} assigned, block_edusupport {{/str}}</td>
+                <td>{{#str}} modified {{/str}}</td>
             </tr>
         </thead>
         <tbody>
@@ -32,6 +33,7 @@
                         </a></td>
                     <td>{{name}}</td>
                     <td>{{currentsupportername}}</td>
+                    <td>{{#userdate}} {{lastmodified}}, %F %X {{/userdate}}</td>
                 </tr>
             {{/issues}}
         </tbody>

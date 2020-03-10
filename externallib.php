@@ -24,6 +24,7 @@
 defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->libdir . "/externallib.php");
+require_once($CFG->dirroot . '/blocks/edusupport/classes/lib.php');
 
 class block_edusupport_external extends external_api {
     public static function close_issue_parameters() {
@@ -340,23 +341,24 @@ class block_edusupport_external extends external_api {
         global $DB, $USER;
         $params = self::validate_parameters(self::get_potentialsupporters_parameters(), array('discussionid' => $discussionid));
         $reply['supporters'] = array();
+
         $discussion = $DB->get_record('forum_discussions', array('id' => $params['discussionid']));
-        $issue = $DB->get_record('block_edusupport_issues', array('discussionid' => $discussion->id));
-        if (!empty($discussion->course)) {
-            $sql = "SELECT u.id,u.firstname,u.lastname,s.supportlevel
-                        FROM {user} u, {block_edusupport_supporters} s
-                        WHERE u.id=s.userid AND s.courseid=?
-                        ORDER BY u.lastname ASC,u.firstname ASC";
-            $supporters = $DB->get_records_sql($sql, array($discussion->course));
-            foreach($supporters AS $supporter) {
-                if (!isset($reply['supporters'][$supporter->supportlevel])) {
-                    $reply['supporters'][$supporter->supportlevel] = array();
-                }
-                if (empty($issue->currentsupporter) && $supporter->id == $USER->id) $supporter->selected = true;
-                elseif ($issue->currentsupporter == $supporter->id) $supporter->selected = true;
-                $reply['supporters'][$supporter->supportlevel][] = $supporter;
+        $sql = "SELECT s.*,u.firstname,u.lastname,s.supportlevel
+                    FROM {user} u, {block_edusupport_supporters} s
+                    WHERE u.id=s.userid
+                        AND s.supportlevel<>''
+                        AND (s.courseid=1 OR s.courseid=?)
+                    ORDER BY u.lastname ASC,u.firstname ASC";
+        $supporters = $DB->get_records_sql($sql, array($discussion->course));
+        foreach($supporters AS $supporter) {
+            if (!isset($reply['supporters'][$supporter->supportlevel])) {
+                $reply['supporters'][$supporter->supportlevel] = array();
             }
+            if (empty($issue->currentsupporter) && $supporter->id == $USER->id) $supporter->selected = true;
+            elseif ($issue->currentsupporter == $supporter->id) $supporter->selected = true;
+            $reply['supporters'][$supporter->supportlevel][] = $supporter;
         }
+
         return json_encode($reply, JSON_NUMERIC_CHECK);
     }
     public static function get_potentialsupporters_returns() {
@@ -406,10 +408,7 @@ class block_edusupport_external extends external_api {
     public static function set_currentsupporter($discussionid, $supporterid) {
         global $CFG, $DB, $USER;
         $params = self::validate_parameters(self::set_currentsupporter_parameters(), array('discussionid' => $discussionid, 'supporterid' => $supporterid));
-        $discussion = $DB->get_record('forum_discussions', array('id' => $params['discussionid']));
-
-        require_once($CFG->dirroot . '/blocks/edusupport/block_edusupport.php');
-        return block_edusupport::set_current_supporter($discussion->id, $params['supporterid']);
+        return \block_edusupport\lib::set_current_supporter($params['discussionid'], $params['supporterid']);
     }
     public static function set_currentsupporter_returns() {
         return new external_value(PARAM_RAW, 'Returns 1 if successful.');

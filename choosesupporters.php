@@ -31,6 +31,9 @@ $userid = optional_param('userid', 0, PARAM_INT);
 $supportlevel = optional_param('supportlevel', '', PARAM_TEXT);
 $remove = optional_param('remove', 0, PARAM_BOOL);
 
+// The next param is not used yet. We could select supporters, that are resposible for certain courses only.
+$courseid = optional_param('courseid', 1, PARAM_INT);
+
 $context = \context_system::instance();
 $PAGE->set_context($context);
 require_login();
@@ -58,12 +61,14 @@ if (!is_siteadmin()) {
             } else {
                 $success = $DB->update_record('block_edusupport_supporters', array(
                     'id' => $id,
+                    'courseid' => $courseid,
                     'userid' => $userid,
                     'supportlevel' => $supportlevel,
                 ));
             }
         } else {
             $success = $DB->insert_record('block_edusupport_supporters', array(
+                'courseid' => $courseid,
                 'userid' => $userid,
                 'supportlevel' => $supportlevel,
             ));

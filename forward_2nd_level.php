@@ -21,46 +21,48 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+// This file forwards a forum discussion to the 2nd level support.
+
 require_once('../../config.php');
+require_once($CFG->libdir . '/adminlib.php');
 require_once($CFG->dirroot . '/blocks/edusupport/classes/lib.php');
 
-$context = \context_system::instance();
-$PAGE->set_context($context);
-require_login();
-$PAGE->set_url(new moodle_url('/blocks/edusupport/issues.php', array()));
+$discussionid = required_param('d', PARAM_INT);
+$discussion = $DB->get_record('forum_discussions', array('id' => $d), MUST_EXIST);
 
-$title = get_string('issues', 'block_edusupport');
+$context = context_course::instance($discussion->course);
+$PAGE->set_context($context);
+require_login($courseid);
+$PAGE->set_url(new moodle_url('/blocks/edusupport/forward_2nd_level.php', array('d' => $d)));
+
+$title = get_string('issue_assign_nextlevel', 'block_edusupport');
 $PAGE->set_title($title);
 $PAGE->set_heading($title);
 
 echo $OUTPUT->header();
 
-if (false && !\block_edusupport\lib::is_supporteam()) {
-    $tocmurl = new moodle_url('/course/view.php', array('id' => $courseid));
+$todiscussion = new moodle_url('/mod/forum/discuss.php', array('d' => $d));
+if (!has_capability('core/course:update', $coursecontext)) {
     echo $OUTPUT->render_from_template('block_edusupport/alert', array(
         'content' => get_string('missing_permission', 'block_edusupport'),
         'type' => 'danger',
-        'url' => $tocmurl->__toString(),
+        'url' => $todiscussion->__toString(),
     ));
 } else {
-    $sql = "SELECT fd.id,fd.name
-                FROM {block_edusupport_assignments} bea,
-                    {forum_discussions} fd
-                WHERE bea.discussionid=fd.id
-                    AND bea.userid=?
-                ORDER BY fd.timemodified DESC";
-    $issues = array_values($DB->get_records_sql($sql, array($USER->id)));
-    foreach ($issues AS &$issue) {
-        $lastpost = $DB->get_record('forum_posts', array('discussion' => $issue->id), '*', 'modified DESC');
-        $issue->lastmodified = $lastpost->modified;
-        if (!empty($issue->currentsupporter)) {
-            $cs = \get_user($issue->currentsupporter);
-            $issue->currentsupportername = \userfullname($cs);
-        } else {
-            $issue->currentsupportername = "2nd Level";
-        }
+    if(\block_edusupport\lib::set_2nd_level($d)) {
+        echo $OUTPUT->render_from_template('block_edusupport/alert', array(
+            'content' => get_string('success'),
+            'type' => 'success',
+            'url' => $todiscussion->__toString(),
+        ));
+        redirect($todiscussion->__toString());
+    } else {
+        echo $OUTPUT->render_from_template('block_edusupport/alert', array(
+            'content' => get_string('missing_permission', 'block_edusupport'),
+            'type' => 'danger',
+            'url' => $todiscussion->__toString(),
+        ));
     }
-    echo $OUTPUT->render_from_template('block_edusupport/issues', array('issues' => $issues, 'wwwroot' => $CFG->wwwroot));
 }
 
 echo $OUTPUT->footer();

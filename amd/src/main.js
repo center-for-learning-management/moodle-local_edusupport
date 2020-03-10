@@ -2,16 +2,20 @@ define(
     ['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'core/modal_factory', 'core/modal_events'],
     function($, AJAX, NOTIFICATION, STR, URL, ModalFactory, ModalEvents) {
     return {
+        debug: 1,
         triggerSteps: 0,
         assignSupporter: function(discussionid, userid){
+            var MAIN = this;
+            if (MAIN.debug > 0) console.log('block_edusupport/main:assignSupporter(discussionid, userid)', discussionid, userid);
             if (typeof userid === 'undefined') {
+                console.log('ajax call');
                 // Show a selection of possible supporters.
                 AJAX.call([{
                     methodname: 'block_edusupport_get_potentialsupporters',
                     args: { discussionid: discussionid },
                     done: function(result) {
-                        try { result = JSON.parse(result); } catch(e) {}
-                        console.log('block_edusupport_get_potentialsupporters', result);
+                        try { result = JSON.parse(result); } catch(e) { }
+                        if (MAIN.debug > 0) console.log('block_edusupport_external:block_edusupport_get_potentialsupporters', result);
                         var supportlevels = Object.keys(result.supporters);
                         var body = '<input type="hidden" value="' + discussionid + '" />';
                         body += '<select>';
@@ -108,13 +112,50 @@ define(
                 fail: NOTIFICATION.exception
             }]);
         },
+        /**
+         * Let's inject a button to call the 2nd level support.
+         * @param discussionid.
+         */
+        injectForwardButton: function(discussionid) {
+            if (typeof discussionid === 'undefined') return;
+            STR.get_strings([
+                    {'key' : 'issue_assign_nextlevel', component: 'block_edusupport' },
+                ]).done(function(s) {
+                    $('#page-content div[role="main"] .discussionname').parent().prepend(
+                        $('<a href="#" onclick="require([\'block_edusupport/main\'], function(MAIN) { MAIN.injectForwardModal(' + discussionid + '); }); return false;" class="btn btn-secondary">' + s[0] + '</a>')
+                    );
+                }
+            ).fail(NOTIFICATION.exception);
+
+
+        },
+        injectForwardModal: function(discussionid) {
+            STR.get_strings([
+                    {'key' : 'confirmation', component: 'core' },
+                    {'key' : 'issue_assign_nextlevel', component: 'block_edusupport' },
+                ]).done(function(s) {
+                    ModalFactory.create({
+                        type: ModalFactory.types.SAVE_CANCEL,
+                        title: s[0],
+                        body: s[1],
+                    }, trigger)
+                    .done(function(modal) {
+                        var root = modal.getRoot();
+                        root.on(ModalEvents.save, function() {
+                            top.location.href = URL.relativePath('/blocks/edusupport/forward_2nd_level.php', { d: discussionid });
+                        });
+                        modal.show();
+                    });
+                }
+            ).fail(NOTIFICATION.exception);
+        },
         postBox: function(modal) {
             var MAIN = this;
             if (typeof MAIN.is_sending !== 'undefined' && MAIN.is_sending) {
                 console.log('Issue in queue, aborting');
                 return;
             }
-            //console.log('MAIN.postBox(modal)', modal);
+            if (MAIN.debug > 0) console.log('MAIN.postBox(modal)', modal);
             var subject = $('#block_edusupport_create_form #id_subject').val();
             var contactphone = $('#block_edusupport_create_form #id_contactphone').val();
             var description = $('#block_edusupport_create_form #id_description').val();
@@ -134,13 +175,13 @@ define(
             MAIN.is_sending = true;
 
             var imagedataurl = (post_screenshot && typeof screenshot !== 'undefined' ) ? screenshot : '';
-            console.log('block_edusupport_create_issue', { subject: subject, description: description, forum_group: forum_group, image: imagedataurl, url: url });
+            if (MAIN.debug > 0) console.log('block_edusupport_create_issue', { subject: subject, description: description, forum_group: forum_group, image: imagedataurl, url: url });
             AJAX.call([{
                 methodname: 'block_edusupport_create_issue',
                 args: { subject: subject, description: description, forum_group: forum_group, image: imagedataurl, url: url, contactphone: contactphone },
                 done: function(result) {
                     // result is the discussion id, -999 if sent by mail, or -1. if > 0 show confirm box that redirects to post. if -1 show error.
-                    console.log(result);
+                    if (MAIN.debug > 0) console.log(result);
                     modal.hide();
                     if (parseInt(result) == -999) {
                         // confirmation, was sent by mail.
@@ -178,8 +219,8 @@ define(
             }]);
         },
         prepareBox: function() {
-            console.log('Showing modal');
             var MAIN = this;
+            if (MAIN.debug > 0) console.log('Showing modal');
             var body = $(MAIN.modal.body);
             if (body.find('#id_forum_group>option').length <= 1) {
                 body.find('#id_forum_group').parent().parent().css('display', 'none');

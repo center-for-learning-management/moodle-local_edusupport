@@ -73,15 +73,40 @@ if (false && !\block_edusupport\lib::is_supporteam()) {
     $PAGE->set_heading($course->fullname);
 
     echo $OUTPUT->header();
+    $options = array();
 
-    \block_edusupport\lib::assign_role($coursecontext, true);
+    if (!empty($issue->currentsupporter)) {
+        $supporter = $DB->get_record('user', array('id' => $issue->currentsupporter));
+        $options[] = array(
+            "title" => $supporter->firstname . ' ' . $supporter->lastname . '(' . $issue->currentlevel . ')',
+            "class" => 'btn-secondary',
+            "icon" => 'i/checkpermissions',
+            "href" => $CFG->wwwroot . '/user/profile.php?id' . $supporter->id,
+        );
+    }
+
+    $options[] = array(
+        "title" => get_string('issue_assign', 'block_edusupport'),
+        "class" => 'btn-secondary',
+        "icon" => 'i/assignroles',
+        "href" => '#',
+        "onclick" => "require(['block_edusupport/main'], function(MAIN){ MAIN.assignSupporter($issue->id); }); return false;",
+    );
+    $options[] = array(
+        "title" => get_string('issue_close', 'block_edusupport'),
+        "class" => 'btn-primary',
+        "icon" => 't/approve',
+        "href" => '#',
+        "onclick" => "require(['block_edusupport/main'], function(MAIN){ MAIN.closeIssue($issue->id); }); return false;",
+    );
+    echo $OUTPUT->render_from_template('block_edusupport/issue_options', array('options' => $options));
+
 
     // move this down fix for MDL-6926
-    require_once($CFG->dirroot.'/mod/forum/lib.php');
+    require_once($CFG->dirroot . '/mod/forum/lib.php');
 
     // Trigger discussion viewed event.
-    forum_discussion_view($modcontext, $forum, $discussion);
-
+    //forum_discussion_view($modcontext, $forum, $discussion);
     unset($SESSION->fromdiscussion);
 
     if ($mode) {
@@ -103,9 +128,11 @@ if (false && !\block_edusupport\lib::is_supporteam()) {
         print_error("notexists", 'forum', "$CFG->wwwroot/mod/forum/view.php?f=$forum->id");
     }
 
+    /*
     if (!forum_user_can_see_post($forum, $discussion, $post, null, $cm, false)) {
         print_error('noviewdiscussionspermission', 'forum', "$CFG->wwwroot/mod/forum/view.php?id=$forum->id");
     }
+    */
     if ($mark == 'read' or $mark == 'unread') {
         if ($CFG->forum_usermarksread && forum_tp_can_track_forums($forum) && forum_tp_is_tracked($forum)) {
             if ($mark == 'read') {
@@ -171,7 +198,7 @@ if (false && !\block_edusupport\lib::is_supporteam()) {
 
     $out = ob_get_contents();
     ob_end_clean();
-    \block_edusupport\lib::assign_role($coursecontext, false);
+    // \block_edusupport\lib::assign_role($coursecontext, false);
     $out = str_replace($CFG->wwwroot . '/mod/forum/discuss.php', $CFG->wwwroot . '/blocks/edusupport/issue.php', $out);
     $starts = array(
         //'<div class="singleselect d-inline-block">',
@@ -191,6 +218,12 @@ if (false && !\block_edusupport\lib::is_supporteam()) {
             $out2 = substr($out, $cutend + strlen($ends[$a]));
             $out = $out1 . $out2;
         }
+    }
+    $replacements = array(
+        array($CFG->wwwroot . '/pluginfile.php/' . $modcontext->id . '/mod_forum/', $CFG->wwwroot . '/pluginfile.php/' . $modcontext->id . '/block_edusupport/'),
+    );
+    foreach ($replacements AS $replacement) {
+        $out = str_replace($replacement[0], $replacement[1], $out);
     }
     echo $out;
 

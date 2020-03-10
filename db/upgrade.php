@@ -138,15 +138,7 @@ function xmldb_block_edusupport_upgrade($oldversion) {
         if ($dbman->table_exists($table)) {
             $dbman->drop_table($table);
         }
-        $table = new xmldb_table('block_edusupport_supporters');
-        $fields = array(
-            new xmldb_field('courseid'),
-        );
-        foreach ($fields AS $field) {
-            if ($dbman->field_exists($table, $field)) {
-                $dbman->drop_field($table, $field);
-            }
-        }
+
         $table = new xmldb_table('block_edusupport_assignments');
         $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
         $table->add_field('issueid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');

@@ -1,0 +1,56 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+   @template block_edusupport/issue_options
+
+   The purpose of this template is to render action buttons for issues.
+
+   Classes required for JS:
+   * none
+
+   Data attributes required for JS:
+   * none
+
+   Context variables required for this template:
+   * attributes Array of name / value pairs.
+
+   Example context (json):
+   {
+       "options": [
+       "title" => get_string('issue_assign', 'block_edusupport'),
+       "class" => '',
+       "icon" => '/pix/i/users.svg',
+       "href" => '#',
+       "onclick" => 'require(
+           { "title": "a title" },
+           { "class": "classnames" },
+           { "icon": "an icon to use" },
+           { "href": "the link href" },
+           { "onclick": "onclick" },
+       ]
+   }
+ }}
+<div class="block_edusupport issue_options" style="float: right;">
+    {{#options}}
+        <a href="{{href}}"
+            class="btn {{#class}} {{class}} {{/class}}"
+            {{#onclick}} onclick="{{onclick}}" {{/onclick}}>
+            {{#icon}} {{#pix}} {{icon}} {{/pix}} {{/icon}}
+            {{title}}
+        </a>
+    {{/options}}
+</div>
