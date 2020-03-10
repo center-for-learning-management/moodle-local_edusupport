@@ -3,6 +3,7 @@ define(
     function($, AJAX, NOTIFICATION, STR, URL, ModalFactory, ModalEvents) {
     return {
         debug: 1,
+        modal: undefined,
         triggerSteps: 0,
         assignSupporter: function(discussionid, userid){
             var MAIN = this;
@@ -67,6 +68,37 @@ define(
             }
         },
         /**
+         * Checks if a particular support form has a screenshot. If not, it hides the modal and creates one.
+         */
+        checkHasScreenshot: function(c) {
+            var MAIN = this;
+            if (MAIN.debug > 0) console.log('block_edusupport/main:checkHasScreenshot(c)', c);
+            if ($(c).closest("form").find("#screenshot").attr('src') == '') {
+                $(c).closest("form").find('#screenshot_ok').css("display", "block");
+            } else {
+                $(c).closest("form").find('#screenshot_ok').css("display", "none");
+                $(c).closest("form").find("#screenshot").css("display", ($(c).is(":checked") ? "inline" : "none"));
+            }
+        },
+        /**
+         * Generate the screenshot now.
+         * @param b the button within the form that was clicked.
+         */
+        generateScreenshot: function(b) {
+            MAIN.modal.hide();
+            require(['block_edusupport/html2canvas'], function(h2c) {
+                console.log('Making screenshot');
+                h2c(document.body).then(function(canvas) {
+                    console.log('Got screenshot');
+                    MAIN.canvas = canvas;
+                    if (typeof MAIN.modal !== 'undefined') {
+                        MAIN.prepareScreenshot(b);
+                        MAIN.modal.show();
+                    }
+                });
+            });
+        },
+        /**
          * Close an issue.
         **/
         closeIssue: function(discussionid) {
@@ -77,7 +109,7 @@ define(
                 done: function(result) {
                     console.log(result);
                     if (result == 1) {
-                        top.location.reload();
+                        top.location.href = URL.relativeUrl('/blocks/edusupport/issues.php', {});
                     } else {
                         NOTIFICATION.exception(result);
                         //alert('Error: ' + result);
@@ -115,34 +147,38 @@ define(
         /**
          * Let's inject a button to call the 2nd level support.
          * @param discussionid.
+         * @param isissue determines if this issue is already at higher support levels.
          */
-        injectForwardButton: function(discussionid) {
+        injectForwardButton: function(discussionid, isissue) {
+            if (this.debug) console.log('block_edusupport/main:injectForwardButton(discussionid, isissue)', discussionid, isissue);
             if (typeof discussionid === 'undefined') return;
             STR.get_strings([
-                    {'key' : 'issue_assign_nextlevel', component: 'block_edusupport' },
+                    {'key' : (typeof isissue !== 'undefined' && isissue) ? 'issue_revoke' : 'issue_assign_nextlevel', component: 'block_edusupport' },
                 ]).done(function(s) {
                     $('#page-content div[role="main"] .discussionname').parent().prepend(
-                        $('<a href="#" onclick="require([\'block_edusupport/main\'], function(MAIN) { MAIN.injectForwardModal(' + discussionid + '); }); return false;" class="btn btn-secondary">' + s[0] + '</a>')
+                        $('<a href="#">')
+                                    .attr('onclick', "require(['block_edusupport/main'], function(MAIN) { MAIN.injectForwardModal(" + discussionid + ", " + isissue + "); }); return false;")
+                                    .attr('style', 'float: right')
+                                    .addClass("btn btn-secondary")
+                                    .html(s[0])
                     );
                 }
             ).fail(NOTIFICATION.exception);
-
-
         },
-        injectForwardModal: function(discussionid) {
+        injectForwardModal: function(discussionid, revoke) {
             STR.get_strings([
-                    {'key' : 'confirmation', component: 'core' },
-                    {'key' : 'issue_assign_nextlevel', component: 'block_edusupport' },
+                    {'key' : 'confirm', component: 'core' },
+                    {'key' : (typeof revoke !== 'undefined' && revoke) ? 'issue_revoke' : 'issue_assign_nextlevel', component: 'block_edusupport' },
                 ]).done(function(s) {
                     ModalFactory.create({
                         type: ModalFactory.types.SAVE_CANCEL,
                         title: s[0],
                         body: s[1],
-                    }, trigger)
+                    })
                     .done(function(modal) {
                         var root = modal.getRoot();
                         root.on(ModalEvents.save, function() {
-                            top.location.href = URL.relativePath('/blocks/edusupport/forward_2nd_level.php', { d: discussionid });
+                            top.location.href = URL.relativeUrl('/blocks/edusupport/forward_2nd_level.php', { d: discussionid, revoke: revoke });
                         });
                         modal.show();
                     });
@@ -160,7 +196,8 @@ define(
             var contactphone = $('#block_edusupport_create_form #id_contactphone').val();
             var description = $('#block_edusupport_create_form #id_description').val();
             var forum_group = $('#block_edusupport_create_form #id_forum_group').val();
-            var post_screenshot = $('#block_edusupport_create_form #id_postscreenshot').is(':checked');
+            var postto2ndlevel = $('#block_edusupport_create_form #id_postto2ndlevel').prop('checked') ? 1 : 0;
+            var post_screenshot = $('#block_edusupport_create_form #id_postscreenshot').prop('checked') ? 1 : 0;
             var screenshot = $('#block_edusupport_create_form img#screenshot').attr('src');
             var url = top.location.href;
 
@@ -175,10 +212,10 @@ define(
             MAIN.is_sending = true;
 
             var imagedataurl = (post_screenshot && typeof screenshot !== 'undefined' ) ? screenshot : '';
-            if (MAIN.debug > 0) console.log('block_edusupport_create_issue', { subject: subject, description: description, forum_group: forum_group, image: imagedataurl, url: url });
+            if (MAIN.debug > 0) console.log('block_edusupport_create_issue', { subject: subject, description: description, forum_group: forum_group, postto2ndlevel: postto2ndlevel, image: imagedataurl, url: url });
             AJAX.call([{
                 methodname: 'block_edusupport_create_issue',
-                args: { subject: subject, description: description, forum_group: forum_group, image: imagedataurl, url: url, contactphone: contactphone },
+                args: { subject: subject, description: description, forum_group: forum_group, postto2ndlevel: postto2ndlevel, image: imagedataurl, url: url, contactphone: contactphone },
                 done: function(result) {
                     // result is the discussion id, -999 if sent by mail, or -1. if > 0 show confirm box that redirects to post. if -1 show error.
                     if (MAIN.debug > 0) console.log(result);
@@ -239,18 +276,20 @@ define(
             });
             $('#id_postscreenshot').closest('div.fitem').css('display', 'none');
             $('#screenshot').closest('div').css('display', 'none');
-            if (typeof MAIN.canvas !== 'undefined') {
-                MAIN.prepareScreenshot();
-            }
+
             MAIN.modal.show();
         },
-        prepareScreenshot: function(){
+        /**
+         * Insert screenshot to form.
+         */
+        prepareScreenshot: function(c){
             var MAIN = this;
             var dataurl = MAIN.canvas.toDataURL();
             var body = $(MAIN.modal.body);
             body.find('img#screenshot').attr('src', dataurl);
             $('#screenshot').closest('div').css('display', undefined);
             $('#id_postscreenshot').closest('div.fitem').css('display', undefined);
+            MAIN.checkHasScreenshot($('#id_postscreenshot'));
             // delete canvas - next time we want a new screenshot!
             delete(MAIN.canvas);
         },
@@ -290,20 +329,6 @@ define(
                     fail: NOTIFICATION.exception
                 }]);
             }
-
-            // I decided to make screenshot in background - do not show spinner!
-            //MAIN.triggerSpinner(1);
-            require(['block_edusupport/html2canvas'], function(h2c) {
-                console.log('Making screenshot');
-                h2c(document.body).then(function(canvas) {
-                    console.log('Got screenshot');
-                    //MAIN.triggerSpinner(-1);
-                    MAIN.canvas = canvas;
-                    if (typeof MAIN.modal !== 'undefined') {
-                        MAIN.prepareScreenshot();
-                    }
-                });
-            });
         },
         triggerSpinner: function(steps) {
             MAIN = this;

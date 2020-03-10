@@ -27,42 +27,61 @@ require_once('../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
 require_once($CFG->dirroot . '/blocks/edusupport/classes/lib.php');
 
-$discussionid = required_param('d', PARAM_INT);
-$discussion = $DB->get_record('forum_discussions', array('id' => $d), MUST_EXIST);
+$d = required_param('d', PARAM_INT);
+$revoke = optional_param('revoke', 0, PARAM_BOOL);
+$discussion = $DB->get_record('forum_discussions', array('id' => $d));
 
 $context = context_course::instance($discussion->course);
 $PAGE->set_context($context);
 require_login($courseid);
-$PAGE->set_url(new moodle_url('/blocks/edusupport/forward_2nd_level.php', array('d' => $d)));
+$PAGE->set_url(new moodle_url('/blocks/edusupport/forward_2nd_level.php', array('d' => $d, 'revoke' => $revoke)));
 
-$title = get_string('issue_assign_nextlevel', 'block_edusupport');
+$title = get_string(empty($revoke) ? 'issue_assign_nextlevel': 'issue_revoke', 'block_edusupport');
 $PAGE->set_title($title);
 $PAGE->set_heading($title);
 
 echo $OUTPUT->header();
 
 $todiscussion = new moodle_url('/mod/forum/discuss.php', array('d' => $d));
-if (!has_capability('core/course:update', $coursecontext)) {
+if (!has_capability('moodle/course:update', $context)) {
     echo $OUTPUT->render_from_template('block_edusupport/alert', array(
         'content' => get_string('missing_permission', 'block_edusupport'),
         'type' => 'danger',
         'url' => $todiscussion->__toString(),
     ));
 } else {
-    if(\block_edusupport\lib::set_2nd_level($d)) {
-        echo $OUTPUT->render_from_template('block_edusupport/alert', array(
-            'content' => get_string('success'),
-            'type' => 'success',
-            'url' => $todiscussion->__toString(),
-        ));
-        redirect($todiscussion->__toString());
+    if (empty($revoke)) {
+        if(\block_edusupport\lib::set_2nd_level($d)) {
+            echo $OUTPUT->render_from_template('block_edusupport/alert', array(
+                'content' => get_string('success'),
+                'type' => 'success',
+                'url' => $todiscussion->__toString(),
+            ));
+            redirect($todiscussion->__toString());
+        } else {
+            echo $OUTPUT->render_from_template('block_edusupport/alert', array(
+                'content' => get_string('issue_assign_nextlevel:error', 'block_edusupport'),
+                'type' => 'danger',
+                'url' => $todiscussion->__toString(),
+            ));
+        }
     } else {
-        echo $OUTPUT->render_from_template('block_edusupport/alert', array(
-            'content' => get_string('missing_permission', 'block_edusupport'),
-            'type' => 'danger',
-            'url' => $todiscussion->__toString(),
-        ));
+        if(\block_edusupport\lib::revoke_issue($d)) {
+            echo $OUTPUT->render_from_template('block_edusupport/alert', array(
+                'content' => get_string('success'),
+                'type' => 'success',
+                'url' => $todiscussion->__toString(),
+            ));
+            redirect($todiscussion->__toString());
+        } else {
+            echo $OUTPUT->render_from_template('block_edusupport/alert', array(
+                'content' => get_string('issue_revoke:error', 'block_edusupport'),
+                'type' => 'danger',
+                'url' => $todiscussion->__toString(),
+            ));
+        }
     }
+
 }
 
 echo $OUTPUT->footer();

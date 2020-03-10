@@ -36,7 +36,7 @@ class block_edusupport_external extends external_api {
         global $CFG;
         $params = self::validate_parameters(self::close_issue_parameters(), array('discussionid' => $discussionid));
         require_once($CFG->dirroot . '/blocks/edusupport/block_edusupport.php');
-        return block_edusupport::close_issue($params['discussionid']);
+        return \block_edusupport\lib::close_issue($params['discussionid']);
     }
     public static function close_issue_returns() {
         return new external_value(PARAM_RAW, 'Returns 1 if successful, or error message.');
@@ -94,6 +94,7 @@ class block_edusupport_external extends external_api {
             'subject' => new external_value(PARAM_TEXT, 'subject of this issue'),
             'description' => new external_value(PARAM_RAW, 'default for whole package otherwise channel name'),
             'forum_group' => new external_value(PARAM_TEXT, 'Forum-ID and Group-ID to post to in format forumid_groupid.'),
+            'postto2ndlevel' => new external_value(PARAM_INT, '1st level supporters can directly call the 2nd level support'),
             'image' => new external_value(PARAM_RAW, 'base64 encoded image as data url or empty string'),
             'url' => new external_value(PARAM_TEXT, 'URL where the error happened'),
             'contactphone' => new external_value(PARAM_TEXT, 'Contactphone'),
@@ -104,9 +105,9 @@ class block_edusupport_external extends external_api {
      * Create an issue in the targetforum.
      * @return postid of created issue
      */
-    public static function create_issue($subject, $description, $forum_group, $image, $url, $contactphone) {
+    public static function create_issue($subject, $description, $forum_group, $postto2ndlevel, $image, $url, $contactphone) {
         global $CFG, $DB, $OUTPUT, $PAGE, $USER;
-        $params = self::validate_parameters(self::create_issue_parameters(), array('subject' => $subject, 'description' => $description, 'forum_group' => $forum_group, 'image' => $image, 'url' => $url, 'contactphone' => $contactphone));
+        $params = self::validate_parameters(self::create_issue_parameters(), array('subject' => $subject, 'description' => $description, 'forum_group' => $forum_group, 'postto2ndlevel' => $postto2ndlevel, 'image' => $image, 'url' => $url, 'contactphone' => $contactphone));
 
         $tmp = explode('_', $forum_group);
         $forumid = $tmp[0];
@@ -143,7 +144,6 @@ class block_edusupport_external extends external_api {
             }
             return -999;
         } else {
-            require_once($CFG->dirroot . '/blocks/edusupport/locallib.php');
             if (\block_edusupport\lib::is_supportforum($forumid)) {
                 // Mainly copied from mod/forum/externallib.php > add_discussion()
                 $warnings = array();
@@ -207,7 +207,7 @@ class block_edusupport_external extends external_api {
                     $discussion->pinned = FORUM_DISCUSSION_UNPINNED;
                 }
 
-                if ($discussionid = forum_add_discussion($discussion, $fakemform)) {
+                if ($discussionid = forum_add_discussion($discussion)) {
                     $discussion->id = $discussionid;
 
                     if (!empty($params['image'])) {
@@ -266,6 +266,15 @@ class block_edusupport_external extends external_api {
                     forum_post_subscription($settings, $forum, $discussion);
                     // Create the issue itself.
                     \block_edusupport\lib::get_issue($discussion->id);
+
+                    if (!empty($postto2ndlevel)) {
+                        // 1. Check if we really are allowed to do so.
+                        $coursecontext = \context_course::instance($discussion->course);
+                        if (has_capability('moodle/course:update', $coursecontext)) {
+                            // 2. call set_2nd_level
+                            \block_edusupport\lib::set_2nd_level($discussion->id);
+                        }
+                    }
                     return $discussionid;
                 } else {
                     throw new moodle_exception('couldnotadd', 'forum');
@@ -309,8 +318,6 @@ class block_edusupport_external extends external_api {
         $params = self::validate_parameters(self::create_form_parameters(), array('url' => $url, 'image' => $image, 'forumid' => $forumid));
 
         $PAGE->set_context(context_system::instance());
-
-        require_once($CFG->dirroot . '/blocks/edusupport/locallib.php');
 
         if (\block_edusupport\lib::is_supportforum($forumid)) {
             require_once($CFG->dirroot . '/blocks/edusupport/classes/issue_create_form.php');

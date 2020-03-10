@@ -64,31 +64,60 @@ class issue_create_form extends moodleform {
         $mform->setType('description', PARAM_RAW);
         $mform->addRule('description', get_string('description_missing', 'block_edusupport'), 'required', null, 'server');
 
-        // This ensures, that there will exist at least one group to show!
-        require_once($CFG->dirroot . '/blocks/edusupport/locallib.php');
-        $potentialtargets = block_edusupport\lib::get_potentialtargets();
+        require_once($CFG->dirroot . '/blocks/edusupport/classes/lib.php');
+        $potentialtargets = \block_edusupport\lib::get_potentialtargets();
 
+        $hideifs = array('mail');
         // If there are not potentialtargets we don't care. We will send a mail to the Moodle default support contact.
         $options = array();
         foreach ($potentialtargets AS $pt) {
             if (empty($pt->potentialgroups) || count($pt->potentialgroups) == 0) {
                 $options[$pt->id . '_0'] = $pt->name;
+                if (empty($pt->postto2ndlevel)) {
+                    $hideifs[] = $pt->id . '_0';
+                }
             } else {
                 foreach($pt->potentialgroups AS $group) {
                     $options[$pt->id . '_' . $group->id] = $pt->name . ' > ' . $group->name;
+                    if (empty($pt->postto2ndlevel)) {
+                        $hideifs[] = $pt->id . '_' . $group->id;
+                    }
                 }
             }
         }
         $supportuser = \core_user::get_support_user();
         $options['mail'] = get_string('email_to_xyz', 'block_edusupport', array('email' => $supportuser->email));
 
-        $mform->addElement('select', 'forum_group', get_string('to_group', 'block_edusupport'), $options);
+        $hideifs = '["' . implode('","', $hideifs) . '"]';
+        $postto2ndlevel_hideshow = 'var hide = (' . $hideifs . '.indexOf(this.value) > -1); var pt2 = $(\'#id_postto2ndlevel\'); $(pt2).prop(\'checked\', false); $(pt2).closest(\'div.form-group\').css(\'display\', hide ? \'none\' : \'block\');';
+        $mform->addElement('select', 'forum_group', get_string('to_group', 'block_edusupport'), $options, array('onchange' => $postto2ndlevel_hideshow));
         $mform->setType('forum_group', PARAM_INT);
 
-        $mform->addElement('checkbox', 'postscreenshot', get_string('screenshot', 'block_edusupport'), get_string('screenshot:description', 'block_edusupport'), array('onclick' => 'var c = this; require(["jquery"], function($) { $(c).closest("form").find("#screenshot").css("display", ($(c).is(":checked") ? "inline" : "none")); });'));
+        $mform->addElement('checkbox', 'postto2ndlevel', get_string('postto2ndlevel', 'block_edusupport'), get_string('postto2ndlevel:description', 'block_edusupport'));
+        $mform->setType('postto2ndlevel', PARAM_BOOL);
+        $mform->setDefault('postto2ndlevel', 0);
+
+        $html = array(
+            '<div id="screenshot_ok" style="display: none;">',
+            get_string('screenshot:generateinfo', 'block_edusupport'),
+            '<br /><a href="#" onclick="var b = this; require([\'block_edusupport/main\'], function(M) { M.generateScreenshot(b); }); return false;" class="btn btn-primary btn-block">',
+            get_string('ok'),
+            '</a></div>'
+        );
+        $mform->addElement('checkbox', 'postscreenshot', get_string('screenshot', 'block_edusupport'),
+                                get_string('screenshot:description', 'block_edusupport') . implode("\n", $html),
+                                array('onclick' => 'var c = this; require(["block_edusupport/main"], function(M) { M.checkHasScreenshot(c); });')
+                        );
         $mform->setType('postscreenshot', PARAM_BOOL);
-        $mform->setDefault('postscreenshot', 1);
-        $mform->addElement('html', '<div style="text-align: center;"><img id="screenshot" src="" alt="Screenshot" style="max-width: 50%;"/></div>');
+        $mform->setDefault('postscreenshot', 0);
+
+        $html = array(
+            '<div style="text-align: center;">',
+            '<img id="screenshot" src="" alt="Screenshot" style="max-width: 50%; display: none;"/>',
+            '</div>',
+        );
+        $mform->addElement('html', implode("\n", $html));
+        $mform->addElement('html', '<script> ' . $postto2ndlevel_hideshow . '</script>');
     }
 
     //Custom validation should be added here

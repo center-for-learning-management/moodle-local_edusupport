@@ -51,7 +51,7 @@ $discussion = $DB->get_record('forum_discussions', array('id' => $discussionid))
 $PAGE->set_title($discussion->name);
 $PAGE->set_heading($discussion->name);
 
-if (false && !\block_edusupport\lib::is_supporteam()) {
+if (!\block_edusupport\lib::is_supportteam()) {
     echo $OUTPUT->header();
     $tocmurl = new moodle_url('/course/view.php', array('id' => $issue->courseid));
     echo $OUTPUT->render_from_template('block_edusupport/alert', array(
@@ -73,14 +73,18 @@ if (false && !\block_edusupport\lib::is_supporteam()) {
     $PAGE->set_heading($course->fullname);
 
     echo $OUTPUT->header();
+
+    \block_edusupport\lib::assign_role($coursecontext, true);
     $options = array();
 
     if (!empty($issue->currentsupporter)) {
-        $supporter = $DB->get_record('user', array('id' => $issue->currentsupporter));
+        $supporter = $DB->get_record('block_edusupport_supporters', array('id' => $issue->currentsupporter));
+        $user = $DB->get_record('user', array('id' => $supporter->userid));
+
         $options[] = array(
-            "title" => $supporter->firstname . ' ' . $supporter->lastname . '(' . $issue->currentlevel . ')',
-            "class" => 'btn-secondary',
-            "icon" => 'i/checkpermissions',
+            "title" => \fullname($user) . ' (' . $supporter->supportlevel . ')',
+            "class" => '',
+            //"icon" => 'i/checkpermissions',
             "href" => $CFG->wwwroot . '/user/profile.php?id' . $supporter->id,
         );
     }
@@ -90,14 +94,14 @@ if (false && !\block_edusupport\lib::is_supporteam()) {
         "class" => 'btn-secondary',
         "icon" => 'i/assignroles',
         "href" => '#',
-        "onclick" => "require(['block_edusupport/main'], function(MAIN){ MAIN.assignSupporter($issue->id); }); return false;",
+        "onclick" => "require(['block_edusupport/main'], function(MAIN){ MAIN.assignSupporter($d); }); return false;",
     );
     $options[] = array(
         "title" => get_string('issue_close', 'block_edusupport'),
         "class" => 'btn-primary',
         "icon" => 't/approve',
         "href" => '#',
-        "onclick" => "require(['block_edusupport/main'], function(MAIN){ MAIN.closeIssue($issue->id); }); return false;",
+        "onclick" => "require(['block_edusupport/main'], function(MAIN){ MAIN.closeIssue($d); }); return false;",
     );
     echo $OUTPUT->render_from_template('block_edusupport/issue_options', array('options' => $options));
 
@@ -226,6 +230,8 @@ if (false && !\block_edusupport\lib::is_supporteam()) {
         $out = str_replace($replacement[0], $replacement[1], $out);
     }
     echo $out;
+
+    \block_edusupport\lib::assign_role($coursecontext, false);
 
     // Add the subscription toggle JS.
     $PAGE->requires->yui_module('moodle-mod_forum-subscriptiontoggle', 'Y.M.mod_forum.subscriptiontoggle.init');

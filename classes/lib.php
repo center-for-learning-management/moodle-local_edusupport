@@ -28,6 +28,28 @@ defined('MOODLE_INTERNAL') || die;
 require_once($CFG->libdir . '/adminlib.php');
 
 class lib {
+    /**
+    * Assigns the teacher role within this script.
+    * Resets cardinality of primary key to avoid bumping the pk.
+    * @param context course_context instance.
+    * @param assign true if we assign the role, false if we unassign it.
+    */
+    public static function assign_role($context, $assign) {
+        global $DB, $USER;
+
+        if (!empty($assign) && $assign) {
+            \role_assign(3, $USER->id, $context);
+        } else {
+            \role_unassign(3, $USER->id, $context->id);
+            // Reset cardinality of auto increment.
+            $sql = "SELECT 0,MAX(id) AS id
+                        FROM {role_assignments}";
+            $max = $DB->get_records_sql($sql, array());
+            $sql = "ALTER TABLE {role_assignments}
+                        AUTO_INCREMENT=" . ($max[0]->id+1);
+            $DB->execute($sql, array());
+        }
+    }
     public static function can_config_course($courseid){
         global $USER;
         if (self::can_config_global()) return true;
@@ -55,13 +77,13 @@ class lib {
         }
 
         // 2.) create a post that we closed that issue.
-        $touser = \get_user($supporter->userid);
+        $touser = $DB->get_record('user', array('id' => $supporter->userid));
         self::create_post($issue->discussionid,
             get_string(
                 'issue_closed:post',
                 'block_edusupport',
                 array(
-                    'fromuserfullname' => \userfullname($USER),
+                    'fromuserfullname' => \fullname($USER),
                     'fromuserid' => $USER->id,
                     'wwwroot' => $CFG->wwwroot,
                 )
@@ -84,10 +106,10 @@ class lib {
      * @param subject subject for post, if not given first 30 chars of text are used.
      */
     public static function create_post($discussionid, $text, $subject = "") {
-        global $DB;
+        global $DB, $USER;
         if (empty($subject)) $subject = substr($text, 0, 30);
-        $discussion = $DB->get_record('forum_discussions', array('id' => $discussinon->id));
-        $post = $DB->get_record('forum_posts', array('discussion' => $discussion->id, 'parent' => 0));
+        $discussion = $DB->get_record('forum_discussions', array('id' => $discussionid));
+        $post = $DB->get_record('forum_posts', array('discussion' => $discussionid, 'parent' => 0));
         $post->parent = $post->id;
         unset($post->id);
         $post->userid = $USER->id;
@@ -95,13 +117,13 @@ class lib {
         $post->modified = time();
         $post->mailed = 0;
         $post->subject = $subject;
-        $post->message = $message;
+        $post->message = $text;
         $post->messageformat = 1;
         $post->id = $DB->insert_record('forum_posts', $post, 1);
 
         $forum = $DB->get_record('forum', array('id' => $discussion->forum));
         $dbcontext = $DB->get_record('course_modules', array('course' => $discussion->course, 'instance' => $discussion->forum));
-        $context = context_module::instance($dbcontext->id);
+        $context = \context_module::instance($dbcontext->id);
         $eventparams = array(
             'context' => $context,
             'objectid' => $post->id,
@@ -179,6 +201,8 @@ class lib {
                     ORDER BY f.name ASC";
         $forums = array_values($DB->get_records_sql($sql, array()));
         foreach ($forums AS &$forum) {
+            $coursecontext = \context_course::instance($forum->course);
+            $forum->postto2ndlevel = has_capability('moodle/course:update', $coursecontext);
             $forum->potentialgroups = self::get_groups_for_user($forum->id);
         }
 
@@ -201,6 +225,47 @@ class lib {
      * @return true or false.
      */
     public static function is_supportforum($forumid) {
+        return true;
+    }
+
+    /**
+     * Similar to close_issue, but can be done by a trainer in the supportforum.
+     * @param discussionid.
+    **/
+    public static function revoke_issue($discussionid) {
+        global $CFG, $DB, $USER;
+
+        $discussion = $DB->get_record('forum_discussions', array('id' => $discussionid));
+        $issue = self::get_issue($discussionid);
+        if (!self::is_supportforum($discussion->forum)) {
+            return false;
+        }
+        // Check if the user taking the action has trainer permissions.
+        $coursecontext = \context_course::instance($discussion->course);
+        if (!has_capability('moodle/course:update', $coursecontext)) {
+            return false;
+        }
+
+        // 2.) create a post that we closed that issue.
+        self::create_post($issue->discussionid,
+            get_string(
+                'issue_revoke:post',
+                'block_edusupport',
+                array(
+                    'fromuserfullname' => \fullname($USER),
+                    'fromuserid' => $USER->id,
+                    'wwwroot' => $CFG->wwwroot,
+                )
+            ),
+            get_string('issue_revoke:subject', 'block_edusupport')
+        );
+
+        // 3.) remove all supporters from the abo-list
+        $DB->delete_records('block_edusupport_assignments', array('discussionid' => $discussionid));
+
+        // 4.) remove issue-link from database
+        $DB->delete_records('block_edusupport_issues', array('discussionid' => $discussionid));
+
         return true;
     }
 
@@ -242,7 +307,7 @@ class lib {
         }
         self::create_post($issue->discussionid,
             get_string('issue_assign_nextlevel:post', 'block_edusupport', array(
-                'fromuserfullname' => \userfullname($USER),
+                'fromuserfullname' => \fullname($USER),
                 'fromuserid' => $USER->id,
                 'wwwroot' => $CFG->wwwroot,
             ),
@@ -277,26 +342,26 @@ class lib {
         }
 
         // Set currentsupporter and add to assigned users.
-        $DB->set_field('block_edusupport_issues', 'currentsupporter', $userid, array('discussionid' => $discussion->id));
+        $DB->set_field('block_edusupport_issues', 'currentsupporter', $supporterid, array('discussionid' => $discussion->id));
         $chk = $DB->get_record('block_edusupport_assignments', array('discussionid' => $issue->discussionid, 'userid' => $supporter->userid));
         if (empty($chk->id)) {
             $assignment = (object) array(
                 'issueid' => $issue->id,
-                'discussionid' => $issue->discussionid,
+                'discussionid' => $discussionid,
                 'userid' => $supporter->userid,
             );
             $DB->insert_record('block_edusupport_assignments', $assignment);
         }
 
-        $touser = \get_user($supporter->userid);
-        self::create_post($issue->discussionid,
+        $touser = $DB->get_record('user', array('id' => $supporter->userid));
+        self::create_post($discussionid,
             get_string(
                 'issue_assign_3rdlevel:post',
                 'block_edusupport',
                 array(
-                    'fromuserfullname' => \userfullname($USER),
+                    'fromuserfullname' => \fullname($USER),
                     'fromuserid' => $USER->id,
-                    'touserfullname' => \userfullname($touser),
+                    'touserfullname' => \fullname($touser),
                     'touserid' => $supporter->userid,
                     'tosupportlevel' => $supporter->supportlevel,
                     'wwwroot ' => $CFG->wwwroot,

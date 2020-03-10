@@ -20,6 +20,7 @@
             <tr>
                 <td width="200">#</td>
                 <td>{{#str}} issue, block_edusupport {{/str}}</td>
+                <td>{{#str}} name {{/str}}</td>
                 <td>{{#str}} assigned, block_edusupport {{/str}}</td>
                 <td>{{#str}} modified {{/str}}</td>
             </tr>
@@ -28,11 +29,20 @@
             {{#issues}}
                 <tr>
                     <td>
-                        <a href="{{wwwroot}}/blocks/edusupport/issue.php?d={{id}}">
+                        <a href="{{wwwroot}}/blocks/edusupport/issue.php?d={{discussionid}}">
                             {{id}}
                         </a></td>
                     <td>{{name}}</td>
-                    <td>{{currentsupportername}}</td>
+                    <td>
+                        <a href="{{wwwroot}}/profile/view.php?id={{userid}}">
+                            {{userfullname}}
+                        </a>
+                    </td>
+                    <td>
+                        {{#currentsupporterid}}<a href="{{wwwroot}}/profile/view.php?id={{currentsupporterid}}">{{/currentsupporterid}}
+                            {{currentsupportername}}
+                        {{#currentsupporterid}}</a>{{/currentsupporterid}}
+                    </td>
                     <td>{{#userdate}} {{lastmodified}}, %F %X {{/userdate}}</td>
                 </tr>
             {{/issues}}

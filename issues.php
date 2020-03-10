@@ -43,22 +43,32 @@ if (false && !\block_edusupport\lib::is_supporteam()) {
         'url' => $tocmurl->__toString(),
     ));
 } else {
-    $sql = "SELECT fd.id,fd.name
+    $sql = "SELECT fd.id,fd.name,fd.userid
                 FROM {block_edusupport_assignments} bea,
                     {forum_discussions} fd
                 WHERE bea.discussionid=fd.id
                     AND bea.userid=?
                 ORDER BY fd.timemodified DESC";
-    $issues = array_values($DB->get_records_sql($sql, array($USER->id)));
-    foreach ($issues AS &$issue) {
-        $lastpost = $DB->get_record('forum_posts', array('discussion' => $issue->id), '*', 'modified DESC');
+    $assignments = array_values($DB->get_records_sql($sql, array($USER->id)));
+    $issues = array();
+    foreach ($assignments AS $assignment) {
+        $issue = \block_edusupport\lib::get_issue($assignment->id);
+        $issue->name = $assignment->name;
+        $firstpost = $DB->get_record('forum_posts', array('discussion' => $issue->discussionid, 'parent' => 0));
+        $lastpost = $DB->get_record('forum_posts', array('discussion' => $issue->discussionid), '*', 'modified DESC');
         $issue->lastmodified = $lastpost->modified;
+        $user = $DB->get_record('user', array('id' => $firstpost->userid));
+
+        $issue->userfullname = \fullname($user);
         if (!empty($issue->currentsupporter)) {
-            $cs = \get_user($issue->currentsupporter);
-            $issue->currentsupportername = \userfullname($cs);
+            $supporter = $DB->get_record('block_edusupport_supporters', array('id' => $issue->currentsupporter));
+            $supportuser = $DB->get_record('user', array('id' => $supporter->userid));
+            $issue->currentsupportername = \fullname($supportuser);
+            $issue->currentsupporterid = $supportuser->id;
         } else {
             $issue->currentsupportername = "2nd Level";
         }
+        $issues[] = $issue;
     }
     echo $OUTPUT->render_from_template('block_edusupport/issues', array('issues' => $issues, 'wwwroot' => $CFG->wwwroot));
 }

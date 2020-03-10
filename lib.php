@@ -32,7 +32,7 @@ defined('MOODLE_INTERNAL') || die;
  *
  */
 function block_edusupport_before_standard_html_head(){
-    global $CFG, $DB;
+    global $CFG, $DB, $PAGE;
     if (strpos($_SERVER["SCRIPT_FILENAME"], '/mod/forum/discuss.php') > 0) {
         require_once($CFG->dirroot . '/blocks/edusupport/classes/lib.php');
         $d = optional_param('d', 0, PARAM_INT);
@@ -40,7 +40,8 @@ function block_edusupport_before_standard_html_head(){
         $coursecontext = \context_course::instance($discussion->course);
         if (has_capability('moodle/course:update', $coursecontext)
                 && \block_edusupport\lib::is_supportforum($discussion->forum)) {
-            $PAGE->requires->js_call_amd('block_edusupport/main', 'injectForwardButton', array($d));
+            $chk = $DB->get_record('block_edusupport_issues', array('discussionid' => $discussion->id));
+            $PAGE->requires->js_call_amd('block_edusupport/main', 'injectForwardButton', array($d, !empty($chk->id)));
         }
     }
 }
