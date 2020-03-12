@@ -103,8 +103,6 @@ class block_edusupport extends block_base {
                 }
             }
 
-            self::get_groups();
-
             $cm = $DB->get_record('course_modules', array('course' => $forum->course, 'instance' => $targetforum));
             $options[] = array(
                 "title" => get_string('goto_targetforum', 'block_edusupport'),
