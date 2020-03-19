@@ -113,14 +113,6 @@ class block_edusupport extends block_base {
 
 
 
-            if ($COURSE->id > 1 && self::can_config_global()) { //self::can_config_course($COURSE->id)) {
-                $options[] = array(
-                    "title" => get_string('courseconfig', 'block_edusupport'),
-                    "icon" => '/pix/t/edit.svg',
-                    "href" => $CFG->wwwroot . '/blocks/edusupport/courseconfig.php?id=' . $COURSE->id
-                );
-            }
-
             if (!empty($supportlevel)) {
                 // Get open issues with me as supporter.
                 $sql = "SELECT '0' AS id,COUNT(id) AS cnt
