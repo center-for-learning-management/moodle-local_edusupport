@@ -23,8 +23,8 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-$plugin->version  = 2019100100;
+$plugin->version  = 2020032700;
 $plugin->requires = 2014051200;
 $plugin->component = 'block_edusupport';
-$plugin->release = '1.3(Build: 2019100100)';
+$plugin->release = '1.3(Build: 2020032700)';
 $plugin->maturity = MATURITY_STABLE;

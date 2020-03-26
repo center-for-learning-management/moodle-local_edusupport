@@ -22,7 +22,7 @@
  */
 
 defined('MOODLE_INTERNAL') || die;
-
+/*
 $tasks = array(
     array(
         'classname' => 'block_edusupport\task\reminder',
@@ -34,3 +34,4 @@ $tasks = array(
         'month' => '*',
     ),
 );
+*/
