@@ -61,24 +61,16 @@ if (!is_siteadmin()) {
         'url' => $tourl->__toString(),
     ));
 } else {
-    $sql = "SELECT fp.userid
+    $sql = "SELECT DISTINCT(fp.userid)
                 FROM {forum_posts} fp, {forum_discussions} fd
                 WHERE fp.discussion=fd.id
-                AND fd.forum=?";
-    $params = array($targetforum);
+                AND fd.course=?";
+    $params = array($forum->course);
 
-    // Check if there is an archive.
-    $entry = $DB->get_record('block_edusupport', array('courseid' => $forum->course));
-    if (!empty($entry->archiveid)) {
-        $sql .= "     OR forum=?";
-        $params[] = $entry->archiveid;
-    }
     $userids_active = array();
     $userids_inactive = array();
-    $posts = $DB->get_records_sql($sql, $params);
-    foreach ($posts AS $post) {
-        $userids_active[] = $post->userid;
-    }
+    $userids_active = array_keys($DB->get_records_sql($sql, $params));
+
     $enrolled = \get_enrolled_users(\context_course::instance($forum->course));
     foreach ($enrolled AS $u) {
         if (!in_array($u->id, $userids_active)) {
