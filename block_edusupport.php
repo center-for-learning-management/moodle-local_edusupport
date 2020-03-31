@@ -477,7 +477,7 @@ class block_edusupport extends block_base {
                 }
             }
 
-            self::get_groups();
+            // self::get_groups(); // Uses groups_get_group_by_idnumber which is not based on an index. Problematic for big sites.
             if (isloggedin() && !isguestuser($USER)) {
                 $options[] = array(
                     "title" => get_string('create_issue', 'block_edusupport'),
@@ -548,38 +548,6 @@ class block_edusupport extends block_base {
                     "title" => get_string('issues:openall', 'block_edusupport', $rcount->cnt),
                     "icon" => '/pix/i/completion-auto-n.svg',
                 );
-
-                /*
-                $sql = "SELECT i.id issueid, i.opened opened, s.courseid courseid, c.fullname coursename, d.id discussionid, d.name discussionname
-                            FROM {block_edusupport} s, {course} c, {forum_discussions} d, {block_edusupport_issues} i
-                            WHERE s.courseid=d.course
-                                AND s.courseid=c.id
-                                AND d.course=c.id
-                                AND i.discussionid=d.id
-                                AND i.opened=1
-                                AND i.id IN (SELECT DISTINCT(l.issueid) FROM oer_block_edusupport_supportlog l WHERE l.userid=?)
-                            ORDER BY d.timemodified DESC";
-                $issues = $DB->get_records_sql($sql, array($USER->id));
-
-                //$discussions = $DB->get_records('forum_discussions', array('forum' => $targetforum, 'userid' => $USER->id));
-                $header_printed = '';
-                foreach($issues AS $issue) {
-                    if ($header_printed != $issue->coursename) {
-                        $options[] = array(
-                            "title" => $issue->coursename,
-                            "icon" => '/pix/i/publish.svg',
-                            "class" => 'divider',
-                        );
-                        $header_printed = $issue->coursename;
-                    }
-                    $options[] = array(
-                        "title" => (strlen($issue->discussionname) > 27) ? substr($issue->discussionname, 0, 24) . '...' : $issue->discussionname,
-                        "icon" => '',
-                        "href" => $CFG->wwwroot . '/mod/forum/discuss.php?d=' . $issue->discussionid,
-                        "style" => (!empty($issue->opened) && $issue->opened == 1) ? self::$STYLE_OPENED : self::$STYLE_CLOSED,
-                    );
-                }
-                */
             }
         }
 
