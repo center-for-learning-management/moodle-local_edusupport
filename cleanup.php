@@ -97,11 +97,11 @@ if (!is_siteadmin()) {
                 WHERE g.id=gm.groupid
                     AND g.courseid=?";
 
-    $groups_active = array_keys($DB->get_records_sql($sql, array($forum->course));
+    $groups_active = array_keys($DB->get_records_sql($sql, array($forum->course)));
 
     // Get all other groups in our support course, that logically have no members.
     $sql = "SELECT id
-                FROM {groups}
+                FROM {groups} g
                 WHERE id NOT IN (" . implode(',', $groups_active) . ")
                     AND g.courseid=?";
     $groups_inactive = $DB->get_records_sql($sql, array($forum->course));
