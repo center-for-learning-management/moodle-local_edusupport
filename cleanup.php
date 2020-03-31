@@ -91,18 +91,26 @@ if (!is_siteadmin()) {
     echo "UNENROL " . count($userids_inactive) . " USERS<br />";
     if (!empty($unlocked)) \block_edusupport::course_manual_enrolments(array($forum->course), $userids_inactive, -1, $reply);
 
-    $sql = "SELECT g.id,COUNT(gm.userid) AS cnt
+    // Get all groups that have members from our support course.
+    $sql = "SELECT DISTINCT(gm.groupid)
                 FROM {groups} g, {groups_members} gm
                 WHERE g.id=gm.groupid
-                AND g.courseid=?";
+                    AND g.courseid=?";
 
-    $groups = $DB->get_records_sql($sql, array($forum->course));
-    foreach ($groups AS $group) {
-        if ($group->cnt == 0) {
-            echo "DELETE GROUP #" . $group->id . "<br />";
-            if (!empty($unlocked)) $DB->delete_records('groups', array('id' => $group->id));
-        }
+    $groups_active = array_keys($DB->get_records_sql($sql, array($forum->course));
+
+    // Get all other groups in our support course, that logically have no members.
+    $sql = "SELECT id
+                FROM {groups}
+                WHERE id NOT IN (" . implode(',', $groups_active) . ")
+                    AND g.courseid=?";
+    $groups_inactive = $DB->get_records_sql($sql, array($forum->course));
+
+    foreach ($groups_inactive AS $group) {
+        echo "DELETE GROUP #" . $group->id . "<br />";
+        if (!empty($unlocked)) $DB->delete_records('groups', array('id' => $group->id));
     }
+
 
 
 }
