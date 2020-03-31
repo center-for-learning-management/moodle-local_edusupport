@@ -15,30 +15,31 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_edusupport
- * @copyright  2020 Center for Learningmanagement (www.lernmanagement.at)
- * @author     Robert Schrenk
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
+* @package    block_edusupport
+* @copyright  2020 Center for Learningmanagement (www.lernmanagement.at)
+* @author     Robert Schrenk
+* @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+*/
 
 /**
- * This script removes all users from the support course that did never create a forum post
- * and removes the according groups too.
- */
+* This script removes all users from the support course that did never create a forum post
+* and removes the according groups too.
+*/
 
 namespace block_edusupport;
 
 require_once('../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
 
+$unlocked = optional_param('unlocked', 0, PARAM_INT);
+
 $context = \context_system::instance();
 $PAGE->set_context($context);
 require_login();
-$PAGE->set_url(new \moodle_url('/blocks/edusupport/cleanup.php', array()));
+$PAGE->set_url(new \moodle_url('/blocks/edusupport/cleanup.php', array('unlocked' => $unlocked)));
 
-$title = get_string('clean');
-$PAGE->set_title($title);
-$PAGE->set_heading($title);
+$PAGE->set_title('Cleaning');
+$PAGE->set_heading('Cleaning');
 
 echo $OUTPUT->header();
 
@@ -46,56 +47,61 @@ echo $OUTPUT->header();
 $targetforum = get_config('block_edusupport', 'targetforum');
 $forum = $DB->get_record('forum', array('id' => $targetforum));
 if (!is_siteadmin()) {
-    $tourl = new moodle_url('/my', array());
+    $tourl = new \moodle_url('/my', array());
     echo $OUTPUT->render_from_template('block_edusupport/alert', array(
         'content' => get_string('missing_permission', 'block_edusupport'),
         'type' => 'danger',
         'url' => $tourl->__toString(),
     ));
 } elseif (empty($targetforum) || empty($forum->id)) {
-  $tourl = new moodle_url('/my', array());
-  echo $OUTPUT->render_from_template('block_edusupport/alert', array(
-      'content' => get_string('missing_targetforum', 'block_edusupport'),
-      'type' => 'danger',
-      'url' => $tourl->__toString(),
-  ));
+    $tourl = new \moodle_url('/my', array());
+    echo $OUTPUT->render_from_template('block_edusupport/alert', array(
+        'content' => get_string('missing_targetforum', 'block_edusupport'),
+        'type' => 'danger',
+        'url' => $tourl->__toString(),
+    ));
 } else {
-    $forum = $DB->get_record('forum', array('id' => $targetforum));
     $sql = "SELECT fp.userid
-              FROM {forum_posts} fp, {forum_discussions} fd
-              WHERE fp.discussion=fd.id
+                FROM {forum_posts} fp, {forum_discussions} fd
+                WHERE fp.discussion=fd.id
                 AND fd.forum=?";
     $params = array($targetforum);
 
     // Check if there is an archive.
     $entry = $DB->get_record('block_edusupport', array('courseid' => $forum->course));
     if (!empty($entry->archiveid)) {
-        $sql .= "     OR forumid=?";
+        $sql .= "     OR forum=?";
         $params[] = $entry->archiveid;
     }
-    $userids = array();
+    $userids_active = array();
+    $userids_inactive = array();
     $posts = $DB->get_records_sql($sql, $params);
     foreach ($posts AS $post) {
-      $userids[] = $post->userid;
+        $userids_active[] = $post->userid;
+    }
+    $enrolled = \get_enrolled_users(\context_course::instance($forum->course));
+    foreach ($enrolled AS $u) {
+        if (!in_array($u->id, $userids_active)) {
+            $userids_inactive[] = $u->id;
+        }
     }
 
     require_once($CFG->dirroot . '/blocks/edusupport/block_edusupport.php');
     $reply = array();
-    echo "UNENROL USERS<br />";
-    print_r($userids);
-    //\block_edusupport::course_manual_enrolments(array($forum->course), $userids, -1, $reply);
+    echo "UNENROL " . count($userids_inactive) . " USERS<br />";
+    if (!empty($unlocked)) \block_edusupport::course_manual_enrolments(array($forum->course), $userids_inactive, -1, $reply);
 
     $sql = "SELECT g.id,COUNT(gm.userid) AS cnt
-              FROM {groups} g, {groups_members} gm
-              WHERE g.id=gm.groupid
+                FROM {groups} g, {groups_members} gm
+                WHERE g.id=gm.groupid
                 AND g.courseid=?";
 
     $groups = $DB->get_records_sql($sql, array($forum->course));
     foreach ($groups AS $group) {
-      if ($group->cnt == 0) {
-          echo "DELETE GROUP #" . $group->id . "<br />";
-          //$DB->delete_records('groups', array('id' => $group->id));
-      }
+        if ($group->cnt == 0) {
+            echo "DELETE GROUP #" . $group->id . "<br />";
+            if (!empty($unlocked)) $DB->delete_records('groups', array('id' => $group->id));
+        }
     }
 
 
