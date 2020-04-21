@@ -51,15 +51,6 @@ function block_edusupport_extend_navigation_course($parentnode, $course, $contex
     //$coursecontext = \context_course::instance($course->id);
     //if (!has_capability('moodle/course:update', $coursecontext)) return;
 
-    global $DB, $PAGE;
-    // 1. Check if this is currently a forum a supportforum.
-    $context = $PAGE->cm->context;
-    $cmid = $PAGE->cm->id;
-    $cm = $PAGE->cm;
-    $course = $PAGE->course;
-    $forumid = $cm->instance;
-    $courseid = $course->id;
-
     // We want to add these new nodes after the Edit settings node, and before the
     // Locally assigned roles node. Of course, both of those are controlled by capabilities.
     $keys = $parentnode->get_children_key_list();
@@ -75,16 +66,16 @@ function block_edusupport_extend_navigation_course($parentnode, $course, $contex
     if (is_siteadmin()) {
         $url = '/blocks/edusupport/chooseforum.php';
         $node = navigation_node::create(get_string('supportforum:choose', 'block_edusupport'),
-            new moodle_url($url, array('courseid' => $courseid)),
+            new moodle_url($url, array('courseid' => $course->id)),
             navigation_node::TYPE_SETTING, null, 'advancedsettings',
-            new pix_icon('t/eye', ''));
+            new pix_icon('i/marker', 'eduSupport'));
         $parentnode->add_node($node, $beforekey);
     }
     /*
     // This is prepared for later use, if we allow support users on course level.
     $url = '/blocks/edusupport/choosesupporters.php';
     $node = navigation_node::create(get_string('supporters:choose', 'block_edusupport'),
-        new moodle_url($url, array('courseid' => $courseid)),
+        new moodle_url($url, array('courseid' => $course->id)),
         navigation_node::TYPE_SETTING, null, 'advancedsettings',
         new pix_icon('t/eye', ''));
     $parentnode->add_node($node, $beforekey);

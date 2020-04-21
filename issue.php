@@ -22,7 +22,7 @@
 */
 
 require_once('../../config.php');
-require_once($CFG->dirroot . '/blocks/edusupport/classes/lib.php');
+//require_once($CFG->dirroot . '/blocks/edusupport/classes/lib.php');
 
 // We fake a forum discussion here.
 // This code is mainly taken from /mod/forum/discuss.php.

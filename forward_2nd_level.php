@@ -25,7 +25,7 @@
 
 require_once('../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
-require_once($CFG->dirroot . '/blocks/edusupport/classes/lib.php');
+//require_once($CFG->dirroot . '/blocks/edusupport/classes/lib.php');
 
 $d = required_param('d', PARAM_INT);
 $revoke = optional_param('revoke', 0, PARAM_BOOL);

@@ -48,7 +48,6 @@ if (!is_siteadmin()) {
     ));
 } else {
     if (!empty($forumid)) {
-        require_once($CFG->dirroot . '/blocks/edusupport/locallib.php');
         switch($state) {
             case 1: \block_edusupport\lib::supportforum_enable($forumid); break;
             case -1: \block_edusupport\lib::supportforum_disable($forumid); break;
@@ -58,8 +57,10 @@ if (!is_siteadmin()) {
     $sql = "SELECT id,name,course
                 FROM {forum}
                 WHERE course=?
+                    AND type='general'
                 ORDER BY name ASC";
     $forums = array_values($DB->get_records_sql($sql, array($courseid)));
+
     foreach ($forums AS &$forum) {
         $state = $DB->get_record('block_edusupport', array('forumid' => $forum->id));
         $forum->state = (!empty($state->id));
