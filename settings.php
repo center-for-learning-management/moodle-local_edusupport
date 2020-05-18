@@ -22,15 +22,15 @@
 
 defined('MOODLE_INTERNAL') || die;
 if ($ADMIN->fulltree) {
-    $settings->add(new admin_setting_configcheckbox('block_edusupport/autocreate_usergroup', get_string('autocreate_usergroup', 'block_edusupport'), '', '', PARAM_INT));
     $settings->add(new admin_setting_configcheckbox('block_edusupport/sendreminders', get_string('cron:reminder:title', 'block_edusupport'), '', '', PARAM_INT));
 
-    $settings->add(new admin_setting_configtext('block_edusupport/relativeurlsupportarea', get_string('relativeurlsupportarea', 'block_edusupport'), '', '', PARAM_URL));
-    $settings->add(new admin_externalpage(
-        'block_edusupport_supporters',
-        get_string('supporters', 'block_edusupport'),
-        $CFG->wwwroot . '/blocks/edusupport/choosesupporters.php'
-    ));
-
-
+    $actions = array(
+        (object) array('name' => 'supporters', 'href' => 'choosesupporters.php')
+    );
+    $links = "<div class=\"grid-eq-3\">";
+    foreach($actions AS $action) {
+        $links .= '<a class="btn" href="' . $CFG->wwwroot . '/blocks/edusupport/' . $action->href . '">' . get_string($action->name, 'block_edusupport') . '</a>';
+    }
+    $links .= "</div>";
+    $settings->add(new admin_setting_heading('block_edusupport_actions', get_string('settings'), $links));
 }

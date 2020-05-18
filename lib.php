@@ -167,3 +167,38 @@ function block_edusupport_pluginfile($course, $cm, $context, $filearea, $args, $
     // finally send the file
     send_stored_file($file, 0, 0, true, $options); // download MUST be forced - security!
 }
+
+/**
+ * If a course category was deleted we remove all contained support forums.
+ * @param category the course category.
+ */
+function block_edusupport_pre_course_category_delete($category) {
+    global $DB;
+    $courses = $DB->get_records('course', array('category' =>  $category->id));
+    foreach ($courses AS $course) {
+        block_edusupport_pre_course_delete($course);
+    }
+}
+
+/**
+ * If a course was deleted we remove all contained support forums.
+ * @param course the course.
+ */
+function block_edusupport_pre_course_delete($course) {
+    global $DB;
+    $supportforums = $DB->get_records('block_edusupport', array('courseid' => $course->id));
+    foreach ($supportforums AS $supportforum) {
+        \block_edusupport\lib::supportforum_disable($supportforum->id);
+    }
+}
+/**
+ * If a forum was deleted we remove it as support forum.
+ * @param cm the course module.
+ */
+function block_edusupport_pre_course_module_delete($cm) {
+    global $DB;
+    $forumtype = $DB->get_record('modules', array('name' => 'forum'));
+    if (!empty($forumtype->id) && !empty($cm->module) && $cm->module == $forumtype->id) {
+        \block_edusupport\lib::supportforum_disable($cm->instance);
+    }
+}

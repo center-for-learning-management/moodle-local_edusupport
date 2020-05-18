@@ -55,7 +55,7 @@ class block_edusupport extends block_base {
                 "title" => get_string('create_issue', 'block_edusupport'),
                 "href" => '#',
                 "id" => 'btn-block_edusupport_create_issue',
-                "onclick" => 'require(["block_edusupport/main"], function(MAIN){ MAIN.showBox(' . $targetforum . '); }); return false;',
+                "onclick" => 'require(["block_edusupport/main"], function(MAIN){ MAIN.showBox(); }); return false;',
                 "icon" => '/pix/t/messages.svg',
             );
         }
@@ -102,16 +102,6 @@ class block_edusupport extends block_base {
                     );
                 }
             }
-
-            $cm = $DB->get_record('course_modules', array('course' => $forum->course, 'instance' => $targetforum));
-            $options[] = array(
-                "title" => get_string('goto_targetforum', 'block_edusupport'),
-                "href" => $CFG->wwwroot . '/mod/forum/view.php?id=' . $cm->id,
-                "class" => '',
-                "icon" => '/pix/i/publish.svg',
-            );
-
-
 
             if (!empty($supportlevel)) {
                 // Get open issues with me as supporter.

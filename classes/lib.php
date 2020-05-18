@@ -381,6 +381,7 @@ class lib {
     public static function supportforum_disable($forumid) {
         global $DB;
         $DB->delete_records('block_edusupport', array('forumid' => $forumid));
+        self::supportforum_managecaps($forumid, false);
         // @TODO shall we check for orphaned discussions too?
     }
 
@@ -395,14 +396,39 @@ class lib {
         $forum = $DB->get_record('forum', array('id' => $forumid));
         if (empty($forum->course)) return false;
 
+        self::supportforum_managecaps($forumid, true);
+
         $supportforum = (object) array(
             'courseid' => $forum->course,
             'forumid' => $forum->id,
             'archiveid' => 0,
         );
-
         $supportforum->id = $DB->insert_record('block_edusupport', $supportforum);
         if (!empty($supportforum->id)) return $supportforum;
         else return false;
+    }
+
+    /**
+     * Sets the capabilities for the context to prevent deletion.
+     * @param forumid.
+     * @param trigger true if we enable the forum, false if we disable it.
+    **/
+    public static function supportforum_managecaps($forumid, $trigger) {
+        global $DB, $USER;
+        if (!is_siteadmin()) return false;
+        $forum = $DB->get_record('forum', array('id' => $forumid));
+        if (empty($forum->course)) return false;
+
+        $cm = \get_coursemodule_from_instance('forum', 16, 0, false, MUST_EXIST);
+        $ctxmod = \context_module::instance($cm->id);
+        $ctxcourse = \context_course::instance($forum->course);
+
+        $capabilities = array('moodle/course:activityvisibility', 'moodle/course:manageactivities', 'moodle/course:delete');
+        $roles = array(7,7,7);
+        $contexts = array($ctxmod, $ctxmod, $ctxcourse);
+        $permission = ($trigger) ? CAP_PROHIBIT : CAP_INHERIT;
+        for ($a = 0; $a < count($capabilities); $a++) {
+            \role_change_permission($roles[$a], $contexts[$a], $capabilities[$a], $permission);
+        }
     }
 }
