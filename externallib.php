@@ -144,7 +144,9 @@ class block_edusupport_external extends external_api {
             }
             return -999;
         } else {
-            if (\block_edusupport\lib::is_supportforum($forumid)) {
+            $potentialtargets = \block_edusupport\lib::get_potentialtargets();
+            if (\block_edusupport\lib::is_supportforum($forumid) && !empty($potentialtargets[$forumid]->id)) {
+                $canpostto2ndlevel = $potentialtargets[$forumid]->postto2ndlevel;
                 // Mainly copied from mod/forum/externallib.php > add_discussion()
                 $warnings = array();
 
@@ -267,13 +269,8 @@ class block_edusupport_external extends external_api {
                     // Create the issue itself.
                     \block_edusupport\lib::get_issue($discussion->id);
 
-                    if (!empty($postto2ndlevel)) {
-                        // 1. Check if we really are allowed to do so.
-                        $coursecontext = \context_course::instance($discussion->course);
-                        if (has_capability('moodle/course:update', $coursecontext)) {
-                            // 2. call set_2nd_level
-                            \block_edusupport\lib::set_2nd_level($discussion->id);
-                        }
+                    if ($canpostto2ndlevel && !empty($postto2ndlevel)) {
+                        \block_edusupport\lib::set_2nd_level($discussion->id);
                     }
                     return $discussionid;
                 } else {
