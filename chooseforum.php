@@ -48,10 +48,40 @@ if (!is_siteadmin()) {
     ));
 } else {
     if (!empty($forumid)) {
-        switch($state) {
-            case 1: \block_edusupport\lib::supportforum_enable($forumid); break;
-            case -1: \block_edusupport\lib::supportforum_disable($forumid); break;
+        $dedicatedsupporter = optional_param('dedicatedsupporter', 0, PARAM_INT);
+        if (!empty($dedicatedsupporter)) {
+            if (\block_edusupport\lib::supportforum_setdedicatedsupporter($forumid, $dedicatedsupporter)) {
+                echo $OUTPUT->render_from_template('block_edusupport/alert', array(
+                    'content' => get_string('dedicatedsupporter:successfully_set', 'block_edusupport'),
+                    'type' => 'success'
+                ));
+            } else {
+                echo $OUTPUT->render_from_template('block_edusupport/alert', array(
+                    'content' => get_string('dedicatedsupporter:not_successfully_set', 'block_edusupport'),
+                    'type' => 'danger'
+                ));
+            }
+
+        } else {
+            switch($state) {
+                case 1: \block_edusupport\lib::supportforum_enable($forumid); break;
+                case -1: \block_edusupport\lib::supportforum_disable($forumid); break;
+            }
         }
+    }
+
+    $sql = "SELECT userid,supportlevel
+                FROM {block_edusupport_supporters}
+                WHERE courseid=1
+                    OR courseid=?
+                ORDER BY supportlevel ASC";
+    $supporters = array_values($DB->get_records_sql($sql, array($courseid)));
+    foreach ($supporters AS &$supporter) {
+        $u = $DB->get_record('user', array('id' => $supporter->userid));
+        $supporter->userfullname = fullname($u);
+        $supporter->firstname = $u->firstname;
+        $supporter->lastname = $u->lastname;
+        $supporter->email = $u->email;
     }
 
     $sql = "SELECT id,name,course
@@ -64,6 +94,13 @@ if (!is_siteadmin()) {
     foreach ($forums AS &$forum) {
         $state = $DB->get_record('block_edusupport', array('forumid' => $forum->id));
         $forum->state = (!empty($state->id));
+        $forum->dedicatedsupporter = $state->dedicatedsupporter;
+        $forum->supporters = $supporters;
+        if (!empty($forum->dedicatedsupporter)) {
+            foreach ($forum->supporters AS &$supporter) {
+                $supporter->selected = $forum->dedicatedsupporter == $supporter->userid;
+            }
+        }
     }
     echo $OUTPUT->render_from_template('block_edusupport/chooseforum', array('forums' => $forums, 'wwwroot' => $CFG->wwwroot));
 }

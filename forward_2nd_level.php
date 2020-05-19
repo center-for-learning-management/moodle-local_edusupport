@@ -29,7 +29,8 @@ require_once($CFG->libdir . '/adminlib.php');
 
 $d = required_param('d', PARAM_INT);
 $revoke = optional_param('revoke', 0, PARAM_BOOL);
-$discussion = $DB->get_record('forum_discussions', array('id' => $d));
+$discussion = $DB->get_record('forum_discussions', array('id' => $d), '*', MUST_EXIST);
+$courseid = $discussion->course;
 
 $context = context_course::instance($discussion->course);
 $PAGE->set_context($context);

@@ -283,24 +283,48 @@ class lib {
             return false;
         }
 
-        $supporters = $DB->get_records('block_edusupport_supporters', array('supportlevel' => ''));
-        foreach ($supporters AS $supporter) {
-            $chk = $DB->get_record('forum_discussion_subs', array('discussion' => $issue->discussionid, 'userid' => $supporter->userid));
+        // Create a list of supporters that will be assigned.
+        // Currently we only assign 1 supporter, so the list will only contain 1 item at the end. But it could also support multiple supporters.
+        $supporters = array();
+        // Check if this has a dedicated supporter.
+        $supportforum = $DB->get_record('block_edusupport', array('forumid' => $discussion->forum));
+        if (!empty($supportforum->dedicatedsupporter)) {
+            $supporters[] = $supportforum->dedicatedsupporter;
+        } else {
+            $sql = "SELECT userid
+                        FROM {block_edusupport_supporters}
+                        WHERE supportlevel=''
+                            AND (
+                                courseid=1
+                                OR
+                                courseid=?
+                            )";
+            $potentialsupporters = array_keys($DB->get_records_sql($sql, array($supportforum->courseid)));
+            if (count($pontentialsupporters) == 0) {
+                // Houston, we have a problem! No support team was set up!
+            } else {
+                $supporters[] = $potentialsupporters[array_rand($potentialsupporters)];
+            }
+        }
+
+        // Now assign each supporter from our list to this issue.
+        foreach ($supporters AS $supporteruserid) {
+            $chk = $DB->get_record('forum_discussion_subs', array('discussion' => $issue->discussionid, 'userid' => $supporteruserid));
             if (empty($chk->id)) {
                 $sub = (object) array(
                     'forum' => $discussion->forum,
-                    'userid' => $supporter->userid,
+                    'userid' => $supporteruserid,
                     'discussion' => $issue->discussionid,
                     'preference' => time(),
                 );
                 $DB->insert_record('forum_discussion_subs', $sub);
             }
-            $chk = $DB->get_record('block_edusupport_assignments', array('discussionid' => $issue->discussionid, 'userid' => $supporter->userid));
+            $chk = $DB->get_record('block_edusupport_assignments', array('discussionid' => $issue->discussionid, 'userid' => $supporteruserid));
             if (empty($chk->id)) {
                 $assignment = (object) array(
                     'issueid' => $issue->id,
                     'discussionid' => $issue->discussionid,
-                    'userid' => $supporter->userid,
+                    'userid' => $supporteruserid,
                 );
                 $DB->insert_record('block_edusupport_assignments', $assignment);
             }
@@ -409,6 +433,36 @@ class lib {
     }
 
     /**
+     * Sets a dedicated supporter for a certain support forum
+     * @param forumid.
+     * @return forum as object on success.
+    **/
+    public static function supportforum_setdedicatedsupporter($forumid, $dedicatedsupporter) {
+        global $DB;
+        if (!is_siteadmin()) return false;
+        $supportforum = $DB->get_record('block_edusupport', array('forumid' => $forumid));
+        if (empty($supportforum->courseid)) return false;
+
+        if ($dedicatedsupporter == -1) {
+            $DB->set_field('block_edusupport', 'dedicatedsupporter', 0, array('id' => $supportforum->id));
+            return true;
+        } else {
+            $sql = "SELECT id
+                        FROM {block_edusupport_supporters}
+                        WHERE userid=?
+                            AND (
+                                courseid=1
+                                OR courseid=?
+                            )";
+            $supporter = $DB->get_record_sql($sql, array($dedicatedsupporter, $supportforum->courseid));
+            if (empty($supporter->id)) return false;
+
+            $DB->set_field('block_edusupport', 'dedicatedsupporter', $dedicatedsupporter, array('id' => $supportforum->id));
+            return true;
+        }
+    }
+
+    /**
      * Sets the capabilities for the context to prevent deletion.
      * @param forumid.
      * @param trigger true if we enable the forum, false if we disable it.
@@ -419,7 +473,7 @@ class lib {
         $forum = $DB->get_record('forum', array('id' => $forumid));
         if (empty($forum->course)) return false;
 
-        $cm = \get_coursemodule_from_instance('forum', 16, 0, false, MUST_EXIST);
+        $cm = \get_coursemodule_from_instance('forum', $forumid, 0, false, MUST_EXIST);
         $ctxmod = \context_module::instance($cm->id);
         $ctxcourse = \context_course::instance($forum->course);
 
