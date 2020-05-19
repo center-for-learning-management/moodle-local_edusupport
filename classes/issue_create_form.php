@@ -89,7 +89,7 @@ class issue_create_form extends moodleform {
         $options['mail'] = get_string('email_to_xyz', 'block_edusupport', array('email' => $supportuser->email));
 
         $hideifs = '["' . implode('","', $hideifs) . '"]';
-        $postto2ndlevel_hideshow = 'var hide = (' . $hideifs . '.indexOf(this.value) > -1); var pt2 = $(\'#id_postto2ndlevel\'); $(pt2).prop(\'checked\', false); $(pt2).closest(\'div.form-group\').css(\'display\', hide ? \'none\' : \'block\');';
+        $postto2ndlevel_hideshow = 'var hide = (' . $hideifs . '.indexOf($(\'#id_forum_group\').val()) > -1); var pt2 = $(\'#id_postto2ndlevel\'); $(pt2).prop(\'checked\', false); $(pt2).closest(\'div.form-group\').css(\'display\', hide ? \'none\' : \'block\');';
         $mform->addElement('select', 'forum_group', get_string('to_group', 'block_edusupport'), $options, array('onchange' => $postto2ndlevel_hideshow));
         $mform->setType('forum_group', PARAM_INT);
 
@@ -117,7 +117,7 @@ class issue_create_form extends moodleform {
             '</div>',
         );
         $mform->addElement('html', implode("\n", $html));
-        $mform->addElement('html', '<script> ' . $postto2ndlevel_hideshow . '</script>');
+        $mform->addElement('html', '<script> setTimeout(function() { ' . $postto2ndlevel_hideshow . ' }, 100);</script>');
     }
 
     //Custom validation should be added here
