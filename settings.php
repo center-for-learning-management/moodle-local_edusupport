@@ -29,7 +29,7 @@ if ($ADMIN->fulltree) {
     );
     $links = "<div class=\"grid-eq-3\">";
     foreach($actions AS $action) {
-        $links .= '<a class="btn" href="' . $CFG->wwwroot . '/blocks/edusupport/' . $action->href . '">' . get_string($action->name, 'block_edusupport') . '</a>';
+        $links .= '<a class="btn btn-secondary" href="' . $CFG->wwwroot . '/blocks/edusupport/' . $action->href . '">' . get_string($action->name, 'block_edusupport') . '</a>';
     }
     $links .= "</div>";
     $settings->add(new admin_setting_heading('block_edusupport_actions', get_string('settings'), $links));
