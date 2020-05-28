@@ -18,8 +18,9 @@
     <table class="generaltable" width="100%">
         <thead>
             <tr>
-                <td width="200">{{#str}} toggle, block_edusupport {{/str}}</td>
+                <td width="250">{{#str}} toggle, block_edusupport {{/str}}</td>
                 <td>{{#str}} name {{/str}}</td>
+                <td width="150">{{#str}} dedicatedsupporter, block_edusupport {{/str}}</td>
             </tr>
         </thead>
         <tbody>
@@ -40,6 +41,22 @@
                         {{/state}}
                     </td>
                     <td>{{name}}</td>
+                    <td>
+                        {{^state}}
+                            -
+                        {{/state}}
+                        {{#state}}
+                        <select name="setsupporter_{{uniqid}}_{{id}}" onchange="top.location.href='{{wwwroot}}/blocks/edusupport/chooseforum.php?courseid={{course}}&forumid={{id}}&dedicatedsupporter=' + this.value;">
+                            <option value="-1">{{#str}} none {{/str}}</option>
+                            {{#supporters}}
+                            <option value="{{userid}}"{{#selected}} selected="selected" {{/selected}}>
+                                {{supportlevel}}:
+                                {{userfullname}} ({{email}})
+                            </option>
+                            {{/supporters}}
+                        </select>
+                        {{/state}}
+                    </td>
                 </tr>
             {{/forums}}
         </tbody>

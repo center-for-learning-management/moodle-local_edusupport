@@ -9,6 +9,7 @@
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="courseid" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="forumid" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="Forum-ID for new Issues"/>
+        <FIELD NAME="dedicatedsupporter" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="User-ID of the default supporter in 2nd level"/>
         <FIELD NAME="archiveid" TYPE="int" LENGTH="20" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Forum-ID for Archive"/>
       </FIELDS>
       <KEYS>
