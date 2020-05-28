@@ -85,16 +85,15 @@ if (false && !\block_edusupport\lib::is_supporteam()) {
 
         // Now get the current supporter
         if (!empty($issue->currentsupporter)) {
-            $supporter = $DB->get_record('block_edusupport_supporters', array('id' => $issue->currentsupporter));
-            $supportuser = $DB->get_record('user', array('id' => $supporter->userid));
+            $supportuser = $DB->get_record('user', array('id' => $issue->currentsupporter));
             $issue->currentsupportername = \fullname($supportuser);
-            $issue->currentsupporterid = $supportuser->id;
+            $issue->currentsupporterid = $issue->currentsupporter;
         } else {
             $issue->currentsupportername = "2nd Level";
         }
 
         // Now separate between current, assigned and other issues.
-        if ($issue->currentsupporterid == $USER->id) {
+        if ($issue->currentsupporter == $USER->id) {
             $params['current'][] = $issue;
         } elseif (!empty($assigned->id)) {
             $params['assigned'][] = $issue;
