@@ -39,7 +39,7 @@ class lib {
         if (!self::is_supportteam($userid)) return;
         $issue = self::get_issue($discussionid);
         $assignment = $DB->get_record('block_edusupport_assignments', array('discussionid' => $discussionid, 'userid' => $userid));
-        if (empty($isassignment->id)) {
+        if (empty($assignment->id)) {
             $assignment = (object) array(
                 'issueid' => $issue->id,
                 'discussionid' => $discussionid,
