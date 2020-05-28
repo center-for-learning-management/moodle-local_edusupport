@@ -43,23 +43,47 @@ if (false && !\block_edusupport\lib::is_supporteam()) {
         'url' => $tocmurl->__toString(),
     ));
 } else {
-    $sql = "SELECT fd.id,fd.name,fd.userid
-                FROM {block_edusupport_assignments} bea,
-                    {forum_discussions} fd
-                WHERE bea.discussionid=fd.id
-                    AND bea.userid=?
-                ORDER BY fd.timemodified DESC";
-    $assignments = array_values($DB->get_records_sql($sql, array($USER->id)));
-    $issues = array();
-    foreach ($assignments AS $assignment) {
-        $issue = \block_edusupport\lib::get_issue($assignment->id);
-        $issue->name = $assignment->name;
-        $firstpost = $DB->get_record('forum_posts', array('discussion' => $issue->discussionid, 'parent' => 0));
-        $lastpost = $DB->get_record('forum_posts', array('discussion' => $issue->discussionid), '*', 'modified DESC');
-        $issue->lastmodified = $lastpost->modified;
-        $user = $DB->get_record('user', array('id' => $firstpost->userid));
+    $assign = optional_param('assign', 0, PARAM_INT); // discussion id we want to assign to
+    $unassign = optional_param('unassign', 0, PARAM_INT); // discussion id we want to unassign from
+    $take = optional_param('take', 0, PARAM_INT); // discussion id we want to unassign from
 
-        $issue->userfullname = \fullname($user);
+    $sql = "SELECT id,discussionid FROM {block_edusupport_issues}";
+    $issues = $DB->get_records('block_edusupport_issues', array(), 'id,discussionid');
+
+    $params = array(
+        'current' => array(), // issues the user is responsible for
+        'assigned' => array(), // issues the user receives notifications for
+        'other' => array(), // all other issues
+        'wwwroot' => $CFG->wwwroot,
+    );
+
+    foreach ($issues AS $issue) {
+        // Collect certain data about this issue.
+        $discussion = $DB->get_record('forum_discussions', array('id' => $issue->discussionid));
+        $issue->name = $discussion->name;
+        $issue->userid = $discussion->userid;
+        $postinguser = $DB->get_record('user', array('id' => $discussion->userid));
+        $issue->userfullname = \fullname($postinguser);
+        $sql = "SELECT id,modified FROM {forum_posts} WHERE discussion=? ORDER BY modified DESC LIMIT 0,1";
+        $lastpost = $DB->get_record_sql($sql, array($issue->discussionid));
+        $issue->lastmodified = $lastpost->modified;
+        $assigned = $DB->get_record('block_edusupport_assignments', array('discussionid' => $issue->discussionid, 'userid' => $USER->id));
+
+        // Check for any actions.
+        if (!empty($assign) && $assign == $issue->discussionid && empty($assigned->id)) {
+            $assigned = \block_edusupport\lib::assignment_add($issue->discussionid);
+        }
+        if (!empty($unassign) && $unassign == $issue->discussionid) {
+            \block_edusupport\lib::assignment_remove($issue->discussionid);
+            unset($assigned);
+        }
+        if (!empty($take) && $take == $issue->discussionid) {
+            \block_edusupport\lib::set_current_supporter($issue->discussionid, $USER->id);
+            $assigned = \block_edusupport\lib::assignment_add($issue->discussionid);
+            $issue->currentsupporter = $USER->id;
+        }
+
+        // Now get the current supporter
         if (!empty($issue->currentsupporter)) {
             $supporter = $DB->get_record('block_edusupport_supporters', array('id' => $issue->currentsupporter));
             $supportuser = $DB->get_record('user', array('id' => $supporter->userid));
@@ -68,9 +92,17 @@ if (false && !\block_edusupport\lib::is_supporteam()) {
         } else {
             $issue->currentsupportername = "2nd Level";
         }
-        $issues[] = $issue;
+
+        // Now separate between current, assigned and other issues.
+        if ($issue->currentsupporterid == $USER->id) {
+            $params['current'][] = $issue;
+        } elseif (!empty($assigned->id)) {
+            $params['assigned'][] = $issue;
+        } else {
+            $params['other'][] = $issue;
+        }
     }
-    echo $OUTPUT->render_from_template('block_edusupport/issues', array('issues' => $issues, 'wwwroot' => $CFG->wwwroot));
+    echo $OUTPUT->render_from_template('block_edusupport/issues', $params);
 }
 
 echo $OUTPUT->footer();

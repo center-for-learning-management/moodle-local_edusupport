@@ -69,7 +69,12 @@ class block_edusupport extends block_base {
         }
 
         if (\block_edusupport\lib::is_supportteam()) {
-
+            $options[] = array(
+                "title" => get_string('issues', 'block_edusupport'),
+                "href" => $CFG->wwwroot . '/blocks/edusupport/issues.php',
+                "class" => '',
+                "icon" => '/pix/docs.svg',
+            );
         } else {
             // Determine current view.
 

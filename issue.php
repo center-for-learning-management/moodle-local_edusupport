@@ -74,7 +74,7 @@ if (!\block_edusupport\lib::is_supportteam()) {
 
     echo $OUTPUT->header();
 
-    \block_edusupport\lib::assign_role($coursecontext, true);
+    //\block_edusupport\lib::assign_role($coursecontext, true);
     $options = array();
 
     if (!empty($issue->currentsupporter)) {
@@ -231,7 +231,7 @@ if (!\block_edusupport\lib::is_supportteam()) {
     }
     echo $out;
 
-    \block_edusupport\lib::assign_role($coursecontext, false);
+    //\block_edusupport\lib::assign_role($coursecontext, false);
 
     // Add the subscription toggle JS.
     $PAGE->requires->yui_module('moodle-mod_forum-subscriptiontoggle', 'Y.M.mod_forum.subscriptiontoggle.init');

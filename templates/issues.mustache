@@ -23,10 +23,14 @@
                 <td>{{#str}} name {{/str}}</td>
                 <td>{{#str}} assigned, block_edusupport {{/str}}</td>
                 <td>{{#str}} modified {{/str}}</td>
+                <td>{{#str}} action {{/str}}</td>
             </tr>
         </thead>
         <tbody>
-            {{#issues}}
+            <tr>
+                <th colspan="6">{{#str}} issues:current, block_edusupport {{/str}}</th>
+            </tr>
+            {{#current}}
                 <tr>
                     <td>
                         <a href="{{wwwroot}}/blocks/edusupport/issue.php?d={{discussionid}}">
@@ -34,7 +38,7 @@
                         </a></td>
                     <td>{{name}}</td>
                     <td>
-                        <a href="{{wwwroot}}/profile/view.php?id={{userid}}">
+                        <a href="{{wwwroot}}/user/profile/view.php?id={{userid}}">
                             {{userfullname}}
                         </a>
                     </td>
@@ -45,7 +49,69 @@
                     </td>
                     <td>{{#userdate}} {{lastmodified}}, %F %X {{/userdate}}</td>
                 </tr>
-            {{/issues}}
+            {{/current}}
+            <tr>
+                <th colspan="6">{{#str}} issues:assigned, block_edusupport {{/str}}</th>
+            </tr>
+            {{#assigned}}
+                <tr>
+                    <td>
+                        <a href="{{wwwroot}}/blocks/edusupport/issue.php?d={{discussionid}}">
+                            {{id}}
+                        </a></td>
+                    <td>{{name}}</td>
+                    <td>
+                        <a href="{{wwwroot}}/user/profile/view.php?id={{userid}}">
+                            {{userfullname}}
+                        </a>
+                    </td>
+                    <td>
+                        {{#currentsupporterid}}<a href="{{wwwroot}}/profile/view.php?id={{currentsupporterid}}">{{/currentsupporterid}}
+                            {{currentsupportername}}
+                        {{#currentsupporterid}}</a>{{/currentsupporterid}}
+                    </td>
+                    <td>{{#userdate}} {{lastmodified}}, %F %X {{/userdate}}</td>
+                    <td>
+                        <a href="{{wwwroot}}/blocks/edusupport/issues.php?unassign={{discussionid}}">
+                            {{#pix}} i/show, core {{/pix}}
+                        </a>
+                        <a href="{{wwwroot}}/blocks/edusupport/issues.php?take={{discussionid}}">
+                            {{#pix}} i/enrolusers, core {{/pix}}
+                        </a>
+                    </td>
+                </tr>
+            {{/assigned}}
+            <tr>
+                <th colspan="6">{{#str}} issues:other, block_edusupport {{/str}}</th>
+            </tr>
+            {{#other}}
+                <tr>
+                    <td>
+                        <a href="{{wwwroot}}/blocks/edusupport/issue.php?d={{discussionid}}">
+                            {{id}}
+                        </a></td>
+                    <td>{{name}}</td>
+                    <td>
+                        <a href="{{wwwroot}}/user/profile/view.php?id={{userid}}">
+                            {{userfullname}}
+                        </a>
+                    </td>
+                    <td>
+                        {{#currentsupporterid}}<a href="{{wwwroot}}/profile/view.php?id={{currentsupporterid}}">{{/currentsupporterid}}
+                            {{currentsupportername}}
+                        {{#currentsupporterid}}</a>{{/currentsupporterid}}
+                    </td>
+                    <td>{{#userdate}} {{lastmodified}}, %F %X {{/userdate}}</td>
+                    <td>
+                        <a href="{{wwwroot}}/blocks/edusupport/issues.php?assign={{discussionid}}">
+                            {{#pix}} i/hide, core {{/pix}}
+                        </a>
+                        <a href="{{wwwroot}}/blocks/edusupport/issues.php?take={{discussionid}}">
+                            {{#pix}} i/enrolusers, core {{/pix}}
+                        </a>
+                    </td>
+                </tr>
+            {{/other}}
         </tbody>
     </table>
 </div>

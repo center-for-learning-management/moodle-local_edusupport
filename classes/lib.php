@@ -29,27 +29,37 @@ require_once($CFG->libdir . '/adminlib.php');
 
 class lib {
     /**
-    * Assigns the teacher role within this script.
-    * Resets cardinality of primary key to avoid bumping the pk.
-    * @param context course_context instance.
-    * @param assign true if we assign the role, false if we unassign it.
-    */
-    public static function assign_role($context, $assign) {
+     * Add support user to the list of assigned users.
+     * @param int dicussionid
+     * @param int userid
+     */
+    public static function assignment_add($discussionid, $userid = 0) {
         global $DB, $USER;
-
-        if (!empty($assign) && $assign) {
-            \role_assign(3, $USER->id, $context);
-        } else {
-            \role_unassign(3, $USER->id, $context->id);
-            // Reset cardinality of auto increment.
-            $sql = "SELECT 0,MAX(id) AS id
-                        FROM {role_assignments}";
-            $max = $DB->get_records_sql($sql, array());
-            $sql = "ALTER TABLE {role_assignments}
-                        AUTO_INCREMENT=" . ($max[0]->id+1);
-            $DB->execute($sql, array());
+        if (empty($userid)) $userid = $USER->id;
+        if (!self::is_supportteam($userid)) return;
+        $issue = self::get_issue($discussionid);
+        $assignment = $DB->get_record('block_edusupport_assignments', array('discussionid' => $discussionid, 'userid' => $userid));
+        if (empty($isassignment->id)) {
+            $assignment = (object) array(
+                'issueid' => $issue->id,
+                'discussionid' => $discussionid,
+                'userid' => $userid,
+            );
+            $assignment->id = $DB->insert_record('block_edusupport_assignments', $assignment);
         }
+        return $assignment;
     }
+    /**
+     * Remove support user from the list of assigned users.
+     * @param int dicussionid
+     * @param int userid
+     */
+    public static function assignment_remove($discussionid, $userid = 0) {
+        global $DB, $USER;
+        if (empty($userid)) $userid = $USER->id;
+        $DB->delete_records('block_edusupport_assignments', array('discussionid' => $discussionid, 'userid' => $userid));
+    }
+
     public static function can_config_course($courseid){
         global $USER;
         if (self::can_config_global()) return true;
@@ -77,7 +87,6 @@ class lib {
         }
 
         // 2.) create a post that we closed that issue.
-        $touser = $DB->get_record('user', array('id' => $supporter->userid));
         self::create_post($issue->discussionid,
             get_string(
                 'issue_closed:post',
@@ -139,35 +148,6 @@ class lib {
     }
 
     /**
-     * Checks for groupmode in a forum and lists available groups of this user.
-     * @return array of groups.
-    **/
-    public static function get_groups_for_user($forumid) {
-        // Store rating if we are permitted to.
-        global $CFG, $DB, $USER;
-
-        if (empty($USER->id) || isguestuser($USER)) return array();
-
-        // Check if this coursemodule has a groupmode
-        $sql = "SELECT cm.*
-                    FROM {course_modules} cm, {modules} m
-                    WHERE cm.module=m.id
-                        AND m.name='forum'
-                        AND cm.instance=?";
-        $cms = array_values($DB->get_records_sql($sql, array($forumid)));
-        if (empty($cms[0]->groupmode)) return array();
-
-        $sql = "SELECT g.*
-                    FROM {groups} g, {groups_members} gm
-                    WHERE g.id=gm.groupid
-                        AND gm.userid=?
-                        AND g.courseid=?
-                    ORDER BY g.name ASC";
-        $groups = array_values($DB->get_records_sql($sql, array($USER->id, $cms[0]->course)));
-        return $groups;
-    }
-
-    /**
      * Get the issue for this discussionid.
      * @param discussionid.
      */
@@ -225,7 +205,9 @@ class lib {
      * @return true or false.
      */
     public static function is_supportforum($forumid) {
-        return true;
+        global $DB;
+        $chk = $DB->get_record('block_edusupport', array('forumid' => $forumid));
+        return !empty($chk->id);
     }
 
     /**
@@ -285,34 +267,16 @@ class lib {
 
         $supporters = $DB->get_records('block_edusupport_supporters', array('supportlevel' => ''));
         foreach ($supporters AS $supporter) {
-            $chk = $DB->get_record('forum_discussion_subs', array('discussion' => $issue->discussionid, 'userid' => $supporter->userid));
-            if (empty($chk->id)) {
-                $sub = (object) array(
-                    'forum' => $discussion->forum,
-                    'userid' => $supporter->userid,
-                    'discussion' => $issue->discussionid,
-                    'preference' => time(),
-                );
-                $DB->insert_record('forum_discussion_subs', $sub);
-            }
-            $chk = $DB->get_record('block_edusupport_assignments', array('discussionid' => $issue->discussionid, 'userid' => $supporter->userid));
-            if (empty($chk->id)) {
-                $assignment = (object) array(
-                    'issueid' => $issue->id,
-                    'discussionid' => $issue->discussionid,
-                    'userid' => $supporter->userid,
-                );
-                $DB->insert_record('block_edusupport_assignments', $assignment);
-            }
+            self::assignment_add($issue->discussionid, $supporter->userid);
         }
         self::create_post($issue->discussionid,
             get_string('issue_assign_nextlevel:post', 'block_edusupport', array(
                 'fromuserfullname' => \fullname($USER),
                 'fromuserid' => $USER->id,
                 'wwwroot' => $CFG->wwwroot,
-            ),
+            )),
             get_string('issue_assigned:subject', 'block_edusupport')
-        ));
+        );
         // @TODO We hope that this sends a message to the supportteam, although they are probably not enrolled in the course. If that does not work, we have to send by mail on our own.
         return true;
     }
@@ -320,10 +284,10 @@ class lib {
     /**
      * Used by 2nd-level support to assign an issue to a particular person from 3rd level.
      * @param discussionid.
-     * @param supporterid. (ATTENTION, THIS IS NOT USERID)
+     * @param userid.
      * @return true on success.
      */
-    public static function set_current_supporter($discussionid, $supporterid) {
+    public static function set_current_supporter($discussionid, $userid) {
         global $CFG, $DB, $USER;
 
         $discussion = $DB->get_record('forum_discussions', array('id' => $discussionid));
@@ -336,24 +300,17 @@ class lib {
             return false;
         }
         // Check if the assigned user belongs to the supportteam as well.
-        $supporter = $DB->get_record('block_edusupport_supporters', array('id' => $supporterid));
-        if (empty($supporter->userid) || empty($supporter->supportlevel)) {
+        if (!self::is_supportteam($userid)) {
             return false;
         }
 
         // Set currentsupporter and add to assigned users.
-        $DB->set_field('block_edusupport_issues', 'currentsupporter', $supporterid, array('discussionid' => $discussion->id));
-        $chk = $DB->get_record('block_edusupport_assignments', array('discussionid' => $issue->discussionid, 'userid' => $supporter->userid));
-        if (empty($chk->id)) {
-            $assignment = (object) array(
-                'issueid' => $issue->id,
-                'discussionid' => $discussionid,
-                'userid' => $supporter->userid,
-            );
-            $DB->insert_record('block_edusupport_assignments', $assignment);
-        }
+        $DB->set_field('block_edusupport_issues', 'currentsupporter', $userid, array('discussionid' => $discussion->id));
+        self::assignment_add($discussionid, $userid);
 
-        $touser = $DB->get_record('user', array('id' => $supporter->userid));
+        $supporter = $DB->get_record('block_edusupport_supporters', array('userid' => $userid));
+        if (empty($supporter->supportlevel)) $supporter->supportlevel = '2nd Level Support';
+        $touser = $DB->get_record('user', array('id' => $userid));
         self::create_post($discussionid,
             get_string(
                 'issue_assign_3rdlevel:post',
@@ -362,7 +319,7 @@ class lib {
                     'fromuserfullname' => \fullname($USER),
                     'fromuserid' => $USER->id,
                     'touserfullname' => \fullname($touser),
-                    'touserid' => $supporter->userid,
+                    'touserid' => $userid,
                     'tosupportlevel' => $supporter->supportlevel,
                     'wwwroot ' => $CFG->wwwroot,
                 )
