@@ -41,7 +41,7 @@ function block_edusupport_before_standard_html_head(){
         if (has_capability('moodle/course:update', $coursecontext)
                 && \block_edusupport\lib::is_supportforum($discussion->forum)) {
             $sql = "SELECT id
-                        FROM {block_edusupport_assignments}
+                        FROM {block_edusupport_subscr}
                         WHERE discussionid=?";
             $chk = $DB->get_record_sql($sql, array($discussion->id));
             $PAGE->requires->js_call_amd('block_edusupport/main', 'injectForwardButton', array($d, !empty($chk->id)));
@@ -119,11 +119,6 @@ function block_edusupport_pluginfile($course, $cm, $context, $filearea, $args, $
         return false;
     }
 
-    $assignment = $DB->get_record('block_edusupport_assignments', array('discussionid' => $post->discussion, 'userid' => $USER->id));
-    if (empty($assignment->id)) {
-        return false;
-    }
-
     $areas = \forum_get_file_areas($course, $cm, $context);
 
     // filearea must contain a real area
@@ -135,7 +130,7 @@ function block_edusupport_pluginfile($course, $cm, $context, $filearea, $args, $
         return false;
     }
 
-    if (!$forum = $DB->get_record('forum', array('id'=>$discussion->forum))) {
+    if (!\block_edusupport\lib::is_supportforum($discussion->forum)) {
         return false;
     }
 

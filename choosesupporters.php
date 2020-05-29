@@ -74,16 +74,17 @@ if (!is_siteadmin()) {
             ));
         }
         if ($success) {
+            \block_edusupport\lib::supportforum_rolecheck();
             if (!empty($remove)) {
                 $chk = $DB->get_record('block_edusupport_supporters', array('userid' => $userid));
                 if (empty($chk->id)) {
                     // This supporter left the team. We remove all assignments.
-                    $DB->delete_records('block_edusupport_assignments', array('userid' => $userid));
+                    $DB->delete_records('block_edusupport_subscr', array('userid' => $userid));
                 }
             } elseif (empty($supportlevel)) {
                 $issues = $DB->get_records('block_edusupport_issues', array('currentsupporter' => 0));
                 foreach ($issues AS $issue) {
-                    $DB->insert_record('block_edusupport_assignments', array(
+                    $DB->insert_record('block_edusupport_subscr', array(
                         'issueid' => $issue->id,
                         'discussionid' => $issue->discussionid,
                         'userid' => $userid,

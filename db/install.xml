@@ -38,7 +38,7 @@
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
     </TABLE>
-    <TABLE NAME="block_edusupport_assignments" COMMENT="n:m relations to relate discussions to support-users.">
+    <TABLE NAME="block_edusupport_subscr" COMMENT="subscriptions of discussions.">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="issueid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>

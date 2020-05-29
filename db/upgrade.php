@@ -139,7 +139,7 @@ function xmldb_block_edusupport_upgrade($oldversion) {
             $dbman->drop_table($table);
         }
 
-        $table = new xmldb_table('block_edusupport_assignments');
+        $table = new xmldb_table('block_edusupport_subscr');
         $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
         $table->add_field('issueid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
         $table->add_field('discussionid', XMLDB_TYPE_INTEGER, '20', null, XMLDB_NOTNULL, null, '0');

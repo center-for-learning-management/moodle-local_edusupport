@@ -58,7 +58,7 @@ class reminder extends \core\task\scheduled_task {
                 $post = $DB->get_record('forum_posts', array('id' => $discussion->firstpost));
                 $user = $DB->get_record('users', array('id' => $discussion->userid));
                 $discussion->message = $post->message;
-                $discussion->userfullname = userfullname($user);
+                $discussion->userfullname = \fullname($user);
                 $discussion->useremail = $user->email;
                 $reminders[] = $discussion;
             }

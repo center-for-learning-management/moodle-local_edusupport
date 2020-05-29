@@ -38,14 +38,14 @@ class lib {
         if (empty($userid)) $userid = $USER->id;
         if (!self::is_supportteam($userid)) return;
         $issue = self::get_issue($discussionid);
-        $assignment = $DB->get_record('block_edusupport_assignments', array('discussionid' => $discussionid, 'userid' => $userid));
+        $assignment = $DB->get_record('block_edusupport_subscr', array('discussionid' => $discussionid, 'userid' => $userid));
         if (empty($assignment->id)) {
             $assignment = (object) array(
                 'issueid' => $issue->id,
                 'discussionid' => $discussionid,
                 'userid' => $userid,
             );
-            $assignment->id = $DB->insert_record('block_edusupport_assignments', $assignment);
+            $assignment->id = $DB->insert_record('block_edusupport_subscr', $assignment);
         }
         return $assignment;
     }
@@ -57,7 +57,7 @@ class lib {
     public static function assignment_remove($discussionid, $userid = 0) {
         global $DB, $USER;
         if (empty($userid)) $userid = $USER->id;
-        $DB->delete_records('block_edusupport_assignments', array('discussionid' => $discussionid, 'userid' => $userid));
+        $DB->delete_records('block_edusupport_subscr', array('discussionid' => $discussionid, 'userid' => $userid));
     }
 
     public static function can_config_course($courseid){
@@ -101,7 +101,7 @@ class lib {
         );
 
         // 3.) remove all supporters from the abo-list
-        $DB->delete_records('block_edusupport_assignments', array('discussionid' => $discussionid));
+        $DB->delete_records('block_edusupport_subscr', array('discussionid' => $discussionid));
 
         // 4.) remove issue-link from database
         $DB->delete_records('block_edusupport_issues', array('discussionid' => $discussionid));
@@ -195,15 +195,20 @@ class lib {
      * @param object.
      * @return object.
      */
-    public static function expose_properties() {
+    public static function expose_properties($object = array()) {
         global $CFG;
-        require_once($CFG->dirroot . '/mod/forum/classes/local/entities/post.php');
-        $props = array('id', 'discussionid', 'parentid', 'authorid');
-        foreach ($props AS $prop) {
-            $reflectionProperty = new \ReflectionProperty(\mod_forum\local\entities\post::class, $prop);
-            $reflectionProperty->setAccessible(true);
+        $object = (array) $object;
+        $keys = array_keys($object);
+        foreach ($keys AS $key) {
+            $xkey = explode("\0", $key);
+            $xkey = $xkey[count($xkey)-1];
+            $object[$xkey] = $object[$key];
+            unset($object[$key]);
+            if (is_object($object[$xkey])) {
+                $object[$xkey] = self::expose_properties($object[$xkey]);
+            }
         }
-
+        return $object;
     }
 
     /**
@@ -260,7 +265,7 @@ class lib {
         );
 
         // 3.) remove all supporters from the abo-list
-        $DB->delete_records('block_edusupport_assignments', array('discussionid' => $discussionid));
+        $DB->delete_records('block_edusupport_subscr', array('discussionid' => $discussionid));
 
         // 4.) remove issue-link from database
         $DB->delete_records('block_edusupport_issues', array('discussionid' => $discussionid));
@@ -310,15 +315,15 @@ class lib {
         $discussion = $DB->get_record('forum_discussions', array('id' => $discussionid));
         $issue = self::get_issue($discussionid);
         if (!self::is_supportforum($discussion->forum)) {
-            return false;
+            return -1;
         }
         // Check if the user taking the action belongs to the supportteam.
         if (!self::is_supportteam()) {
-            return false;
+            return -2;
         }
         // Check if the assigned user belongs to the supportteam as well.
         if (!self::is_supportteam($userid)) {
-            return false;
+            return -3;
         }
 
         // Set currentsupporter and add to assigned users.
@@ -330,7 +335,7 @@ class lib {
         $touser = $DB->get_record('user', array('id' => $userid));
         self::create_post($discussionid,
             get_string(
-                'issue_assign_3rdlevel:post',
+                ($userid == $USER->id) ? 'issue_assign_3rdlevel:postself' : 'issue_assign_3rdlevel:post',
                 'block_edusupport',
                 array(
                     'fromuserfullname' => \fullname($USER),
@@ -356,6 +361,7 @@ class lib {
         global $DB;
         $DB->delete_records('block_edusupport', array('forumid' => $forumid));
         self::supportforum_managecaps($forumid, false);
+        \block_edusupport\lib::supportforum_rolecheck($forumid);
         // @TODO shall we check for orphaned discussions too?
     }
 
@@ -370,14 +376,19 @@ class lib {
         $forum = $DB->get_record('forum', array('id' => $forumid));
         if (empty($forum->course)) return false;
 
-        self::supportforum_managecaps($forumid, true);
+        $supportforum = $DB->get_record('block_edusupport', array('forumid' => $forumid));
+        if (empty($supportforum->id)) {
+            $supportforum = (object) array(
+                'courseid' => $forum->course,
+                'forumid' => $forum->id,
+                'archiveid' => 0,
+                'dedicatedsupporter' => 0,
+            );
+            $supportforum->id = $DB->insert_record('block_edusupport', $supportforum);
+        }
 
-        $supportforum = (object) array(
-            'courseid' => $forum->course,
-            'forumid' => $forum->id,
-            'archiveid' => 0,
-        );
-        $supportforum->id = $DB->insert_record('block_edusupport', $supportforum);
+        self::supportforum_managecaps($forumid, true);
+        \block_edusupport\lib::supportforum_rolecheck($forumid);
         if (!empty($supportforum->id)) return $supportforum;
         else return false;
     }
@@ -393,10 +404,11 @@ class lib {
         $forum = $DB->get_record('forum', array('id' => $forumid));
         if (empty($forum->course)) return false;
 
-        $cm = \get_coursemodule_from_instance('forum', 16, 0, false, MUST_EXIST);
+        $cm = \get_coursemodule_from_instance('forum', $forumid, 0, false, MUST_EXIST);
         $ctxmod = \context_module::instance($cm->id);
         $ctxcourse = \context_course::instance($forum->course);
 
+        // Capabilities that should be PREVENTED for supportforums
         $capabilities = array('moodle/course:activityvisibility', 'moodle/course:manageactivities', 'moodle/course:delete');
         $roles = array(7,7,7);
         $contexts = array($ctxmod, $ctxmod, $ctxcourse);
@@ -404,5 +416,64 @@ class lib {
         for ($a = 0; $a < count($capabilities); $a++) {
             \role_change_permission($roles[$a], $contexts[$a], $capabilities[$a], $permission);
         }
+    }
+
+    /**
+     * Checks for a forum, if all supportteam-members have the required role.
+     * @param forumid.
+     */
+    public static function supportforum_rolecheck($forumid=0) {
+        global $DB;
+        if (empty($forumid)) {
+            // We have to re-sync all supportforums.
+            $forums = $DB->get_record('block_edusupport', array());
+            foreach ($forums AS $forum) {
+                self::supportforum_rolecheck($forum->id);
+            }
+        } else {
+            $forum = $DB->get_record('forum', array('id' => $forumid), '*', MUST_EXIST);
+            $issupportforum = self::is_supportforum($forumid);
+
+            $cm = \get_coursemodule_from_instance('forum', $forumid, $forum->course, false, MUST_EXIST);
+            $ctx = \context_module::instance($cm->id);
+            $roleid = get_config('block_edusupport', 'supportteamrole');
+
+            // Get all users that currently have the supporter-role.
+            $sql = "SELECT userid FROM {role_assignments} WHERE roleid=? AND contextid=?";
+            $curmembers = array_keys($DB->get_records_sql($sql, array($roleid, $ctx->id)));
+            foreach ($curmembers AS $curmember) {
+                $unassign = false;
+                if (!$issupportforum) $unassign = true;
+                else {
+                    $sql = "SELECT * FROM {block_edusupport_supporters} WHERE userid=? AND (courseid=0 OR courseid=?)";
+                    $issupporter = $DB->get_record_sql($sql, array($curmember, $forum->course));
+                    $unassign = empty($issupporter->id);
+                }
+                if ($unassign) {
+                    role_unassign($roleid, $curmember, $ctx->id);
+                }
+            }
+
+            if ($issupportforum) {
+                // Assign all current supportteam users.
+                $sql = "SELECT * FROM {block_edusupport_supporters} WHERE courseid=1 OR courseid=?";
+                $members = $DB->get_records_sql($sql, array($forum->course));
+                foreach ($members AS $member) {
+                    role_assign($roleid, $member->userid, $ctx->id);
+                }
+            }
+        }
+    }
+
+    /**
+     * Set the dedicated supporter for a particular forum.
+     * @param userid.
+     **/
+    public static function supportforum_setdedicatedsupporter($forumid, $userid) {
+        if (!self::is_supportteam($userid)) return false;
+        if (!self::is_supportforum($forumid)) return false;
+        global $DB;
+        $DB->set_field('block_edusupport', 'dedicatedsupporter', $userid, array('forumid' => $forumid));
+        return true;
     }
 }

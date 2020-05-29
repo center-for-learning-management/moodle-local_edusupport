@@ -24,7 +24,7 @@ define(
                             body += '<optgroup label="' + supportlevels[a] + '">';
                             for (var b = 0; b < result.supporters[supportlevels[a]].length; b++) {
                                 var supporter = result.supporters[supportlevels[a]][b];
-                                body += '<option value="' + supporter.id + '"' + ((supporter.selected)?' selected="selected"':'') + '>' + supporter.firstname + ' ' + supporter.lastname + '</option>';
+                                body += '<option value="' + supporter.userid + '"' + ((supporter.selected)?' selected="selected"':'') + '>' + supporter.firstname + ' ' + supporter.lastname + '</option>';
                             }
                             body += '</optgroup>';
                         }
@@ -97,6 +97,25 @@ define(
                     }
                 });
             });
+        },
+        /**
+         * Scans the page for all discussion posts and adds a reply-button.
+         */
+        injectReplyButtons: function() {
+            STR.get_strings([
+                    {'key' : 'reply', component: 'forum' },
+                ]).done(function(s) {
+                    $('#page-blocks-edusupport-issue .forum-post-container>.forumpost').each(function() {
+                        var postid = $(this).attr('data-post-id');
+                        if ($(this).find('.reply-' + postid).length == 0) {
+                            $(this).find('.post-actions:first-child').append(
+                                $('<a data-region="post-action" class="btn btn-link reply-' + postid + '" title="' + s[0] + '" aria-label="' + s[0] + '" role="menuitem" tabindex="-1">')
+                                    .html(s[0]).attr('href', URL.relativeUrl('/blocks/edusupport/issue.php?discussion=1&replyto=' + postid))
+                            );
+                        }
+                    });
+                }
+            ).fail(NOTIFICATION.exception);
         },
         /**
          * Close an issue.

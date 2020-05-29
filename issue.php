@@ -29,7 +29,7 @@ require_once('../../config.php');
 $d = optional_param('d', 0, PARAM_INT); // discussionid.
 $discussion = optional_param('discussion', 0, PARAM_INT); // discussionid.
 $discussionid = $discussion | $d;
-$reply = optional_param('reply', 0, PARAM_INT);          // If set, we reply to this post.
+$replyto = optional_param('replyto', 0, PARAM_INT);          // If set, we reply to this post.
 
 $parent = optional_param('parent', 0, PARAM_INT);        // If set, then display this post and all children.
 $mode   = optional_param('mode', 0, PARAM_INT);          // If set, changes the layout of the thread
@@ -38,7 +38,10 @@ $mark   = optional_param('mark', '', PARAM_ALPHA);       // Used for tracking re
 $postid = optional_param('postid', 0, PARAM_INT);        // Used for tracking read posts if user initiated.
 $pin    = optional_param('pin', -1, PARAM_INT);          // If set, pin or unpin this discussion.
 
-$url = new moodle_url('/blocks/edusupport/issue.php', array('discussion'=>$discussionid));
+$edit   = optional_param('edit', 0, PARAM_INT);
+$delete   = optional_param('delete', 0, PARAM_INT);
+
+$url = new moodle_url('/blocks/edusupport/issue.php', array('discussion'=>$discussionid, 'replyto' => $replyto, 'delete' => $delete));
 if ($parent !== 0) {
     $url->param('parent', $parent);
 }
@@ -49,7 +52,7 @@ $PAGE->set_context($context);
 require_login();
 
 $issue = \block_edusupport\lib::get_issue($discussionid);
-$discussion = $DB->get_record('forum_discussions', array('id' => $discussionid));
+$discussion = $DB->get_record('forum_discussions', array('id' => $discussionid), '*', MUST_EXIST);
 $PAGE->set_title($discussion->name);
 $PAGE->set_heading($discussion->name);
 
@@ -62,8 +65,6 @@ if (!\block_edusupport\lib::is_supportteam()) {
         'url' => $tocmurl->__toString(),
     ));
 } else {
-    \block_edusupport\lib::expose_properties();
-    $discussion = $DB->get_record('forum_discussions', array('id' => $discussionid), '*', MUST_EXIST);
     $course = $DB->get_record('course', array('id' => $discussion->course), '*', MUST_EXIST);
     $forum = $DB->get_record('forum', array('id' => $discussion->forum), '*', MUST_EXIST);
     $cm = get_coursemodule_from_instance('forum', $forum->id, $course->id, false, MUST_EXIST);
@@ -71,21 +72,19 @@ if (!\block_edusupport\lib::is_supportteam()) {
     $coursecontext = \context_course::instance($forum->course);
     $modcontext = \context_module::instance($cm->id);
 
-
     $PAGE->set_title("$course->shortname: ".format_string($discussion->name));
     $PAGE->set_heading($course->fullname);
 
     echo $OUTPUT->header();
 
-    //\block_edusupport\lib::assign_role($coursecontext, true);
     $options = array();
 
     if (!empty($issue->currentsupporter)) {
-        $supporter = $DB->get_record('block_edusupport_supporters', array('id' => $issue->currentsupporter));
+        $supporter = $DB->get_record('block_edusupport_supporters', array('userid' => $issue->currentsupporter));
         $user = $DB->get_record('user', array('id' => $supporter->userid));
 
         $options[] = array(
-            "title" => \fullname($user) . ' (' . $supporter->supportlevel . ')',
+            "title" => \fullname($user) . ' (' . ($supporter->supportlevel | '2nd Level') . ')',
             "class" => '',
             //"icon" => 'i/checkpermissions',
             "href" => $CFG->wwwroot . '/user/profile.php?id' . $supporter->id,
@@ -133,6 +132,31 @@ if (!\block_edusupport\lib::is_supportteam()) {
     //$cm = $forum->get_course_module_record();
     $cm =  get_coursemodule_from_instance('forum', $forum->id, 0, false, MUST_EXIST);
 
+
+    if (!empty($delete)) {
+        $deletepost = $DB->get_record('forum_posts', array('id' => $delete));
+        if (!empty($deletepost->id) && $deletepost->userid == $USER->id) {
+            $vaultfactory = mod_forum\local\container::get_vault_factory();
+            $postvault = $vaultfactory->get_post_vault();
+            $postentity = $postvault->get_from_id($delete);
+            $managerfactory = mod_forum\local\container::get_manager_factory();
+            $legacydatamapperfactory = mod_forum\local\container::get_legacy_data_mapper_factory();
+            $forumdatamapper = $legacydatamapperfactory->get_forum_data_mapper();
+            $postdatamapper = $legacydatamapperfactory->get_post_data_mapper();
+            forum_delete_post(
+                $postdatamapper->to_legacy_object($postentity),
+                true, // capability
+                $vforum->get_course_record(),
+                $vforum->get_course_module_record(),
+                $forumdatamapper->to_legacy_object($vforum)
+            );
+            echo $OUTPUT->render_from_template('block_edusupport/alert', array(
+                'content' => get_string('deletedpost', 'mod_forum'),
+                'type' => 'success'
+            ));
+        }
+    }
+
     $mode   = optional_param('mode', 0, PARAM_INT);          // If set, changes the layout of the thread
     $saveddisplaymode = get_user_preferences('forum_displaymode', $CFG->forum_displaymode);
 
@@ -167,37 +191,9 @@ if (!\block_edusupport\lib::is_supportteam()) {
 
     $postvault = $vaultfactory->get_post_vault();
     if (!$vpost = $postvault->get_from_id($parent)) {
-        print_error("notexists", 'forum', "$CFG->wwwroot/mod/forum/view.php?f={$forum->get_id()}");
+        print_error("notexists", 'forum', "$CFG->wwwroot/mod/forum/view.php?f={$vforum->get_id()}");
     }
     $post = $DB->get_record('forum_posts', array('id' => $parent->id));
-
-    $forumnode = $PAGE->navigation->find($cm->id, navigation_node::TYPE_ACTIVITY);
-    if (empty($forumnode)) {
-        $forumnode = $PAGE->navbar;
-    } else {
-        $forumnode->make_active();
-    }
-    $node = $forumnode->add(format_string($vdiscussion->get_name()), $discussionviewurl);
-    $node->display = false;
-    if ($node && $vpost->get_id() != $vdiscussion->get_first_post_id()) {
-        $node->add(format_string($vpost->get_subject()), $PAGE->url);
-    }
-
-    $isnestedv2displaymode = $displaymode == FORUM_MODE_NESTED_V2;
-
-    if ($isnestedv2displaymode) {
-        $PAGE->add_body_class('nested-v2-display-mode reset-style');
-        $settingstrigger = $OUTPUT->render_from_template('mod_forum/settings_drawer_trigger', null);
-        $PAGE->add_header_action($settingstrigger);
-    } else {
-        require_once($CFG->dirroot . '/mod/forum/lib.php');
-        $PAGE->set_button(forum_search_form($course));
-    }
-
-    if (!$isnestedv2displaymode) {
-        //echo $OUTPUT->heading(format_string($forum->get_name()), 2);
-        //echo $OUTPUT->heading(format_string($discussion->get_name()), 3, 'discussionname');
-    }
 
     $rendererfactory = \mod_forum\local\container::get_renderer_factory();
     $discussionrenderer = $rendererfactory->get_discussion_renderer($vforum, $vdiscussion, $displaymode);
@@ -207,37 +203,19 @@ if (!\block_edusupport\lib::is_supportteam()) {
         return $vpost->get_id();
     }, array_merge([$vpost], array_values($replies)));
 
+    echo $discussionrenderer->render($USER, $vpost, $replies);
 
-/*
-    foreach($replies AS $_reply) {
-        var_dump($_reply);
-        $exposed = \block_edusupport\lib::expose_properties($_reply);
-        //print_r($exposed);
-        die();
-        //$serialized = serialize($_reply);
-        //$serialized = str_replace("mod_forum\\local\\entities\\", "", $serialized);
-        //echo $serialized;
-        die(serialize((array) $_reply));
-        die(unserialize(serialize((array) $_reply)));
-        $_reply = unserialize(serialize($_reply));
-        var_dump($_reply);
-        $replies = array($reply);
-    }
-    print_r($replies);
-*/
+    $PAGE->requires->js_call_amd("block_edusupport/main", "injectReplyButtons", array());
 
-
-    echo $OUTPUT->render_from_template('mod_forum/forum_discussion_threaded_posts', array('posts' =>$replies));
-
-    //echo $discussionrenderer->render($USER, $vpost, $replies);
-
-
+    // Now catch the output from the renderer and modify some parts.
     $out = ob_get_contents();
     ob_end_clean();
 
-    // \block_edusupport\lib::assign_role($coursecontext, false);
     $out = str_replace($CFG->wwwroot . '/mod/forum/discuss.php', $CFG->wwwroot . '/blocks/edusupport/issue.php', $out);
     $out = str_replace($CFG->wwwroot . '/mod/forum/post.php?reply=', $CFG->wwwroot . '/blocks/edusupport/issue.php?discussion=' . $discussionid . '&parent=', $out);
+    $out = str_replace($CFG->wwwroot . '/mod/forum/post.php?edit=', $CFG->wwwroot . '/blocks/edusupport/editpost.php?discussion=' . $discussionid . '&edit=', $out);
+    $out = str_replace($CFG->wwwroot . '/mod/forum/post.php?delete=', $CFG->wwwroot . '/blocks/edusupport/issue.php?discussion=' . $discussionid . '&delete=', $out);
+
     $starts = array(
         //'<div class="singleselect d-inline-block">',
         //'<div class="discussion-nav clearfix">',
@@ -265,10 +243,10 @@ if (!\block_edusupport\lib::is_supportteam()) {
     }
     echo $out;
 
-    if (!empty($reply)) {
+    if (!empty($replyto)) {
         //require_once($CFG->dirroot . '/mod/forum/classes/post_form.php');
         require_once($CFG->dirroot . '/blocks/edusupport/classes/post_form.php');
-        $mform_post = new \block_edusupport_post_form($CFG->wwwroot . '/blocks/edusupport/issue.php', array(
+        $mform_post = new \block_edusupport_post_form($CFG->wwwroot . '/blocks/edusupport/issue.php?d=' . $discussionid . '&replyto=' . $replyto, array(
             'course' => $course,
             'cm' => $cm,
             'coursecontext' => $coursecontext,
@@ -315,7 +293,7 @@ if (!\block_edusupport\lib::is_supportteam()) {
                 'discussionsubscribe' => $discussionsubscribe,
                 'mailnow'=> 1,
                 'userid'=>$USER->id,
-                'parent'=>$reply,
+                'parent'=>$replyto,
                 'discussion'=>$discussionid,
                 'course'=>$course->id,
                 'forum' => $forum->id,
@@ -347,7 +325,6 @@ if (!\block_edusupport\lib::is_supportteam()) {
             $fromform = trusttext_pre_edit($fromform, 'message', $modcontext);
 
             if ($fromform->discussion) { // Adding a new post to an existing discussion
-
                 // Before we add this we must check that the user will not exceed the blocking threshold.
                 \forum_check_blocking_threshold($thresholdwarning);
 
@@ -389,6 +366,7 @@ if (!\block_edusupport\lib::is_supportteam()) {
                     ($forum->completionreplies || $forum->completionposts)) {
                         $completion->update_state($cm,COMPLETION_COMPLETE);
                     }
+
                     redirect(
                         forum_go_back_to($discussionurl),
                         $message . $subscribemessage,

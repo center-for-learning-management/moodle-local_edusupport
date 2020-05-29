@@ -67,7 +67,7 @@ if (false && !\block_edusupport\lib::is_supporteam()) {
         $sql = "SELECT id,modified FROM {forum_posts} WHERE discussion=? ORDER BY modified DESC LIMIT 0,1";
         $lastpost = $DB->get_record_sql($sql, array($issue->discussionid));
         $issue->lastmodified = $lastpost->modified;
-        $assigned = $DB->get_record('block_edusupport_assignments', array('discussionid' => $issue->discussionid, 'userid' => $USER->id));
+        $assigned = $DB->get_record('block_edusupport_subscr', array('discussionid' => $issue->discussionid, 'userid' => $USER->id));
 
         // Check for any actions.
         if (!empty($assign) && $assign == $issue->discussionid && empty($assigned->id)) {

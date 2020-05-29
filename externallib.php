@@ -347,19 +347,22 @@ class block_edusupport_external extends external_api {
         $reply['supporters'] = array();
 
         $discussion = $DB->get_record('forum_discussions', array('id' => $params['discussionid']));
-        $sql = "SELECT s.*,u.firstname,u.lastname,s.supportlevel
+        $sql = "SELECT s.userid,u.firstname,u.lastname,s.supportlevel
                     FROM {user} u, {block_edusupport_supporters} s
                     WHERE u.id=s.userid
-                        AND s.supportlevel<>''
                         AND (s.courseid=1 OR s.courseid=?)
                     ORDER BY u.lastname ASC,u.firstname ASC";
         $supporters = $DB->get_records_sql($sql, array($discussion->course));
         foreach($supporters AS $supporter) {
+            if (empty($supporter->supportlevel)) $supporter->supportlevel = '2nd Level';
             if (!isset($reply['supporters'][$supporter->supportlevel])) {
                 $reply['supporters'][$supporter->supportlevel] = array();
             }
-            if (empty($issue->currentsupporter) && $supporter->id == $USER->id) $supporter->selected = true;
-            elseif ($issue->currentsupporter == $supporter->id) $supporter->selected = true;
+            if (empty($issue->currentsupporter) && $supporter->userid == $USER->id) {
+                $supporter->selected = true;
+            } elseif ($issue->currentsupporter == $supporter->userid) {
+                $supporter->selected = true;
+            }
             $reply['supporters'][$supporter->supportlevel][] = $supporter;
         }
 
