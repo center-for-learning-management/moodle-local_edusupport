@@ -153,6 +153,7 @@ class lib {
      */
     public static function get_issue($discussionid) {
         global $DB;
+        if (empty($discussionid)) return;
         $issue = $DB->get_record('block_edusupport_issues', array('discussionid' => $discussionid));
         if (empty($issue->id)) {
             $issue = (object) array(
@@ -187,6 +188,22 @@ class lib {
         }
 
         return $forums;
+    }
+
+    /**
+     * Clones an object to reveal private fields.
+     * @param object.
+     * @return object.
+     */
+    public static function expose_properties() {
+        global $CFG;
+        require_once($CFG->dirroot . '/mod/forum/classes/local/entities/post.php');
+        $props = array('id', 'discussionid', 'parentid', 'authorid');
+        foreach ($props AS $prop) {
+            $reflectionProperty = new \ReflectionProperty(\mod_forum\local\entities\post::class, $prop);
+            $reflectionProperty->setAccessible(true);
+        }
+
     }
 
     /**
