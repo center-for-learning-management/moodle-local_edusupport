@@ -205,7 +205,7 @@ if (!\block_edusupport\lib::is_supportteam()) {
 
     echo $discussionrenderer->render($USER, $vpost, $replies);
 
-    $PAGE->requires->js_call_amd("block_edusupport/main", "injectReplyButtons", array());
+    $PAGE->requires->js_call_amd("block_edusupport/main", "injectReplyButtons", array($discussionid));
 
     // Now catch the output from the renderer and modify some parts.
     $out = ob_get_contents();
