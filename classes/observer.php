@@ -63,6 +63,9 @@ class observer {
         $subscribers = $DB->get_records('block_edusupport_subscr', array('discussionid' => $discussion->id));
 
         foreach ($subscribers AS $subscriber) {
+            // We do not want to send to ourselves...
+            if ($subscriber->userid == $author->id) continue;
+
             $touser = $DB->get_record('user', array('id' => $subscriber->userid));
 
             // Send notification
