@@ -27,7 +27,7 @@ defined('MOODLE_INTERNAL') || die;
 
 class observer {
     public static function event($event) {
-        global $CFG, $DB;
+        global $CFG, $DB, $OUTPUT;
 
         //error_log("OBSERVER EVENT: " . print_r($event, 1));
         $entry = (object)$event->get_data();
@@ -40,44 +40,37 @@ class observer {
             $post = $DB->get_record("forum_posts", array("discussion" => $discussion->id, "parent" => 0));
         }
         $forum = $DB->get_record("forum", array("id" => $discussion->forum));
-
+        $course = $DB->get_record("course", array("id" => $forum->course));
         $issue = $DB->get_record('block_edusupport_issues', array('discussionid' => $discussion->id));
         if (empty($issue->id)) return;
+        $author = $DB->get_record('user', array('id' => $post->userid));
+        // enhance post data.
+        $post->wwwroot = $CFG->wwwroot;
+        $post->authorfullname = \fullname($author);
+        $post->authorlink = $CFG->wwwroot . '/user/profile.php?id=' . $author->id;
+        $post->authorpicture = $OUTPUT->user_picture($author, array('size' => 200));
+        $post->postdate = strftime('%d. %B %Y, %H:%m', $post->created);
 
-        $course = \get_course($forum->course);
-        $cm = \$cm = get_coursemodule_from_instance('forum', $forum->id, 0, false, MUST_EXIST);
-        $author = \get_user($post->userid);
+        $post->coursename = $course->fullname;
+        $post->forumname = $forum->name;
+        $post->discussionname = $discussion->name;
+
+        $post->issuelink = $CFG->wwwroot . '/blocks/edusupport/issue.php?d=' . $discussion->id;
+        $post->replylink = $CFG->wwwroot . '/blocks/edusupport/issue.php?d=' . $discussion->id . '&replyto=' . $post->id;
 
         // Get all subscribers
         $fromuser = \core_user::get_support_user();
         $subscribers = $DB->get_records('block_edusupport_subscr', array('discussionid' => $discussion->id));
+
         foreach ($subscribers AS $subscriber) {
-            // Check if this person is not a subscriber of the forum itself.
-            $chkforum = $DB->get_record('forum_subscriptions', array('userid' => $subscriber->userid, 'forumid' => $discussion->forum));
-            $chkdisc = $DB->get_record('forum_discussion_subs', array('userid' => $subscriber->userid, 'discussionid' => $discussion->id));
-            if (empty($chkforum->id) && empty($chkdisc->id)) {
-                $touser = \get_user($subscriber->userid);
+            $touser = $DB->get_record('user', array('id' => $subscriber->userid));
 
-                $data = new \mod_forum\output\forum_post_email(
-                    $course,
-                    $cm,
-                    $forum,
-                    $discussion,
-                    $post,
-                    $author,
-                    $touser,
-                    true
-                );
+            // Send notification
+            $subject = $discussion->name;
+            $mailhtml =  $OUTPUT->render_from_template('block_edusupport/post_mailhtml', $post);
+            $mailtext =  $OUTPUT->render_from_template('block_edusupport/post_mailtext', $post);
 
-                print_r($data);
-
-                // Send notification
-                $subject = $discussion->name;
-                $mailhtml =  $OUTPUT->render_from_template('mod_forum/forum_post_emaildigestfull_htmlemail', array($post));
-                $mailhtml =  $OUTPUT->render_from_template('mod_forum/forum_post_emaildigestfull_textemail', array($post));
-
-                \email_to_user($touser, $author, $subject, $mailtext, $mailhtml, "", true);
-            }
+            \email_to_user($touser, $author, $subject, $mailtext, $mailhtml, "", true);
         }
 
         return true;
