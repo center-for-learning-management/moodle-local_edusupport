@@ -16,16 +16,22 @@
 
 /**
  * @package    block_edusupport
- * @copyright  2018 Digital Education Society (http://www.dibig.at)
- * @copyright  2020 Center for Learningmanagement (www.lernmanagement.at)
+ * @copyright  2020 Center for Learningmanagement (https://www.lernmanagement.at)
  * @author     Robert Schrenk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die;
 
-$plugin->version  = 2020060200;
-$plugin->requires = 2014051200;
-$plugin->component = 'block_edusupport';
-$plugin->release = '1.4 (Build: 2020060200)';
-$plugin->maturity = MATURITY_STABLE;
+$observers = array();
+$events = array(
+    "\\mod_forum\\event\\discussion_created",
+    "\\mod_forum\\event\\post_created",
+);
+foreach ($events AS $event) {
+    $observers[] = array(
+            'eventname' => $event,
+            'callback' => '\block_edusupport\observer::event',
+            'priority' => 9999,
+        );
+}
