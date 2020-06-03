@@ -86,7 +86,9 @@ class issue_create_form extends moodleform {
             }
         }
         $supportuser = \core_user::get_support_user();
-        $options['mail'] = get_string('email_to_xyz', 'block_edusupport', array('email' => $supportuser->email));
+        if (count($potentialtargets) == 0) {
+            $options['mail'] = get_string('email_to_xyz', 'block_edusupport', array('email' => $supportuser->email));
+        }
 
         $hideifs = '["' . implode('","', $hideifs) . '"]';
         $postto2ndlevel_hideshow = 'var hide = (' . $hideifs . '.indexOf($(\'#id_forum_group\').val()) > -1); var pt2 = $(\'#id_postto2ndlevel\'); $(pt2).prop(\'checked\', false); $(pt2).closest(\'div.form-group\').css(\'display\', hide ? \'none\' : \'block\');';
