@@ -40,7 +40,7 @@ function block_edusupport_before_standard_html_head(){
         $coursecontext = \context_course::instance($discussion->course);
         if (has_capability('moodle/course:update', $coursecontext)
                 && \block_edusupport\lib::is_supportforum($discussion->forum)) {
-            $sql = "SELECT id
+            $sql = "SELECT DISTINCT(discussionid)
                         FROM {block_edusupport_subscr}
                         WHERE discussionid=?";
             $chk = $DB->get_record_sql($sql, array($discussion->id));
