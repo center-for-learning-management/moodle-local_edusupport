@@ -352,6 +352,38 @@ class lib {
     }
 
     /**
+     * Add support user to the list of assigned users.
+     * @param int dicussionid
+     * @param int userid
+     */
+    public static function subscription_add($discussionid, $userid = 0) {
+        global $DB, $USER;
+        if (empty($userid)) $userid = $USER->id;
+        if (!self::is_supportteam($userid)) return;
+        $issue = self::get_issue($discussionid);
+        $subscription = $DB->get_record('block_edusupport_subscr', array('discussionid' => $discussionid, 'userid' => $userid));
+        if (empty($subscription->id)) {
+            $subscription = (object) array(
+                'issueid' => $issue->id,
+                'discussionid' => $discussionid,
+                'userid' => $userid,
+            );
+            $subscription->id = $DB->insert_record('block_edusupport_subscr', $subscription);
+        }
+        return $subscription;
+    }
+    /**
+     * Remove support user from the list of assigned users.
+     * @param int dicussionid
+     * @param int userid
+     */
+    public static function subscription_remove($discussionid, $userid = 0) {
+        global $DB, $USER;
+        if (empty($userid)) $userid = $USER->id;
+        $DB->delete_records('block_edusupport_subscr', array('discussionid' => $discussionid, 'userid' => $userid));
+    }
+
+    /**
      * Removes a forum as potential supportforum.
      * @param forumid.
      * @return true.
