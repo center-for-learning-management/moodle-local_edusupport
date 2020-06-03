@@ -58,7 +58,7 @@ $PAGE->set_heading($discussion->name);
 
 if (!\block_edusupport\lib::is_supportteam()) {
     echo $OUTPUT->header();
-    $tocmurl = new moodle_url('/course/view.php', array('id' => $issue->courseid));
+    $tocmurl = new moodle_url('/mod/forum/view.php', array('id' => $discussion->forum));
     echo $OUTPUT->render_from_template('block_edusupport/alert', array(
         'content' => get_string('missing_permission', 'block_edusupport'),
         'type' => 'danger',
@@ -96,14 +96,14 @@ if (!\block_edusupport\lib::is_supportteam()) {
         "class" => 'btn-secondary',
         "icon" => 'i/assignroles',
         "href" => '#',
-        "onclick" => "require(['block_edusupport/main'], function(MAIN){ MAIN.assignSupporter($d); }); return false;",
+        "onclick" => "require(['block_edusupport/main'], function(MAIN){ MAIN.assignSupporter($discussionid); }); return false;",
     );
     $options[] = array(
         "title" => get_string('issue_close', 'block_edusupport'),
         "class" => 'btn-primary',
         "icon" => 't/approve',
         "href" => '#',
-        "onclick" => "require(['block_edusupport/main'], function(MAIN){ MAIN.closeIssue($d); }); return false;",
+        "onclick" => "require(['block_edusupport/main'], function(MAIN){ MAIN.closeIssue($discussionid); }); return false;",
     );
     echo $OUTPUT->render_from_template('block_edusupport/issue_options', array('options' => $options));
 
