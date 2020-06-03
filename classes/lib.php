@@ -28,38 +28,6 @@ defined('MOODLE_INTERNAL') || die;
 require_once($CFG->libdir . '/adminlib.php');
 
 class lib {
-    /**
-     * Add support user to the list of assigned users.
-     * @param int dicussionid
-     * @param int userid
-     */
-    public static function assignment_add($discussionid, $userid = 0) {
-        global $DB, $USER;
-        if (empty($userid)) $userid = $USER->id;
-        if (!self::is_supportteam($userid)) return;
-        $issue = self::get_issue($discussionid);
-        $assignment = $DB->get_record('block_edusupport_subscr', array('discussionid' => $discussionid, 'userid' => $userid));
-        if (empty($assignment->id)) {
-            $assignment = (object) array(
-                'issueid' => $issue->id,
-                'discussionid' => $discussionid,
-                'userid' => $userid,
-            );
-            $assignment->id = $DB->insert_record('block_edusupport_subscr', $assignment);
-        }
-        return $assignment;
-    }
-    /**
-     * Remove support user from the list of assigned users.
-     * @param int dicussionid
-     * @param int userid
-     */
-    public static function assignment_remove($discussionid, $userid = 0) {
-        global $DB, $USER;
-        if (empty($userid)) $userid = $USER->id;
-        $DB->delete_records('block_edusupport_subscr', array('discussionid' => $discussionid, 'userid' => $userid));
-    }
-
     public static function can_config_course($courseid){
         global $USER;
         if (self::can_config_global()) return true;
@@ -145,6 +113,35 @@ class lib {
         $event = \mod_forum\event\post_created::create($eventparams);
         $event->add_record_snapshot('forum_posts', $post);
         $event->trigger();
+    }
+
+    /**
+     * Checks for groupmode in a forum and lists available groups of this user.
+     * @return array of groups.
+    **/
+    public static function get_groups_for_user($forumid) {
+        // Store rating if we are permitted to.
+        global $CFG, $DB, $USER;
+
+        if (empty($USER->id) || isguestuser($USER)) return array();
+
+        // Check if this coursemodule has a groupmode
+        $sql = "SELECT cm.*
+                    FROM {course_modules} cm, {modules} m
+                    WHERE cm.module=m.id
+                        AND m.name='forum'
+                        AND cm.instance=?";
+        $cms = array_values($DB->get_records_sql($sql, array($forumid)));
+        if (empty($cms[0]->groupmode)) return array();
+
+        $sql = "SELECT g.*
+                    FROM {groups} g, {groups_members} gm
+                    WHERE g.id=gm.groupid
+                        AND gm.userid=?
+                        AND g.courseid=?
+                    ORDER BY g.name ASC";
+        $groups = array_values($DB->get_records_sql($sql, array($USER->id, $cms[0]->course)));
+        return $groups;
     }
 
     /**
@@ -287,10 +284,12 @@ class lib {
             return false;
         }
 
+        // @TODO Only subscribe 1 person and make it responsible!
         $supporters = $DB->get_records('block_edusupport_supporters', array('supportlevel' => ''));
         foreach ($supporters AS $supporter) {
-            self::assignment_add($issue->discussionid, $supporter->userid);
+            self::subscription_add($issue->discussionid, $supporter->userid);
         }
+
         self::create_post($issue->discussionid,
             get_string('issue_assign_nextlevel:post', 'block_edusupport', array(
                 'fromuserfullname' => \fullname($USER),
@@ -299,7 +298,7 @@ class lib {
             )),
             get_string('issue_assigned:subject', 'block_edusupport')
         );
-        // @TODO We hope that this sends a message to the supportteam, although they are probably not enrolled in the course. If that does not work, we have to send by mail on our own.
+
         return true;
     }
 
@@ -326,9 +325,9 @@ class lib {
             return -3;
         }
 
-        // Set currentsupporter and add to assigned users.
+        // Set currentsupporter and add to subscribed users.
         $DB->set_field('block_edusupport_issues', 'currentsupporter', $userid, array('discussionid' => $discussion->id));
-        self::assignment_add($discussionid, $userid);
+        self::subscription_add($discussionid, $userid);
 
         $supporter = $DB->get_record('block_edusupport_supporters', array('userid' => $userid));
         if (empty($supporter->supportlevel)) $supporter->supportlevel = '2nd Level Support';

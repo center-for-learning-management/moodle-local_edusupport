@@ -71,15 +71,15 @@ if (false && !\block_edusupport\lib::is_supporteam()) {
 
         // Check for any actions.
         if (!empty($assign) && $assign == $issue->discussionid && empty($assigned->id)) {
-            $assigned = \block_edusupport\lib::assignment_add($issue->discussionid);
+            $assigned = \block_edusupport\lib::subscription_add($issue->discussionid);
         }
         if (!empty($unassign) && $unassign == $issue->discussionid) {
-            \block_edusupport\lib::assignment_remove($issue->discussionid);
+            \block_edusupport\lib::subscription_remove($issue->discussionid);
             unset($assigned);
         }
         if (!empty($take) && $take == $issue->discussionid) {
             \block_edusupport\lib::set_current_supporter($issue->discussionid, $USER->id);
-            $assigned = \block_edusupport\lib::assignment_add($issue->discussionid);
+            $assigned = \block_edusupport\lib::subscription_add($issue->discussionid);
             $issue->currentsupporter = $USER->id;
         }
 
