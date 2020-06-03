@@ -457,11 +457,9 @@ class lib {
         $ctxmod = \context_module::instance($cm->id);
         $ctxcourse = \context_course::instance($forum->course);
 
-        // Capabilities that should be PREVENTED for supportforums
-        // @TODO prevent course move and change visibility!!!
-        $capabilities = array('moodle/course:activityvisibility', 'moodle/course:manageactivities', 'moodle/course:delete');
+        $capabilities = array('moodle/course:activityvisibility', 'moodle/course:changecategory', 'moodle/course:manageactivities', 'moodle/course:delete', 'moodle/course:visibility');
         $roles = array(7,7,7);
-        $contexts = array($ctxmod, $ctxmod, $ctxcourse);
+        $contexts = array($ctxmod, $ctxcourse, $ctxmod, $ctxcourse, $ctxcourse);
         $permission = ($trigger) ? CAP_PROHIBIT : CAP_INHERIT;
         for ($a = 0; $a < count($capabilities); $a++) {
             \role_change_permission($roles[$a], $contexts[$a], $capabilities[$a], $permission);
