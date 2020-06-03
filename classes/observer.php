@@ -48,7 +48,7 @@ class observer {
         $post->wwwroot = $CFG->wwwroot;
         $post->authorfullname = \fullname($author);
         $post->authorlink = $CFG->wwwroot . '/user/profile.php?id=' . $author->id;
-        $post->authorpicture = $OUTPUT->user_picture($author, array('size' => 200));
+        $post->authorpicture = $OUTPUT->user_picture($author, array('size' => 40));
         $post->postdate = strftime('%d. %B %Y, %H:%m', $post->created);
 
         $post->coursename = $course->fullname;
