@@ -7,6 +7,7 @@
     <TABLE NAME="block_edusupport" COMMENT="Default comment for block_edusupport, please edit me">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="categoryid" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="courseid" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="forumid" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="Forum-ID for new Issues"/>
         <FIELD NAME="dedicatedsupporter" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="User-ID of the default supporter in 2nd level"/>

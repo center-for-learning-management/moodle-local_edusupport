@@ -34,7 +34,6 @@ defined('MOODLE_INTERNAL') || die;
 function block_edusupport_before_standard_html_head(){
     global $CFG, $DB, $PAGE;
     if (strpos($_SERVER["SCRIPT_FILENAME"], '/mod/forum/discuss.php') > 0) {
-        require_once($CFG->dirroot . '/blocks/edusupport/classes/lib.php');
         $d = optional_param('d', 0, PARAM_INT);
         $discussion = $DB->get_record('forum_discussions', array('id' => $d));
         $coursecontext = \context_course::instance($discussion->course);
@@ -44,8 +43,57 @@ function block_edusupport_before_standard_html_head(){
                         FROM {block_edusupport_subscr}
                         WHERE discussionid=? LIMIT 0,1";
             $chk = $DB->get_record_sql($sql, array($discussion->id));
-            
+
             $PAGE->requires->js_call_amd('block_edusupport/main', 'injectForwardButton', array($d, !empty($chk->id)));
+        }
+    }
+    if (strpos($_SERVER["SCRIPT_FILENAME"], '/course/management.php') > 0) {
+        // The user could potentially move a supportforum-course,
+        // or delete a course category, that contains a supportforum-course.
+        // In that case we will move the supportforum-course to a safe location.
+        $categoryid = optional_param('categoryid', 0, PARAM_INT);
+        $action = optional_param('action', '', PARAM_ALPHANUM);
+        if ($action == 'deletecategory') {
+            // Check if there are any supportforums below this context.
+            $coursecatcontext = \context_coursecat::instance($categoryid);
+            $sql = "SELECT *
+                        FROM {context}
+                        WHERE contextlevel=?
+                            AND (
+                                path LIKE ?
+                                OR path LIKE ?
+                            )";
+            $subcategories = $DB->get_records_sql($sql, array(CONTEXT_COURSECAT, $coursecatcontext->path, $coursecatcontext->path . '/%'));
+            foreach ($subcategories AS $subcategory) {
+                $chkforforum = $DB->get_record('block_edusupport', array('categoryid' => $subcategory->instanceid));
+                if (!empty($chkforforum->id)) {
+                    redirect(new \moodle_url('/blocks/edusupport/error.php', array('error' => 'coursecategorydeletion', 'categoryid' => $categoryid)));
+                }
+            }
+        }
+
+        // Check if the coursecategory exists and is visible.
+        $coursecat = \core_course_category::get($categoryid, MUST_EXIST, true);
+        if (empty($coursecat->__get('visible'))) {
+            $courecat->update(array('visible' => 1));
+        }
+
+        // Check for any supportforum-courses that are should be contained by this coursecat.
+        $supportforums = $DB->get_records('block_edusupport', array('categoryid' => $categoryid));
+        foreach ($supportforums AS $supportforum) {
+            // Check if the course is in place and the category
+            $course = $DB->get_record('course', array('id' => $supportforum->id));
+            if (!empty($course->id) && $course->category != $categoryid) {
+                // Update our database
+                $DB->set_field('block_edusupport', 'categoryid', $categoryid, array('courseid' => $course->id));
+                /*
+                // Move that course to its correct location!
+                $course->category = $categoryid;
+                \update_course($course);
+                // We moved a course, show an alert in a modal.
+                $PAGE->requires->js_call_amd('block_edusupport/main', 'supportCourseMovedAlert', array(get_string('error'), get_string('coursecategoryrestored', 'block_edusupport')));
+                */
+            }
         }
     }
 }

@@ -352,6 +352,16 @@ define(
                 }]);
             }
         },
+        supportCourseMovedAlert: function(title, msg) {
+            ModalFactory.create({
+                title: title,
+                type: ModalFactory.types.OK,
+                body: msg,
+                //footer: 'footer',
+            }).done(function(modal) {
+                modal.show();
+            });
+        },
         triggerSpinner: function(steps) {
             MAIN = this;
             MAIN.triggerSteps += steps;

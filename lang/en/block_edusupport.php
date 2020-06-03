@@ -34,6 +34,7 @@ $string['changes_saved_successfully'] = 'Changes saved successfully.';
 $string['changes_saved_fail'] = 'Changes could not be saved.';
 $string['contactphone'] = 'Telephone';
 $string['contactphone_missing'] = 'Please enter your telephone number';
+$string['coursecategorydeletion'] = 'You are trying to remove a category, that contains supportforums. Please ensure, that you disable the support forums first!';
 $string['courseconfig'] = 'Course config';
 $string['create_issue'] = 'Create issue';
 $string['create_issue_error_title'] = 'Error';

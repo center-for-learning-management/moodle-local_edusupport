@@ -427,7 +427,9 @@ class lib {
 
         $supportforum = $DB->get_record('block_edusupport', array('forumid' => $forumid));
         if (empty($supportforum->id)) {
+            $course = $DB->get_record('course', array('id' => $forum->course));
             $supportforum = (object) array(
+                'categoryid' => $course->category,
                 'courseid' => $forum->course,
                 'forumid' => $forum->id,
                 'archiveid' => 0,

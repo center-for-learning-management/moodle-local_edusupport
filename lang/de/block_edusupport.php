@@ -35,6 +35,7 @@ $string['changes_saved_successfully'] = 'Änderungen erfolgreich gespeichert.';
 $string['changes_saved_fail'] = 'Änderungen konnten nicht gespeichert werden.';
 $string['contactphone'] = 'Telefon';
 $string['contactphone_missing'] = 'Bitte geben Sie Ihre Telefonnummer für Rückfragen an!';
+$string['coursecategorydeletion'] = 'Sie versuchen einen Kursbereich zu löschen, der Supportforen enthält. Bitte stellen Sie sicher, dass Sie zuvor die Supportforen deaktivieren!';
 $string['courseconfig'] = 'Kurskonfiguration';
 $string['create_issue'] = 'Problem melden';
 $string['create_issue_error_title'] = 'Fehler';

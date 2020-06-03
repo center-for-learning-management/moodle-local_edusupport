@@ -174,6 +174,14 @@ function xmldb_block_edusupport_upgrade($oldversion) {
         }
         upgrade_block_savepoint(true, 2020051900, 'edusupport');
     }
+    if ($oldversion < 2020060300) {
+        $table = new xmldb_table('block_edusupport');
+        $field = new xmldb_field('categoryid', XMLDB_TYPE_INTEGER, '10', null, null, null, null, 'id');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        upgrade_block_savepoint(true, 2020060300, 'edusupport');
+    }
 
 
     return true;
