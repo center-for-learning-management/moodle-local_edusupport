@@ -479,7 +479,8 @@ class lib {
                 self::supportforum_rolecheck($forum->id);
             }
         } else {
-            $forum = $DB->get_record('forum', array('id' => $forumid), '*', MUST_EXIST);
+            $forum = $DB->get_record('forum', array('id' => $forumid), '*', IGNORE_MISSING);
+            if (empty($forum->id)) return;
             $issupportforum = self::is_supportforum($forumid);
 
             $cm = \get_coursemodule_from_instance('forum', $forumid, $forum->course, false, MUST_EXIST);
