@@ -51,14 +51,15 @@ $context = \context_system::instance();
 $PAGE->set_context($context);
 require_login();
 
-$issue = \block_edusupport\lib::get_issue($discussionid);
+$issue = \block_edusupport\lib::get_issue($discussionid, false);
 $discussion = $DB->get_record('forum_discussions', array('id' => $discussionid), '*', MUST_EXIST);
 $PAGE->set_title($discussion->name);
 $PAGE->set_heading($discussion->name);
 
-if (!\block_edusupport\lib::is_supportteam()) {
+if (empty($issue->id) || !\block_edusupport\lib::is_supportteam()) {
     echo $OUTPUT->header();
-    $tocmurl = new moodle_url('/mod/forum/view.php', array('id' => $discussion->forum));
+    $cm = \get_coursemodule_from_instance('forum', $discussion->forum);
+    $tocmurl = new moodle_url('/mod/forum/view.php', array('id' => $cm->id));
     echo $OUTPUT->render_from_template('block_edusupport/alert', array(
         'content' => get_string('missing_permission', 'block_edusupport'),
         'type' => 'danger',

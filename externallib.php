@@ -266,8 +266,6 @@ class block_edusupport_external extends external_api {
                     $settings = new stdClass();
                     $settings->discussionsubscribe = $options['discussionsubscribe'];
                     forum_post_subscription($settings, $forum, $discussion);
-                    // Create the issue itself.
-                    \block_edusupport\lib::get_issue($discussion->id);
 
                     if ($canpostto2ndlevel && !empty($postto2ndlevel)) {
                         \block_edusupport\lib::set_2nd_level($discussion->id);

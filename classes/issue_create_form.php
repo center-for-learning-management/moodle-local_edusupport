@@ -70,6 +70,7 @@ class issue_create_form extends moodleform {
         $hideifs = array('mail');
         // If there are not potentialtargets we don't care. We will send a mail to the Moodle default support contact.
         $options = array();
+
         foreach ($potentialtargets AS $pt) {
             if (empty($pt->potentialgroups) || count($pt->potentialgroups) == 0) {
                 $options[$pt->id . '_0'] = $pt->name;

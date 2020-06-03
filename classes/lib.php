@@ -123,36 +123,44 @@ class lib {
         // Store rating if we are permitted to.
         global $CFG, $DB, $USER;
 
-        if (empty($USER->id) || isguestuser($USER)) return array();
+        if (empty($USER->id) || isguestuser($USER)) return;
 
-        // Check if this coursemodule has a groupmode
-        $sql = "SELECT cm.*
-                    FROM {course_modules} cm, {modules} m
-                    WHERE cm.module=m.id
-                        AND m.name='forum'
-                        AND cm.instance=?";
-        $cms = array_values($DB->get_records_sql($sql, array($forumid)));
-        if (empty($cms[0]->groupmode)) return array();
+        $forum = $DB->get_record('forum', array('id' => $forumid));
+        $course = $DB->get_record('course', array('id' => $forum->course));
 
-        $sql = "SELECT g.*
-                    FROM {groups} g, {groups_members} gm
-                    WHERE g.id=gm.groupid
-                        AND gm.userid=?
-                        AND g.courseid=?
-                    ORDER BY g.name ASC";
-        $groups = array_values($DB->get_records_sql($sql, array($USER->id, $cms[0]->course)));
+        $cm = \get_coursemodule_from_instance('forum', $forumid);
+        $groupmode = \groups_get_activity_groupmode($cm);
+        // If we do not use groups in this forum, return without groups.
+        if (empty($groupmode)) return;
+
+        // We do not use the function groups_get_user_groups, as it does not
+        // return groups that don't have members!!
+        // $_groups = \groups_get_user_groups($course->id);
+        $_groups = $DB->get_records('groups', array('courseid' => $course->id));
+        if (count($_groups) == 0) return;
+
+        require_once($CFG->dirroot . '/mod/forum/lib.php');
+
+        $groups = array();
+        foreach ($_groups AS $k => $group) {
+            if (\forum_user_can_post_discussion($forum, $group)) {
+                $groups[$k] = $group;
+            }
+        }
+
         return $groups;
     }
 
     /**
      * Get the issue for this discussionid.
      * @param discussionid.
+     * @param createifnotexist (optional).
      */
-    public static function get_issue($discussionid) {
+    public static function get_issue($discussionid, $createifnotexist = false) {
         global $DB;
         if (empty($discussionid)) return;
         $issue = $DB->get_record('block_edusupport_issues', array('discussionid' => $discussionid));
-        if (empty($issue->id)) {
+        if (empty($issue->id) && !empty($createifnotexist)) {
             $issue = (object) array(
                 'discussionid' => $discussionid,
                 'currentsupporter' => 0,
@@ -177,9 +185,12 @@ class lib {
                     WHERE f.course IN ($courseids)
                         AND be.forumid=f.id
                     ORDER BY f.name ASC";
-        $forums = array_values($DB->get_records_sql($sql, array()));
+        $forums = $DB->get_records_sql($sql, array());
+        $delimiter = ' > ';
         foreach ($forums AS &$forum) {
+            $course = $DB->get_record('course', array('id' => $forum->course), 'id,fullname');
             $coursecontext = \context_course::instance($forum->course);
+            $forum->name = $course->fullname . $delimiter . $forum->name;
             $forum->postto2ndlevel = has_capability('moodle/course:update', $coursecontext);
             $forum->potentialgroups = self::get_groups_for_user($forum->id);
         }
@@ -279,16 +290,23 @@ class lib {
         global $CFG, $DB, $USER;
 
         $discussion = $DB->get_record('forum_discussions', array('id' => $discussionid));
-        $issue = self::get_issue($discussionid);
+        $issue = self::get_issue($discussionid, true);
         if (!self::is_supportforum($discussion->forum)) {
             return false;
         }
 
         // @TODO Only subscribe 1 person and make it responsible!
-        $supporters = $DB->get_records('block_edusupport_supporters', array('supportlevel' => ''));
-        foreach ($supporters AS $supporter) {
-            self::subscription_add($issue->discussionid, $supporter->userid);
+        $supportforum = $DB->get_record('block_edusupport', array('forumid' => $discussion->forum));
+        $supporters = $DB->get_records('block_edusupport_supporters', array('supportlevel' => ''), 'userid');
+        if (!empty($supportforum->dedicatedsupporter) && !empty($supporters[$supportforum->dedicatedsupporter]->id)) {
+            $dedicated = $supporters[$supportforum->dedicatedsupporter];
+        } else {
+            // Choose one supporter randomly.
+            $keys = array_keys($supporters);
+            $dedicated = $supporters[$keys[array_rand($keys)]];
         }
+        $DB->set_field('block_edusupport_issues', 'currentsupporter', $dedicated->userid, array('discussionid' => $discussion->id));
+        self::subscription_add($discussionid, $dedicated->userid);
 
         self::create_post($issue->discussionid,
             get_string('issue_assign_nextlevel:post', 'block_edusupport', array(
@@ -440,6 +458,7 @@ class lib {
         $ctxcourse = \context_course::instance($forum->course);
 
         // Capabilities that should be PREVENTED for supportforums
+        // @TODO prevent course move and change visibility!!!
         $capabilities = array('moodle/course:activityvisibility', 'moodle/course:manageactivities', 'moodle/course:delete');
         $roles = array(7,7,7);
         $contexts = array($ctxmod, $ctxmod, $ctxcourse);
