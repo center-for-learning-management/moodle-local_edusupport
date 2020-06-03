@@ -316,15 +316,11 @@ class block_edusupport_external extends external_api {
 
         $PAGE->set_context(context_system::instance());
 
-        if (\block_edusupport\lib::is_supportforum($forumid)) {
-            require_once($CFG->dirroot . '/blocks/edusupport/classes/issue_create_form.php');
-            $params['contactphone'] = $USER->phone1;
-            $form = new \issue_create_form(null, null, 'post', '_self', array('id' => 'block_edusupport_create_form'), true);
-            $form->set_data((object) $params);
-            return $form->render();
-        } else {
-            return print_r($params, 1);
-        }
+        require_once($CFG->dirroot . '/blocks/edusupport/classes/issue_create_form.php');
+        $params['contactphone'] = $USER->phone1;
+        $form = new \issue_create_form(null, null, 'post', '_self', array('id' => 'block_edusupport_create_form'), true);
+        $form->set_data((object) $params);
+        return $form->render();
     }
     /**
      * Return definition.
