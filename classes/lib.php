@@ -458,7 +458,7 @@ class lib {
         $ctxcourse = \context_course::instance($forum->course);
 
         $capabilities = array('moodle/course:activityvisibility', 'moodle/course:changecategory', 'moodle/course:manageactivities', 'moodle/course:delete', 'moodle/course:visibility');
-        $roles = array(7,7,7);
+        $roles = array(7,7,7,7,7);
         $contexts = array($ctxmod, $ctxcourse, $ctxmod, $ctxcourse, $ctxcourse);
         $permission = ($trigger) ? CAP_PROHIBIT : CAP_INHERIT;
         for ($a = 0; $a < count($capabilities); $a++) {
