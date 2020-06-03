@@ -86,13 +86,6 @@ function block_edusupport_before_standard_html_head(){
             if (!empty($course->id) && $course->category != $categoryid) {
                 // Update our database
                 $DB->set_field('block_edusupport', 'categoryid', $categoryid, array('courseid' => $course->id));
-                /*
-                // Move that course to its correct location!
-                $course->category = $categoryid;
-                \update_course($course);
-                // We moved a course, show an alert in a modal.
-                $PAGE->requires->js_call_amd('block_edusupport/main', 'supportCourseMovedAlert', array(get_string('error'), get_string('coursecategoryrestored', 'block_edusupport')));
-                */
             }
         }
     }
