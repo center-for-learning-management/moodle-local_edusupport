@@ -99,6 +99,23 @@ define(
             });
         },
         /**
+         * Inject a help button in the upper right menu.
+         */
+        injectHelpButton: function() {
+            console.log('block_edusupport/main:injectHelpButton()');
+
+            var btn = $('<li class="nav-item">').append(
+                $('<div class="popover-region collapsed">').append(
+                    $('<a href="#" class="nav-link d-inline-block popover-region-toggle position-relative">')
+                        .attr('onclick', 'require(["block_edusupport/main"], function(MAIN){ MAIN.showBox(); }); return false;')
+                        .append(
+                            $('<i class="icon fa fa-medkit fa-fw">')
+                        )
+                )
+            );
+            $(btn).insertBefore($('#page-wrapper>.navbar div.usermenu').closest('li'));
+        },
+        /**
          * Scans the page for all discussion posts and adds a reply-button.
          */
         injectReplyButtons: function(discussion) {
