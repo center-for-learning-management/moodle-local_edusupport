@@ -42,17 +42,23 @@ If a user belongs to the first level support of a certain supportforum, it is po
 
 ## Who is responsible for a ticket?
 
-1. The 1st level support, which means: all trainers in the support course. These users can forward an issue to the 2nd level. On the discussion page they will find a button "Forward this issue to 2nd level support". If a dedicated supporter was set for this forum, this user will be named to be responsible for this ticket. Otherwise a random user from the 2nd level support team will be selected. For transparency reasons a post on behalf of the 1st level support user is automatically added to the discussion.
+1. The 1st level support, which means: all trainers in the support course. These users can forward an issue to the 2nd level. On the discussion page they will find a button "Forward this issue to 2nd level support". If a dedicated supporter was set for this forum, this user will be named to be responsible for this ticket. Otherwise a random user from the 2nd level support team will be selected. For transparency reasons a post on behalf of the 1st level support user is automatically added to the discussion. Anybody from the 1st level support can also revoke the issue from the 2nd level.
 
 ![Forward issue to 2nd level](/doc/issue-forward.png)
 
+2. All support members of 2nd and 3rd level will find a link "Issues" in the left panel. Under that link they have access to an overview page that shows them all issues, that currently belong to the 2nd or 3rd level support. These issues are grouped to "My issues" (I am responsible), "Subscribed" (I am not responsible, but will receive notifications), "Other issues" (I will not receive any notification, but can access and subscribe).
 
-AT THIS STAGE I DECIDED TO RENAME THIS PLUGIN TYPE FROM BLOCK TO LOCAL.
+![Manage issues](/doc/issue-manage.png)
 
+3. Members of the 2nd and 3rd level support can now assign responsibilities. Once the issue is solved, they can mark it as solved on the discussion page.
 
+![Issue discussion page](/doc/issue-discussion.png)
 
+4. When an issue is closed any subscriptions of the support team will be removed. An automated post on behalf of the closing user makes this transparent to the 1st level and end user. No access to the discussion will be possible anymore, unless the 1st level support forwards the issue again.
 
-2. All users of the 2nd and 3rd level support team have access to an overview page that shows them all issues, that belong to the 2nd or 3rd level support.
+This overviewpage allows access to the discussions that represent the issue. All support team members can access only these discussions. On the overview page itself they can subscribe for notifications, if they are not responsible, they can also unsubscribe.
+ They can forward the responsibility to someone else on the discussion page, or can take subscribe / unsubscribe from notifications.
+
 
 1. It splits your support team into the three support levels, and each issue can be forwarded to the next level.
     * 1st level: pedagogic issues or simple technical questions
