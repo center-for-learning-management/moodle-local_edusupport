@@ -22,7 +22,8 @@
 
 defined('MOODLE_INTERNAL') || die;
 if ($ADMIN->fulltree) {
-    $settings->add(new admin_setting_configcheckbox('block_edusupport/sendreminders', get_string('cron:reminder:title', 'block_edusupport'), '', '', PARAM_INT));
+    // @TODO a feature from the future.
+    // $settings->add(new admin_setting_configcheckbox('block_edusupport/sendreminders', get_string('cron:reminder:title', 'block_edusupport'), '', '', PARAM_INT));
 
     $actions = array(
         (object) array('name' => 'supporters', 'href' => 'choosesupporters.php')
