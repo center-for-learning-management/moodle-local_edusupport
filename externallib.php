@@ -129,7 +129,6 @@ class local_edusupport_external extends external_api {
 
             if (!empty($params['image'])) {
                 // Write image to a temporary file
-                error_log('IMAGE IS ' . $params['image']);
                 $x = explode(",", $params['image']);
                 // Get mimetype (e.g. png)
                 $type = str_replace('data:image/', '', $x[0]);
