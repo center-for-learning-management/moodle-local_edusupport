@@ -15,25 +15,25 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 
-<h3>{{#str}} supporters, block_edusupport {{/str}}</h3>
-<p>{{#str}} supporters:description, block_edusupport {{/str}}</p>
+<h3>{{#str}} supporters, local_edusupport {{/str}}</h3>
+<p>{{#str}} supporters:description, local_edusupport {{/str}}</p>
 <ul>
     {{#supporters}}
         <li>
-            <input type="text" id="{{uniqid}}-setsupporter-{{id}}" onkeyup="var inp = this; require(['block_edusupport/courseconfig'], function(COURSE) { COURSE.setSupporter('{{uniqid}}', {{courseid}}, {{id}}, inp.value); });" value="{{supportlevel}}" />&nbsp;
+            <input type="text" id="{{uniqid}}-setsupporter-{{id}}" onkeyup="var inp = this; require(['local_edusupport/courseconfig'], function(COURSE) { COURSE.setSupporter('{{uniqid}}', {{courseid}}, {{id}}, inp.value); });" value="{{supportlevel}}" />&nbsp;
             <label for="{{uniqid}}-setsupporter-{{id}}">{{firstname}} {{lastname}} ({{email}})</label>
         </li>
     {{/supporters}}
 </ul>
 
-<h3>{{#str}} targetforum, block_edusupport {{/str}}</h3>
-<p>{{#str}} targetforum:description, block_edusupport {{/str}}</p>
+<h3>{{#str}} targetforum, local_edusupport {{/str}}</h3>
+<p>{{#str}} targetforum:description, local_edusupport {{/str}}</p>
 <table border="0">
     <thead>
         <tr>
             {{#canconfigglobal}} <th align="center">{{#str}} coresystem {{/str}}<sup>1)</sup></th> {{/canconfigglobal}}
             <th align="center">{{#str}} course {{/str}}</th>
-            <th align="center">{{#str}} archive, block_edusupport {{/str}}</th>
+            <th align="center">{{#str}} archive, local_edusupport {{/str}}</th>
             <th>{{#str}} name {{/str}}</th>
         </tr>
     </thead>
@@ -43,32 +43,32 @@
                 {{#canconfigglobal}}
                     <td align="center">
                         {{#selectedforglobal}}
-                            {{#pix}} /t/approve, core, {{#str}} select_isselected, block_edusupport {{/str}} {{/pix}}
+                            {{#pix}} /t/approve, core, {{#str}} select_isselected, local_edusupport {{/str}} {{/pix}}
                         {{/selectedforglobal}}
                         {{^selectedforglobal}}
-                            <a href="#" class="btn btn-secondary" onclick="require(['block_edusupport/courseconfig'], function(COURSE) { COURSE.setDefault('{{uniqid}}', {{id}}, 1); }); return false;">{{#str}} select {{/str}}</a>
+                            <a href="#" class="btn btn-secondary" onclick="require(['local_edusupport/courseconfig'], function(COURSE) { COURSE.setDefault('{{uniqid}}', {{id}}, 1); }); return false;">{{#str}} select {{/str}}</a>
                         {{/selectedforglobal}}
                     </td>
                 {{/canconfigglobal}}
                 <td align="center">
                     {{#selectedforglobal}}
-                        {{#pix}} /t/delete, core, {{#str}} select_unavailable, block_edusupport {{/str}} {{/pix}}
+                        {{#pix}} /t/delete, core, {{#str}} select_unavailable, local_edusupport {{/str}} {{/pix}}
                     {{/selectedforglobal}}
                     {{^selectedforglobal}}
                         {{#selectedforcourse}}
-                            {{#pix}} /t/approve, core, {{#str}} select_isselected, block_edusupport {{/str}} {{/pix}}
+                            {{#pix}} /t/approve, core, {{#str}} select_isselected, local_edusupport {{/str}} {{/pix}}
                         {{/selectedforcourse}}
                         {{^selectedforcourse}}
-                            <a href="#" class="btn btn-secondary" onclick="require(['block_edusupport/courseconfig'], function(COURSE) { COURSE.setDefault('{{uniqid}}', {{id}}); }); return false;">{{#str}} select {{/str}}</a>
+                            <a href="#" class="btn btn-secondary" onclick="require(['local_edusupport/courseconfig'], function(COURSE) { COURSE.setDefault('{{uniqid}}', {{id}}); }); return false;">{{#str}} select {{/str}}</a>
                         {{/selectedforcourse}}
                     {{/selectedforglobal}}
                 </td>
                 <td align="center">
                     {{#selectedforarchive}}
-                        {{#pix}} /t/approve, core, {{#str}} select_isselected, block_edusupport {{/str}} {{/pix}}
+                        {{#pix}} /t/approve, core, {{#str}} select_isselected, local_edusupport {{/str}} {{/pix}}
                     {{/selectedforarchive}}
                     {{^selectedforarchive}}
-                        <a href="#" class="btn btn-secondary" onclick="require(['block_edusupport/courseconfig'], function(COURSE) { COURSE.setArchive('{{uniqid}}', {{id}}); }); return false;">{{#str}} select {{/str}}</a>
+                        <a href="#" class="btn btn-secondary" onclick="require(['local_edusupport/courseconfig'], function(COURSE) { COURSE.setArchive('{{uniqid}}', {{id}}); }); return false;">{{#str}} select {{/str}}</a>
                     {{/selectedforarchive}}
                 </td>
                 <td>{{name}}</td>
@@ -77,5 +77,5 @@
     </tbody>
 </table>
 {{#canconfigglobal}}
-<p><small><sup>1)</sup>{{#str}} targetforum:core:description, block_edusupport {{/str}}</small></p>
+<p><small><sup>1)</sup>{{#str}} targetforum:core:description, local_edusupport {{/str}}</small></p>
 {{/canconfigglobal}}

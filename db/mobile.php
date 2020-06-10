@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_edusupport
+ * @package    local_edusupport
  * @copyright  2019 Digital Education Society (http://www.dibig.at)
  * @author     Robert Schrenk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -24,12 +24,12 @@
 defined('MOODLE_INTERNAL') || die;
 
 $addons = [
-    'block_edusupport' => [ // Plugin identifier
+    'local_edusupport' => [ // Plugin identifier
         'handlers' => [ // Different places where the plugin will display content.
             'issue_close' => [ // Handler unique name (alphanumeric).
                 'displaydata' => [
                     'icon' => $CFG->wwwroot . '/mod/certificate/pix/icon.gif',
-                    'class' => 'block_edusupport',
+                    'class' => 'local_edusupport',
                     'title' => 'pluginname',
                 ],
                 'init' => 'edusupport_init',
@@ -42,8 +42,8 @@ $addons = [
             ],
         ],
         'lang' => [ // Language strings that are used in all the handlers.
-            ['pluginname', 'block_edusupport'],
-            ['issue_close', 'block_edusupport'],
+            ['pluginname', 'local_edusupport'],
+            ['issue_close', 'local_edusupport'],
         ],
     ],
 ];

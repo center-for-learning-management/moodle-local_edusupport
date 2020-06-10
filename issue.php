@@ -15,14 +15,14 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
-* @package    block_edusupport
+* @package    local_edusupport
 * @copyright  2020 Center for Learningmanagement (www.lernmanagement.at)
 * @author     Robert Schrenk
 * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
 */
 
 require_once('../../config.php');
-//require_once($CFG->dirroot . '/blocks/edusupport/classes/lib.php');
+//require_once($CFG->dirroot . '/local/edusupport/classes/lib.php');
 
 // We fake a forum discussion here.
 // This code is mainly taken from /mod/forum/discuss.php.
@@ -41,7 +41,7 @@ $pin    = optional_param('pin', -1, PARAM_INT);          // If set, pin or unpin
 $edit   = optional_param('edit', 0, PARAM_INT);
 $delete   = optional_param('delete', 0, PARAM_INT);
 
-$url = new moodle_url('/blocks/edusupport/issue.php', array('discussion'=>$discussionid, 'replyto' => $replyto, 'delete' => $delete));
+$url = new moodle_url('/local/edusupport/issue.php', array('discussion'=>$discussionid, 'replyto' => $replyto, 'delete' => $delete));
 if ($parent !== 0) {
     $url->param('parent', $parent);
 }
@@ -51,17 +51,17 @@ $context = \context_system::instance();
 $PAGE->set_context($context);
 require_login();
 
-$issue = \block_edusupport\lib::get_issue($discussionid, false);
+$issue = \local_edusupport\lib::get_issue($discussionid, false);
 $discussion = $DB->get_record('forum_discussions', array('id' => $discussionid), '*', MUST_EXIST);
 $PAGE->set_title($discussion->name);
 $PAGE->set_heading($discussion->name);
 
-if (empty($issue->id) || !\block_edusupport\lib::is_supportteam()) {
+if (empty($issue->id) || !\local_edusupport\lib::is_supportteam()) {
     echo $OUTPUT->header();
     $cm = \get_coursemodule_from_instance('forum', $discussion->forum);
     $tocmurl = new moodle_url('/mod/forum/view.php', array('id' => $cm->id));
-    echo $OUTPUT->render_from_template('block_edusupport/alert', array(
-        'content' => get_string('missing_permission', 'block_edusupport'),
+    echo $OUTPUT->render_from_template('local_edusupport/alert', array(
+        'content' => get_string('missing_permission', 'local_edusupport'),
         'type' => 'danger',
         'url' => $tocmurl->__toString(),
     ));
@@ -81,7 +81,7 @@ if (empty($issue->id) || !\block_edusupport\lib::is_supportteam()) {
     $options = array();
 
     if (!empty($issue->currentsupporter)) {
-        $supporter = $DB->get_record('block_edusupport_supporters', array('userid' => $issue->currentsupporter));
+        $supporter = $DB->get_record('local_edusupport_supporters', array('userid' => $issue->currentsupporter));
         $user = $DB->get_record('user', array('id' => $supporter->userid));
 
         $options[] = array(
@@ -93,20 +93,20 @@ if (empty($issue->id) || !\block_edusupport\lib::is_supportteam()) {
     }
 
     $options[] = array(
-        "title" => get_string('issue_assign', 'block_edusupport'),
+        "title" => get_string('issue_assign', 'local_edusupport'),
         "class" => 'btn-secondary',
         "icon" => 'i/assignroles',
         "href" => '#',
-        "onclick" => "require(['block_edusupport/main'], function(MAIN){ MAIN.assignSupporter($discussionid); }); return false;",
+        "onclick" => "require(['local_edusupport/main'], function(MAIN){ MAIN.assignSupporter($discussionid); }); return false;",
     );
     $options[] = array(
-        "title" => get_string('issue_close', 'block_edusupport'),
+        "title" => get_string('issue_close', 'local_edusupport'),
         "class" => 'btn-primary',
         "icon" => 't/approve',
         "href" => '#',
-        "onclick" => "require(['block_edusupport/main'], function(MAIN){ MAIN.closeIssue($discussionid); }); return false;",
+        "onclick" => "require(['local_edusupport/main'], function(MAIN){ MAIN.closeIssue($discussionid); }); return false;",
     );
-    echo $OUTPUT->render_from_template('block_edusupport/issue_options', array('options' => $options));
+    echo $OUTPUT->render_from_template('local_edusupport/issue_options', array('options' => $options));
 
     // We capture the output, as we need to modify links to attachments!
     ob_start();
@@ -151,7 +151,7 @@ if (empty($issue->id) || !\block_edusupport\lib::is_supportteam()) {
                 $vforum->get_course_module_record(),
                 $forumdatamapper->to_legacy_object($vforum)
             );
-            echo $OUTPUT->render_from_template('block_edusupport/alert', array(
+            echo $OUTPUT->render_from_template('local_edusupport/alert', array(
                 'content' => get_string('deletedpost', 'mod_forum'),
                 'type' => 'success'
             ));
@@ -206,16 +206,16 @@ if (empty($issue->id) || !\block_edusupport\lib::is_supportteam()) {
 
     echo $discussionrenderer->render($USER, $vpost, $replies);
 
-    $PAGE->requires->js_call_amd("block_edusupport/main", "injectReplyButtons", array($discussionid));
+    $PAGE->requires->js_call_amd("local_edusupport/main", "injectReplyButtons", array($discussionid));
 
     // Now catch the output from the renderer and modify some parts.
     $out = ob_get_contents();
     ob_end_clean();
 
-    $out = str_replace($CFG->wwwroot . '/mod/forum/discuss.php', $CFG->wwwroot . '/blocks/edusupport/issue.php', $out);
-    $out = str_replace($CFG->wwwroot . '/mod/forum/post.php?reply=', $CFG->wwwroot . '/blocks/edusupport/issue.php?discussion=' . $discussionid . '&parent=', $out);
-    $out = str_replace($CFG->wwwroot . '/mod/forum/post.php?edit=', $CFG->wwwroot . '/blocks/edusupport/editpost.php?discussion=' . $discussionid . '&edit=', $out);
-    $out = str_replace($CFG->wwwroot . '/mod/forum/post.php?delete=', $CFG->wwwroot . '/blocks/edusupport/issue.php?discussion=' . $discussionid . '&delete=', $out);
+    $out = str_replace($CFG->wwwroot . '/mod/forum/discuss.php', $CFG->wwwroot . '/local/edusupport/issue.php', $out);
+    $out = str_replace($CFG->wwwroot . '/mod/forum/post.php?reply=', $CFG->wwwroot . '/local/edusupport/issue.php?discussion=' . $discussionid . '&parent=', $out);
+    $out = str_replace($CFG->wwwroot . '/mod/forum/post.php?edit=', $CFG->wwwroot . '/local/edusupport/editpost.php?discussion=' . $discussionid . '&edit=', $out);
+    $out = str_replace($CFG->wwwroot . '/mod/forum/post.php?delete=', $CFG->wwwroot . '/local/edusupport/issue.php?discussion=' . $discussionid . '&delete=', $out);
 
     $starts = array(
         //'<div class="singleselect d-inline-block">',
@@ -237,7 +237,7 @@ if (empty($issue->id) || !\block_edusupport\lib::is_supportteam()) {
         }
     }
     $replacements = array(
-        array($CFG->wwwroot . '/pluginfile.php/' . $modcontext->id . '/mod_forum/', $CFG->wwwroot . '/pluginfile.php/' . $modcontext->id . '/block_edusupport/'),
+        array($CFG->wwwroot . '/pluginfile.php/' . $modcontext->id . '/mod_forum/', $CFG->wwwroot . '/pluginfile.php/' . $modcontext->id . '/local_edusupport/'),
     );
     foreach ($replacements AS $replacement) {
         $out = str_replace($replacement[0], $replacement[1], $out);
@@ -246,8 +246,8 @@ if (empty($issue->id) || !\block_edusupport\lib::is_supportteam()) {
 
     if (!empty($replyto)) {
         //require_once($CFG->dirroot . '/mod/forum/classes/post_form.php');
-        require_once($CFG->dirroot . '/blocks/edusupport/classes/post_form.php');
-        $mform_post = new \block_edusupport_post_form($CFG->wwwroot . '/blocks/edusupport/issue.php?d=' . $discussionid . '&replyto=' . $replyto, array(
+        require_once($CFG->dirroot . '/local/edusupport/classes/post_form.php');
+        $mform_post = new \local_edusupport_post_form($CFG->wwwroot . '/local/edusupport/issue.php?d=' . $discussionid . '&replyto=' . $replyto, array(
             'course' => $course,
             'cm' => $cm,
             'coursecontext' => $coursecontext,
@@ -263,7 +263,7 @@ if (empty($issue->id) || !\block_edusupport\lib::is_supportteam()) {
 
         $draftitemid = \file_get_submitted_draft_itemid('attachments');
         //\file_prepare_draft_area($draftitemid, $modcontext->id, 'mod_forum', 'attachment', empty($post->id)?null:$post->id, \mod_forum_post_form::attachment_options($forum));
-        \file_prepare_draft_area($draftitemid, $modcontext->id, 'mod_forum', 'attachment', null, \block_edusupport_post_form::attachment_options($forum));
+        \file_prepare_draft_area($draftitemid, $modcontext->id, 'mod_forum', 'attachment', null, \local_edusupport_post_form::attachment_options($forum));
 
         $formheading = '';
         if (!empty($parent)) {
@@ -279,7 +279,7 @@ if (empty($issue->id) || !\block_edusupport\lib::is_supportteam()) {
 
         $postid = empty($post->id) ? null : $post->id;
         $draftid_editor = file_get_submitted_draft_itemid('message');
-        $currenttext = file_prepare_draft_area($draftid_editor, $modcontext->id, 'mod_forum', 'post', $postid, \block_edusupport_post_form::editor_options($modcontext, $postid), $post->message);
+        $currenttext = file_prepare_draft_area($draftid_editor, $modcontext->id, 'mod_forum', 'post', $postid, \local_edusupport_post_form::editor_options($modcontext, $postid), $post->message);
 
         $mform_post->set_data(
             array(

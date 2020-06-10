@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_edusupport
+ * @package    local_edusupport
  * @copyright  2018 Digital Education Society (http://www.dibig.at)
  * @author     Robert Schrenk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -24,9 +24,9 @@
 defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->libdir . "/externallib.php");
-require_once($CFG->dirroot . '/blocks/edusupport/classes/lib.php');
+require_once($CFG->dirroot . '/local/edusupport/classes/lib.php');
 
-class block_edusupport_external extends external_api {
+class local_edusupport_external extends external_api {
     public static function close_issue_parameters() {
         return new external_function_parameters(array(
             'discussionid' => new external_value(PARAM_INT, 'discussionid')
@@ -35,8 +35,8 @@ class block_edusupport_external extends external_api {
     public static function close_issue($discussionid) {
         global $CFG;
         $params = self::validate_parameters(self::close_issue_parameters(), array('discussionid' => $discussionid));
-        require_once($CFG->dirroot . '/blocks/edusupport/block_edusupport.php');
-        return \block_edusupport\lib::close_issue($params['discussionid']);
+        require_once($CFG->dirroot . '/local/edusupport/local_edusupport.php');
+        return \local_edusupport\lib::close_issue($params['discussionid']);
     }
     public static function close_issue_returns() {
         return new external_value(PARAM_RAW, 'Returns 1 if successful, or error message.');
@@ -56,28 +56,28 @@ class block_edusupport_external extends external_api {
         global $CFG, $DB, $USER;
         $params = self::validate_parameters(self::colorize_parameters(), array('discussionids' => $discussionids));
 
-        require_once($CFG->dirroot . '/blocks/edusupport/block_edusupport.php');
+        require_once($CFG->dirroot . '/local/edusupport/local_edusupport.php');
         $styles = array();
         $forum_check = array();
         foreach($params['discussionids'] AS $discussionid) {
             $discussion = $DB->get_record('forum_discussions', array('id' => $discussionid));
             if (empty($forum_check[$discussion->forum])) {
-                $support = $DB->get_record('block_edusupport', array('courseid' => $discussion->course));
+                $support = $DB->get_record('local_edusupport', array('courseid' => $discussion->course));
                 $forum_check[$discussion->forum] = ($support->forumid == $discussion->forum);
             }
             if (!$forum_check[$discussion->forum]) {
                 // Sorry, this discussion is not from a support forum.
                 continue;
             }
-            $issue = block_edusupport::get_issue($discussionid);
+            $issue = local_edusupport::get_issue($discussionid);
             if (empty($issue->currentsupporter)) {
-                $styles[$discussionid] = block_edusupport::$STYLE_UNASSIGNED;
+                $styles[$discussionid] = local_edusupport::$STYLE_UNASSIGNED;
             } elseif ($issue->currentsupporter == $USER->id) {
-                $styles[$discussionid] = block_edusupport::$STYLE_MINE;
+                $styles[$discussionid] = local_edusupport::$STYLE_MINE;
             } elseif ($issue->opened == 1) {
-                $styles[$discussionid] = block_edusupport::$STYLE_OPENED;
+                $styles[$discussionid] = local_edusupport::$STYLE_OPENED;
             } elseif ($issue->opened == 0) {
-                $styles[$discussionid] = block_edusupport::$STYLE_CLOSED;
+                $styles[$discussionid] = local_edusupport::$STYLE_CLOSED;
             }
         }
         return json_encode(array('styles' => $styles), JSON_NUMERIC_CHECK);
@@ -118,7 +118,7 @@ class block_edusupport_external extends external_api {
         if ($forum_group == 'mail' || empty($forumid)) {
             // fallback and send by mail!
             $subject = $params['subject'];
-            $messagehtml = $OUTPUT->render_from_template("block_edusupport/issue_template", $params);
+            $messagehtml = $OUTPUT->render_from_template("local_edusupport/issue_template", $params);
             $messagetext = html_to_text($messagehtml);
 
             $recipients = array(\core_user::get_support_user());
@@ -144,8 +144,8 @@ class block_edusupport_external extends external_api {
             }
             return -999;
         } else {
-            $potentialtargets = \block_edusupport\lib::get_potentialtargets();
-            if (\block_edusupport\lib::is_supportforum($forumid) && !empty($potentialtargets[$forumid]->id)) {
+            $potentialtargets = \local_edusupport\lib::get_potentialtargets();
+            if (\local_edusupport\lib::is_supportforum($forumid) && !empty($potentialtargets[$forumid]->id)) {
                 $canpostto2ndlevel = $potentialtargets[$forumid]->postto2ndlevel;
                 // Mainly copied from mod/forum/externallib.php > add_discussion()
                 $warnings = array();
@@ -184,7 +184,7 @@ class block_edusupport_external extends external_api {
                 $thresholdwarning = forum_check_throttling($forum, $cm);
                 forum_check_blocking_threshold($thresholdwarning);
 
-                $message = $OUTPUT->render_from_template("block_edusupport/issue_template", $params);
+                $message = $OUTPUT->render_from_template("local_edusupport/issue_template", $params);
 
                 // Create the discussion.
                 $discussion = new stdClass();
@@ -268,7 +268,7 @@ class block_edusupport_external extends external_api {
                     forum_post_subscription($settings, $forum, $discussion);
 
                     if ($canpostto2ndlevel && !empty($postto2ndlevel)) {
-                        \block_edusupport\lib::set_2nd_level($discussion->id);
+                        \local_edusupport\lib::set_2nd_level($discussion->id);
                     }
                     return $discussionid;
                 } else {
@@ -314,9 +314,9 @@ class block_edusupport_external extends external_api {
 
         $PAGE->set_context(context_system::instance());
 
-        require_once($CFG->dirroot . '/blocks/edusupport/classes/issue_create_form.php');
+        require_once($CFG->dirroot . '/local/edusupport/classes/issue_create_form.php');
         $params['contactphone'] = $USER->phone1;
-        $form = new \issue_create_form(null, null, 'post', '_self', array('id' => 'block_edusupport_create_form'), true);
+        $form = new \issue_create_form(null, null, 'post', '_self', array('id' => 'local_edusupport_create_form'), true);
         $form->set_data((object) $params);
         return $form->render();
     }
@@ -342,7 +342,7 @@ class block_edusupport_external extends external_api {
 
         $discussion = $DB->get_record('forum_discussions', array('id' => $params['discussionid']));
         $sql = "SELECT s.userid,u.firstname,u.lastname,s.supportlevel
-                    FROM {user} u, {block_edusupport_supporters} s
+                    FROM {user} u, {local_edusupport_supporters} s
                     WHERE u.id=s.userid
                         AND (s.courseid=1 OR s.courseid=?)
                     ORDER BY u.lastname ASC,u.firstname ASC";
@@ -375,20 +375,20 @@ class block_edusupport_external extends external_api {
         global $CFG, $DB, $PAGE;
 
         $params = self::validate_parameters(self::set_archive_parameters(), array('forumid' => $forumid));
-        require_once($CFG->dirroot . '/blocks/edusupport/block_edusupport.php');
+        require_once($CFG->dirroot . '/local/edusupport/local_edusupport.php');
 
         $forum = $DB->get_record('forum', array('id' => $params['forumid']));
         if (empty($forum->id)) return -1;
 
-        if (block_edusupport::can_config_course($forum->course)){
-            $entry = $DB->get_record('block_edusupport', array('courseid' => $forum->course));
+        if (local_edusupport::can_config_course($forum->course)){
+            $entry = $DB->get_record('local_edusupport', array('courseid' => $forum->course));
             if (!empty($entry->courseid)) {
                 $entry->forumid = !empty($entry->forumid) ? $entry->forumid : 0;
                 $entry->archiveid = $forum->id;
-                $DB->update_record('block_edusupport', $entry);
+                $DB->update_record('local_edusupport', $entry);
             } else {
                 $entry = (object) array('courseid' => $forum->course, 'forumid' => $forum->id, 'archiveid' => 0);
-                $DB->insert_record('block_edusupport', $entry);
+                $DB->insert_record('local_edusupport', $entry);
             }
             return 1;
         }
@@ -409,7 +409,7 @@ class block_edusupport_external extends external_api {
     public static function set_currentsupporter($discussionid, $supporterid) {
         global $CFG, $DB, $USER;
         $params = self::validate_parameters(self::set_currentsupporter_parameters(), array('discussionid' => $discussionid, 'supporterid' => $supporterid));
-        return \block_edusupport\lib::set_current_supporter($params['discussionid'], $params['supporterid']);
+        return \local_edusupport\lib::set_current_supporter($params['discussionid'], $params['supporterid']);
     }
     public static function set_currentsupporter_returns() {
         return new external_value(PARAM_RAW, 'Returns 1 if successful.');
@@ -426,28 +426,28 @@ class block_edusupport_external extends external_api {
         global $CFG, $DB, $PAGE;
 
         $params = self::validate_parameters(self::set_default_parameters(), array('forumid' => $forumid, 'asglobal' => $asglobal));
-        require_once($CFG->dirroot . '/blocks/edusupport/block_edusupport.php');
+        require_once($CFG->dirroot . '/local/edusupport/local_edusupport.php');
 
         $forum = $DB->get_record('forum', array('id' => $params['forumid']));
         if (empty($forum->id)) return -1;
         if ($params['asglobal']) {
-            if (block_edusupport::can_config_global()) {
-                set_config('targetforum', $forum->id, 'block_edusupport');
+            if (local_edusupport::can_config_global()) {
+                set_config('targetforum', $forum->id, 'local_edusupport');
             } else {
                 return -2;
             }
-        } elseif ($forum->id == get_config('block_edusupport', 'targetforum')) {
-            set_config('targetforum', 0, 'block_edusupport');
+        } elseif ($forum->id == get_config('local_edusupport', 'targetforum')) {
+            set_config('targetforum', 0, 'local_edusupport');
         }
 
-        if (block_edusupport::can_config_course($forum->course)){
-            $entry = $DB->get_record('block_edusupport', array('courseid' => $forum->course));
+        if (local_edusupport::can_config_course($forum->course)){
+            $entry = $DB->get_record('local_edusupport', array('courseid' => $forum->course));
             if (!empty($entry->forumid)) {
                 $entry->forumid = $forum->id;
-                $DB->update_record('block_edusupport', $entry);
+                $DB->update_record('local_edusupport', $entry);
             } else {
                 $entry = (object) array('courseid' => $forum->course, 'forumid' => $forum->id);
-                $DB->insert_record('block_edusupport', $entry);
+                $DB->insert_record('local_edusupport', $entry);
             }
             return 1;
         }
@@ -468,17 +468,17 @@ class block_edusupport_external extends external_api {
         global $CFG, $DB, $PAGE;
 
         $params = self::validate_parameters(self::set_supporter_parameters(), array('courseid' => $courseid, 'userid' => $userid, 'supportlevel' => $supportlevel));
-        require_once($CFG->dirroot . '/blocks/edusupport/block_edusupport.php');
-        if (block_edusupport::can_config_course($params['courseid'])){
+        require_once($CFG->dirroot . '/local/edusupport/local_edusupport.php');
+        if (local_edusupport::can_config_course($params['courseid'])){
             if (empty($params['supportlevel'])) {
-                $DB->delete_records('block_edusupport_supporters', array('courseid' => $params['courseid'], 'userid' => $params['userid']));
+                $DB->delete_records('local_edusupport_supporters', array('courseid' => $params['courseid'], 'userid' => $params['userid']));
             } else {
-                $entry = $DB->get_record('block_edusupport_supporters', array('courseid' => $params['courseid'], 'userid' => $params['userid']));
+                $entry = $DB->get_record('local_edusupport_supporters', array('courseid' => $params['courseid'], 'userid' => $params['userid']));
                 if (!empty($entry->supportlevel)) {
                     $entry->supportlevel = $params['supportlevel'];
-                    $DB->update_record('block_edusupport_supporters', $entry);
+                    $DB->update_record('local_edusupport_supporters', $entry);
                 } else {
-                    $DB->insert_record('block_edusupport_supporters', (object) $params);
+                    $DB->insert_record('local_edusupport_supporters', (object) $params);
                 }
             }
             return 1;

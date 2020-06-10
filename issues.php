@@ -15,30 +15,30 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_edusupport
+ * @package    local_edusupport
  * @copyright  2020 Center for Learningmanagement (www.lernmanagement.at)
  * @author     Robert Schrenk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 require_once('../../config.php');
-//require_once($CFG->dirroot . '/blocks/edusupport/classes/lib.php');
+//require_once($CFG->dirroot . '/local/edusupport/classes/lib.php');
 
 $context = \context_system::instance();
 $PAGE->set_context($context);
 require_login();
-$PAGE->set_url(new moodle_url('/blocks/edusupport/issues.php', array()));
+$PAGE->set_url(new moodle_url('/local/edusupport/issues.php', array()));
 
-$title = get_string('issues', 'block_edusupport');
+$title = get_string('issues', 'local_edusupport');
 $PAGE->set_title($title);
 $PAGE->set_heading($title);
 
 echo $OUTPUT->header();
 
-if (false && !\block_edusupport\lib::is_supporteam()) {
+if (false && !\local_edusupport\lib::is_supporteam()) {
     $tocmurl = new moodle_url('/course/view.php', array('id' => $courseid));
-    echo $OUTPUT->render_from_template('block_edusupport/alert', array(
-        'content' => get_string('missing_permission', 'block_edusupport'),
+    echo $OUTPUT->render_from_template('local_edusupport/alert', array(
+        'content' => get_string('missing_permission', 'local_edusupport'),
         'type' => 'danger',
         'url' => $tocmurl->__toString(),
     ));
@@ -47,8 +47,8 @@ if (false && !\block_edusupport\lib::is_supporteam()) {
     $unassign = optional_param('unassign', 0, PARAM_INT); // discussion id we want to unassign from
     $take = optional_param('take', 0, PARAM_INT); // discussion id we want to unassign from
 
-    $sql = "SELECT id,discussionid FROM {block_edusupport_issues}";
-    $issues = $DB->get_records('block_edusupport_issues', array(), 'id,discussionid');
+    $sql = "SELECT id,discussionid FROM {local_edusupport_issues}";
+    $issues = $DB->get_records('local_edusupport_issues', array(), 'id,discussionid');
 
     $params = array(
         'current' => array(), // issues the user is responsible for
@@ -67,19 +67,19 @@ if (false && !\block_edusupport\lib::is_supporteam()) {
         $sql = "SELECT id,modified FROM {forum_posts} WHERE discussion=? ORDER BY modified DESC LIMIT 0,1";
         $lastpost = $DB->get_record_sql($sql, array($issue->discussionid));
         $issue->lastmodified = $lastpost->modified;
-        $assigned = $DB->get_record('block_edusupport_subscr', array('discussionid' => $issue->discussionid, 'userid' => $USER->id));
+        $assigned = $DB->get_record('local_edusupport_subscr', array('discussionid' => $issue->discussionid, 'userid' => $USER->id));
 
         // Check for any actions.
         if (!empty($assign) && $assign == $issue->discussionid && empty($assigned->id)) {
-            $assigned = \block_edusupport\lib::subscription_add($issue->discussionid);
+            $assigned = \local_edusupport\lib::subscription_add($issue->discussionid);
         }
         if (!empty($unassign) && $unassign == $issue->discussionid) {
-            \block_edusupport\lib::subscription_remove($issue->discussionid);
+            \local_edusupport\lib::subscription_remove($issue->discussionid);
             unset($assigned);
         }
         if (!empty($take) && $take == $issue->discussionid) {
-            \block_edusupport\lib::set_current_supporter($issue->discussionid, $USER->id);
-            $assigned = \block_edusupport\lib::subscription_add($issue->discussionid);
+            \local_edusupport\lib::set_current_supporter($issue->discussionid, $USER->id);
+            $assigned = \local_edusupport\lib::subscription_add($issue->discussionid);
             $issue->currentsupporter = $USER->id;
         }
 
@@ -101,7 +101,7 @@ if (false && !\block_edusupport\lib::is_supporteam()) {
             $params['other'][] = $issue;
         }
     }
-    echo $OUTPUT->render_from_template('block_edusupport/issues', $params);
+    echo $OUTPUT->render_from_template('local_edusupport/issues', $params);
 }
 
 echo $OUTPUT->footer();

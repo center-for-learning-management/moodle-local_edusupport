@@ -7,7 +7,7 @@ define(
 
             console.log('setArchive(uniqid, forumid)', uniqid, forumid);
             AJAX.call([{
-                methodname: 'block_edusupport_set_archive',
+                methodname: 'local_edusupport_set_archive',
                 args: { forumid: forumid },
                 done: function(result) {
                     console.log('Result is', result);
@@ -28,7 +28,7 @@ define(
 
             console.log('setDefault(uniqid, forumid, asglobal)', uniqid, forumid, asglobal);
             AJAX.call([{
-                methodname: 'block_edusupport_set_default',
+                methodname: 'local_edusupport_set_default',
                 args: { forumid: forumid, asglobal: asglobal },
                 done: function(result) {
                     console.log('Result is', result);
@@ -48,7 +48,7 @@ define(
 
             console.log('setSupporter(uniqid, courseid,userid,supportlevel)', uniqid, courseid, userid, supportlevel);
             AJAX.call([{
-                methodname: 'block_edusupport_set_supporter',
+                methodname: 'local_edusupport_set_supporter',
                 args: { courseid: courseid, userid: userid, supportlevel: supportlevel },
                 done: function(result) {
                     console.log('Result is', result);

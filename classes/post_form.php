@@ -37,7 +37,7 @@ require_once($CFG->dirroot . '/repository/lib.php');
  * @copyright Jamie Pratt <me@jamiep.org>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class block_edusupport_post_form extends moodleform {
+class local_edusupport_post_form extends moodleform {
 
     /**
      * Returns the options array to use in filemanager for forum attachments

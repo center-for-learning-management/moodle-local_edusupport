@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_edusupport
+ * @package    local_edusupport
  * @copyright  2020 Center for Learning Management (https://www.lernmanagement.at)
  * @author     Robert Schrenk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -23,25 +23,25 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-function xmldb_block_edusupport_install(){
+function xmldb_local_edusupport_install(){
     global $DB;
 
-    $role = $DB->get_record('role', array('shortname' => 'block_edusupport'));
+    $role = $DB->get_record('role', array('shortname' => 'local_edusupport'));
     if (empty($role->id)) {
         $sql = "SELECT MAX(sortorder)+1 AS id FROM {role}";
         $max = $DB->get_record_sql($sql, array());
 
         $role = (object) array(
             'name' => 'eduSupport Team',
-            'shortname' => 'block_edusupport',
-            'description' => 'This role was automatically created by the block_edusupport Plugin',
+            'shortname' => 'local_edusupport',
+            'description' => 'This role was automatically created by the local_edusupport Plugin',
             'sortorder' => $max->id,
             'archetype' => '',
         );
         $role->id = $DB->insert_record('role', $role);
     }
 
-    set_config('supportteamrole', $role->id, 'block_edusupport');
+    set_config('supportteamrole', $role->id, 'local_edusupport');
 
     // Ensure, that this role is assigned in the required context levels.
     $chk = $DB->get_record('role_context_levels', array('roleid' => $role->id, 'contextlevel' => CONTEXT_MODULE));

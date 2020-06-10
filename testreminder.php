@@ -15,28 +15,28 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_edusupport
+ * @package    local_edusupport
  * @copyright  2019 Digital Education Society (http://www.dibig.at)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 require_once('../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
-require_once($CFG->dirroot . '/blocks/edusupport/block_edusupport.php');
+require_once($CFG->dirroot . '/local/edusupport/local_edusupport.php');
 
 $context = context_system::instance();
 // Must pass login
-$PAGE->set_url('/blocks/edusupport/testreminder.php');
+$PAGE->set_url('/local/edusupport/testreminder.php');
 require_login();
 $PAGE->set_context($context);
-$PAGE->set_title(get_string('cron:reminder:title', 'block_edusupport'));
-$PAGE->set_heading(get_string('cron:reminder:title', 'block_edusupport'));
+$PAGE->set_title(get_string('cron:reminder:title', 'local_edusupport'));
+$PAGE->set_heading(get_string('cron:reminder:title', 'local_edusupport'));
 
 echo $OUTPUT->header();
 
-if (block_edusupport::is_admin()) {
-    require_once($CFG->dirroot . '/blocks/edusupport/classes/task/reminder.php');
-    $reminder = new \block_edusupport\task\reminder();
+if (local_edusupport::is_admin()) {
+    require_once($CFG->dirroot . '/local/edusupport/classes/task/reminder.php');
+    $reminder = new \local_edusupport\task\reminder();
     $reminder->execute(true);
 
     echo "Reminders sent";

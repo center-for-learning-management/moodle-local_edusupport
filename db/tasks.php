@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_edusupport
+ * @package    local_edusupport
  * @copyright  2018 Digital Education Society (http://www.dibig.at)
  * @author     Robert Schrenk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -25,7 +25,7 @@ defined('MOODLE_INTERNAL') || die;
 /*
 $tasks = array(
     array(
-        'classname' => 'block_edusupport\task\reminder',
+        'classname' => 'local_edusupport\task\reminder',
         'blocking' => 0,
         'minute' => '0',
         'hour' => '8',

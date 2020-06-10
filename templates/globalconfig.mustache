@@ -17,13 +17,13 @@
 
 NOT USED ANYMORE.
 
-<h3>{{#str}} targetforum, block_edusupport {{/str}}</h3>
-<p>{{#str}} targetforum:description, block_edusupport {{/str}}</p>
+<h3>{{#str}} targetforum, local_edusupport {{/str}}</h3>
+<p>{{#str}} targetforum:description, local_edusupport {{/str}}</p>
 <ul>
     {{#forums}}
         <li>
         {{^selectedforglobal}}
-            <a href="#" class="btn btn-secondary" onclick="require(['block_edusupport/globalconfig'], function(GLOBAL) { GLOBAL.setDefault('{{uniqid}}', {{id}}); });">{{name}}</a>
+            <a href="#" class="btn btn-secondary" onclick="require(['local_edusupport/globalconfig'], function(GLOBAL) { GLOBAL.setDefault('{{uniqid}}', {{id}}); });">{{name}}</a>
         {{/selectedforglobal}}
         {{#selectedforglobal}}
             <a href="#" class="btn btn-primary">{{name}}</a>

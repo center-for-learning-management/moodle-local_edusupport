@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_edusupport
+ * @package    local_edusupport
  * @copyright  2018 Digital Education Society (http://www.dibig.at)
  * @copyright  2020 Center for Learningmanagement (www.lernmanagement.at)
  * @author     Robert Schrenk
@@ -26,6 +26,6 @@ defined('MOODLE_INTERNAL') || die;
 
 $plugin->version  = 2020060300;
 $plugin->requires = 2014051200;
-$plugin->component = 'block_edusupport';
+$plugin->component = 'local_edusupport';
 $plugin->release = '1.4 (Build: 2020060300)';
 $plugin->maturity = MATURITY_STABLE;

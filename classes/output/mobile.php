@@ -17,17 +17,17 @@
 /**
  * Mobile functions for edusupport
  *
- * @package    block_edusupport
+ * @package    local_edusupport
  * @copyright  2019 Zentrum für Lernmanagement (www.lernmanagement.at)
  * @author     Robert Schrenk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace block_edusupport\output;
+namespace local_edusupport\output;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/blocks/edusupport/block_edusupport.php');
+require_once($CFG->dirroot . '/local/edusupport/local_edusupport.php');
 
 /**
  * Ouput components to generate mobile app screens.
@@ -39,10 +39,10 @@ class mobile {
     public static function edusupport_init(array $args) : array {
         global $CFG, $DB; $USER;
         $courseids = array();
-        $allsupportforums = $DB->get_records('block_edusupport', array());
+        $allsupportforums = $DB->get_records('local_edusupport', array());
         foreach ($allsupportforums AS $supportforum) {
             // If we are part of the support team of this forum, add the course.
-            if (!empty(\block_edusupport::get_supporter_level($supportforum->courseid, $USER->id))) {
+            if (!empty(\local_edusupport::get_supporter_level($supportforum->courseid, $USER->id))) {
                 $courseids[] = $supportforum->courseid;
             }
         }

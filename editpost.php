@@ -15,14 +15,14 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
-* @package    block_edusupport
+* @package    local_edusupport
 * @copyright  2020 Center for Learningmanagement (www.lernmanagement.at)
 * @author     Robert Schrenk
 * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
 */
 
 require_once('../../config.php');
-//require_once($CFG->dirroot . '/blocks/edusupport/classes/lib.php');
+//require_once($CFG->dirroot . '/local/edusupport/classes/lib.php');
 
 // We fake a forum discussion here.
 // This code is mainly taken from /mod/forum/discuss.php.
@@ -32,23 +32,23 @@ $discussionid = $discussion | $d;
 
 $edit   = required_param('edit', PARAM_INT);
 
-$url = new moodle_url('/blocks/edusupport/editpost.php', array('discussion'=>$discussionid, 'edit' => $edit));
+$url = new moodle_url('/local/edusupport/editpost.php', array('discussion'=>$discussionid, 'edit' => $edit));
 $PAGE->set_url($url);
 
 $context = \context_system::instance();
 $PAGE->set_context($context);
 require_login();
 
-$issue = \block_edusupport\lib::get_issue($discussionid);
+$issue = \local_edusupport\lib::get_issue($discussionid);
 $discussion = $DB->get_record('forum_discussions', array('id' => $discussionid), '*', MUST_EXIST);
 $PAGE->set_title($discussion->name);
 $PAGE->set_heading($discussion->name);
 
-if (!\block_edusupport\lib::is_supportteam()) {
+if (!\local_edusupport\lib::is_supportteam()) {
     echo $OUTPUT->header();
     $tocmurl = new moodle_url('/course/view.php', array('id' => $issue->courseid));
-    echo $OUTPUT->render_from_template('block_edusupport/alert', array(
-        'content' => get_string('missing_permission', 'block_edusupport'),
+    echo $OUTPUT->render_from_template('local_edusupport/alert', array(
+        'content' => get_string('missing_permission', 'local_edusupport'),
         'type' => 'danger',
         'url' => $tocmurl->__toString(),
     ));
@@ -97,8 +97,8 @@ if (!\block_edusupport\lib::is_supportteam()) {
     $post = $DB->get_record('forum_posts', array('id' => $edit));
 
 
-    require_once($CFG->dirroot . '/blocks/edusupport/classes/post_form.php');
-    $mform_post = new \block_edusupport_post_form($CFG->wwwroot . '/blocks/edusupport/editpost.php?d=' . $discussionid . '&edit=' . $edit, array(
+    require_once($CFG->dirroot . '/local/edusupport/classes/post_form.php');
+    $mform_post = new \local_edusupport_post_form($CFG->wwwroot . '/local/edusupport/editpost.php?d=' . $discussionid . '&edit=' . $edit, array(
         'course' => $course,
         'cm' => $cm,
         'coursecontext' => $coursecontext,
@@ -114,7 +114,7 @@ if (!\block_edusupport\lib::is_supportteam()) {
 
     $draftitemid = \file_get_submitted_draft_itemid('attachments');
     //\file_prepare_draft_area($draftitemid, $modcontext->id, 'mod_forum', 'attachment', empty($post->id)?null:$post->id, \mod_forum_post_form::attachment_options($forum));
-    \file_prepare_draft_area($draftitemid, $modcontext->id, 'mod_forum', 'attachment', null, \block_edusupport_post_form::attachment_options($forum));
+    \file_prepare_draft_area($draftitemid, $modcontext->id, 'mod_forum', 'attachment', null, \local_edusupport_post_form::attachment_options($forum));
 
     $formheading = '';
     if (!empty($parent)) {
@@ -130,7 +130,7 @@ if (!\block_edusupport\lib::is_supportteam()) {
 
     $postid = empty($post->id) ? null : $post->id;
     $draftid_editor = file_get_submitted_draft_itemid('message');
-    $currenttext = file_prepare_draft_area($draftid_editor, $modcontext->id, 'mod_forum', 'post', $postid, \block_edusupport_post_form::editor_options($modcontext, $postid), $post->message);
+    $currenttext = file_prepare_draft_area($draftid_editor, $modcontext->id, 'mod_forum', 'post', $postid, \local_edusupport_post_form::editor_options($modcontext, $postid), $post->message);
 
     $mform_post->set_data(
         array(
@@ -190,7 +190,7 @@ if (!\block_edusupport\lib::is_supportteam()) {
             $message = get_string("editedpostupdated", "forum", fullname($realuser));
         }
 
-        $discussionurl = $CFG->wwwroot . '/blocks/edusupport/issue.php?d=' . $discussionid;
+        $discussionurl = $CFG->wwwroot . '/local/edusupport/issue.php?d=' . $discussionid;
 
         redirect(
             forum_go_back_to($discussionurl),

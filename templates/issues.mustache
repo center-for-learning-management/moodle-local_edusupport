@@ -14,26 +14,26 @@
     You should have received a copy of the GNU General Public License
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
-<div class="block_edusupport issues">
+<div class="local_edusupport issues">
     <table class="generaltable" width="100%">
         <thead>
             <tr>
                 <td width="200">#</td>
-                <td>{{#str}} issue, block_edusupport {{/str}}</td>
+                <td>{{#str}} issue, local_edusupport {{/str}}</td>
                 <td>{{#str}} name {{/str}}</td>
-                <td>{{#str}} assigned, block_edusupport {{/str}}</td>
+                <td>{{#str}} assigned, local_edusupport {{/str}}</td>
                 <td>{{#str}} modified {{/str}}</td>
                 <td>{{#str}} action {{/str}}</td>
             </tr>
         </thead>
         <tbody>
             <tr>
-                <th colspan="6">{{#str}} issues:current, block_edusupport {{/str}}</th>
+                <th colspan="6">{{#str}} issues:current, local_edusupport {{/str}}</th>
             </tr>
             {{#current}}
                 <tr>
                     <td>
-                        <a href="{{wwwroot}}/blocks/edusupport/issue.php?d={{discussionid}}">
+                        <a href="{{wwwroot}}/local/edusupport/issue.php?d={{discussionid}}">
                             {{id}}
                         </a></td>
                     <td>{{name}}</td>
@@ -53,12 +53,12 @@
                 </tr>
             {{/current}}
             <tr>
-                <th colspan="6">{{#str}} issues:assigned, block_edusupport {{/str}}</th>
+                <th colspan="6">{{#str}} issues:assigned, local_edusupport {{/str}}</th>
             </tr>
             {{#assigned}}
                 <tr>
                     <td>
-                        <a href="{{wwwroot}}/blocks/edusupport/issue.php?d={{discussionid}}">
+                        <a href="{{wwwroot}}/local/edusupport/issue.php?d={{discussionid}}">
                             {{id}}
                         </a></td>
                     <td>{{name}}</td>
@@ -74,22 +74,22 @@
                     </td>
                     <td>{{#userdate}} {{lastmodified}}, %F %X {{/userdate}}</td>
                     <td>
-                        <a href="{{wwwroot}}/blocks/edusupport/issues.php?unassign={{discussionid}}">
+                        <a href="{{wwwroot}}/local/edusupport/issues.php?unassign={{discussionid}}">
                             {{#pix}} i/show, core {{/pix}}
                         </a>
-                        <a href="{{wwwroot}}/blocks/edusupport/issues.php?take={{discussionid}}">
+                        <a href="{{wwwroot}}/local/edusupport/issues.php?take={{discussionid}}">
                             {{#pix}} i/enrolusers, core {{/pix}}
                         </a>
                     </td>
                 </tr>
             {{/assigned}}
             <tr>
-                <th colspan="6">{{#str}} issues:other, block_edusupport {{/str}}</th>
+                <th colspan="6">{{#str}} issues:other, local_edusupport {{/str}}</th>
             </tr>
             {{#other}}
                 <tr>
                     <td>
-                        <a href="{{wwwroot}}/blocks/edusupport/issue.php?d={{discussionid}}">
+                        <a href="{{wwwroot}}/local/edusupport/issue.php?d={{discussionid}}">
                             {{id}}
                         </a></td>
                     <td>{{name}}</td>
@@ -105,10 +105,10 @@
                     </td>
                     <td>{{#userdate}} {{lastmodified}}, %F %X {{/userdate}}</td>
                     <td>
-                        <a href="{{wwwroot}}/blocks/edusupport/issues.php?assign={{discussionid}}">
+                        <a href="{{wwwroot}}/local/edusupport/issues.php?assign={{discussionid}}">
                             {{#pix}} i/hide, core {{/pix}}
                         </a>
-                        <a href="{{wwwroot}}/blocks/edusupport/issues.php?take={{discussionid}}">
+                        <a href="{{wwwroot}}/local/edusupport/issues.php?take={{discussionid}}">
                             {{#pix}} i/enrolusers, core {{/pix}}
                         </a>
                     </td>

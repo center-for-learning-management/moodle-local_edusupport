@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_edusupport
+ * @package    local_edusupport
  * @copyright  2018 Digital Education Society (http://www.dibig.at)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
 */
@@ -23,15 +23,15 @@
 defined('MOODLE_INTERNAL') || die;
 if ($ADMIN->fulltree) {
     // @TODO a feature from the future.
-    // $settings->add(new admin_setting_configcheckbox('block_edusupport/sendreminders', get_string('cron:reminder:title', 'block_edusupport'), '', '', PARAM_INT));
+    // $settings->add(new admin_setting_configcheckbox('local_edusupport/sendreminders', get_string('cron:reminder:title', 'local_edusupport'), '', '', PARAM_INT));
 
     $actions = array(
         (object) array('name' => 'supporters', 'href' => 'choosesupporters.php')
     );
     $links = "<div class=\"grid-eq-3\">";
     foreach($actions AS $action) {
-        $links .= '<a class="btn btn-secondary" href="' . $CFG->wwwroot . '/blocks/edusupport/' . $action->href . '">' . get_string($action->name, 'block_edusupport') . '</a>';
+        $links .= '<a class="btn btn-secondary" href="' . $CFG->wwwroot . '/local/edusupport/' . $action->href . '">' . get_string($action->name, 'local_edusupport') . '</a>';
     }
     $links .= "</div>";
-    $settings->add(new admin_setting_heading('block_edusupport_actions', get_string('settings'), $links));
+    $settings->add(new admin_setting_heading('local_edusupport_actions', get_string('settings'), $links));
 }

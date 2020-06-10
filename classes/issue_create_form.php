@@ -50,22 +50,22 @@ class issue_create_form extends moodleform {
         $mform->addElement('hidden', 'image', ''); // base64 encoded image
         $mform->setType('image', PARAM_RAW);
 
-        $mform->addElement('header', 'header', get_string('header', 'block_edusupport', $COURSE->fullname));
+        $mform->addElement('header', 'header', get_string('header', 'local_edusupport', $COURSE->fullname));
 
-        $mform->addElement('text', 'subject', get_string('subject', 'block_edusupport'), array('style' => 'width: 100%;', 'type' => 'tel'));
+        $mform->addElement('text', 'subject', get_string('subject', 'local_edusupport'), array('style' => 'width: 100%;', 'type' => 'tel'));
         $mform->setType('subject', PARAM_TEXT);
-        $mform->addRule('subject', get_string('subject_missing', 'block_edusupport'), 'required', null, 'server');
+        $mform->addRule('subject', get_string('subject_missing', 'local_edusupport'), 'required', null, 'server');
 
-        $mform->addElement('text', 'contactphone', get_string('contactphone', 'block_edusupport'), array('style' => 'width: 100%;'));
+        $mform->addElement('text', 'contactphone', get_string('contactphone', 'local_edusupport'), array('style' => 'width: 100%;'));
         $mform->setType('contactphone', PARAM_TEXT);
-        //$mform->addRule('contactphone', get_string('contactphone_missing', 'block_edusupport'), 'required', null, 'server');
+        //$mform->addRule('contactphone', get_string('contactphone_missing', 'local_edusupport'), 'required', null, 'server');
 
-        $mform->addElement('textarea', 'description', get_string('description', 'block_edusupport'), array('style' => 'width: 100%;', 'rows' => 10));
+        $mform->addElement('textarea', 'description', get_string('description', 'local_edusupport'), array('style' => 'width: 100%;', 'rows' => 10));
         $mform->setType('description', PARAM_RAW);
-        $mform->addRule('description', get_string('description_missing', 'block_edusupport'), 'required', null, 'server');
+        $mform->addRule('description', get_string('description_missing', 'local_edusupport'), 'required', null, 'server');
 
-        require_once($CFG->dirroot . '/blocks/edusupport/classes/lib.php');
-        $potentialtargets = \block_edusupport\lib::get_potentialtargets();
+        require_once($CFG->dirroot . '/local/edusupport/classes/lib.php');
+        $potentialtargets = \local_edusupport\lib::get_potentialtargets();
 
         $hideifs = array('mail');
         // If there are not potentialtargets we don't care. We will send a mail to the Moodle default support contact.
@@ -88,28 +88,28 @@ class issue_create_form extends moodleform {
         }
         $supportuser = \core_user::get_support_user();
         if (count($potentialtargets) == 0) {
-            $options['mail'] = get_string('email_to_xyz', 'block_edusupport', array('email' => $supportuser->email));
+            $options['mail'] = get_string('email_to_xyz', 'local_edusupport', array('email' => $supportuser->email));
         }
 
         $hideifs = '["' . implode('","', $hideifs) . '"]';
         $postto2ndlevel_hideshow = 'var hide = (' . $hideifs . '.indexOf($(\'#id_forum_group\').val()) > -1); var pt2 = $(\'#id_postto2ndlevel\'); $(pt2).prop(\'checked\', false); $(pt2).closest(\'div.form-group\').css(\'display\', hide ? \'none\' : \'block\');';
-        $mform->addElement('select', 'forum_group', get_string('to_group', 'block_edusupport'), $options, array('onchange' => $postto2ndlevel_hideshow));
+        $mform->addElement('select', 'forum_group', get_string('to_group', 'local_edusupport'), $options, array('onchange' => $postto2ndlevel_hideshow));
         $mform->setType('forum_group', PARAM_INT);
 
-        $mform->addElement('checkbox', 'postto2ndlevel', get_string('postto2ndlevel', 'block_edusupport'), get_string('postto2ndlevel:description', 'block_edusupport'));
+        $mform->addElement('checkbox', 'postto2ndlevel', get_string('postto2ndlevel', 'local_edusupport'), get_string('postto2ndlevel:description', 'local_edusupport'));
         $mform->setType('postto2ndlevel', PARAM_BOOL);
         $mform->setDefault('postto2ndlevel', 0);
 
         $html = array(
             '<div id="screenshot_ok" style="display: none;">',
-            get_string('screenshot:generateinfo', 'block_edusupport'),
-            '<br /><a href="#" onclick="var b = this; require([\'block_edusupport/main\'], function(M) { M.generateScreenshot(b); }); return false;" class="btn btn-primary btn-block">',
+            get_string('screenshot:generateinfo', 'local_edusupport'),
+            '<br /><a href="#" onclick="var b = this; require([\'local_edusupport/main\'], function(M) { M.generateScreenshot(b); }); return false;" class="btn btn-primary btn-block">',
             get_string('ok'),
             '</a></div>'
         );
-        $mform->addElement('checkbox', 'postscreenshot', get_string('screenshot', 'block_edusupport'),
-                                get_string('screenshot:description', 'block_edusupport') . implode("\n", $html),
-                                array('onclick' => 'var c = this; require(["block_edusupport/main"], function(M) { M.checkHasScreenshot(c); });')
+        $mform->addElement('checkbox', 'postscreenshot', get_string('screenshot', 'local_edusupport'),
+                                get_string('screenshot:description', 'local_edusupport') . implode("\n", $html),
+                                array('onclick' => 'var c = this; require(["local_edusupport/main"], function(M) { M.checkHasScreenshot(c); });')
                         );
         $mform->setType('postscreenshot', PARAM_BOOL);
         $mform->setDefault('postscreenshot', 0);

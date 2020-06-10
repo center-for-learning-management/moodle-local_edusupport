@@ -15,38 +15,38 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_edusupport
+ * @package    local_edusupport
  * @copyright  2019 Digital Education Society (http://www.dibig.at)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 require_once('../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
-require_once($CFG->dirroot . '/blocks/edusupport/block_edusupport.php');
+require_once($CFG->dirroot . '/local/edusupport/local_edusupport.php');
 
 $id = required_param('id', PARAM_INT); // This is the courseid
 $course = get_course($id);
 $context = context_course::instance($id);
 // Must pass login
-$PAGE->set_url('/blocks/edusupport/courseconfig.php?id=' . $id);
+$PAGE->set_url('/local/edusupport/courseconfig.php?id=' . $id);
 require_login($course->id);
 $PAGE->set_context($context);
-$PAGE->set_title(get_string('courseconfig', 'block_edusupport'));
-$PAGE->set_heading(get_string('courseconfig', 'block_edusupport'));
+$PAGE->set_title(get_string('courseconfig', 'local_edusupport'));
+$PAGE->set_heading(get_string('courseconfig', 'local_edusupport'));
 $PAGE->set_pagelayout('incourse');
 
 echo $OUTPUT->header();
 
 $cms = $DB->get_records_sql('SELECT cm.id,cm.instance,cm.course FROM {course_modules} cm, {modules} m WHERE cm.course=? AND cm.module=m.id AND cm.deletioninprogress=0 AND m.name="forum"', array($COURSE->id));
 $forums = array();
-$targetforum = get_config('block_edusupport', 'targetforum');
+$targetforum = get_config('local_edusupport', 'targetforum');
 foreach($cms AS &$cm) {
     $forum = $DB->get_record('forum', array('id' => $cm->instance));
     if (empty($forum->type) || $forum->type != 'general') continue;
     if ($forum->id == $targetforum) {
         $forum->selectedforglobal = 1;
     } else {
-        $chk = $DB->get_record('block_edusupport', array('courseid' => $COURSE->id));
+        $chk = $DB->get_record('local_edusupport', array('courseid' => $COURSE->id));
         if (!empty($chk->forumid) && $chk->forumid == $forum->id) {
             $forum->selectedforcourse = 1;
         }
@@ -57,20 +57,20 @@ foreach($cms AS &$cm) {
     $forums[] = $forum;
 }
 
-if (block_edusupport::can_config_course($course->id)){
+if (local_edusupport::can_config_course($course->id)){
     // capability moodle/course:viewhiddenactivities applies to editing and non editing teachers, but not to students.
     $enrolled = get_enrolled_users($context, 'moodle/course:viewhiddenactivities');
     $potentialsupporters = array();
     foreach($enrolled AS &$potentialsupporter) {
-        $potentialsupporter->supportlevel = block_edusupport::get_supporter_level($course->id, $potentialsupporter->id);
+        $potentialsupporter->supportlevel = local_edusupport::get_supporter_level($course->id, $potentialsupporter->id);
         $potentialsupporter->courseid = $COURSE->id;
         $potentialsupporters[] = $potentialsupporter;
     }
 
     echo $OUTPUT->render_from_template(
-        'block_edusupport/courseconfig',
+        'local_edusupport/courseconfig',
         (object) array(
-            'canconfigglobal' => block_edusupport::can_config_global(),
+            'canconfigglobal' => local_edusupport::can_config_global(),
             'forums' => $forums,
             'supporters' => $potentialsupporters,
         )

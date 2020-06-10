@@ -15,13 +15,13 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_edusupport
+ * @package    local_edusupport
  * @copyright  2020 Center for Learningmangement (www.lernmanagement.at)
  * @author     Robert Schrenk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace block_edusupport;
+namespace local_edusupport;
 
 defined('MOODLE_INTERNAL') || die;
 
@@ -41,7 +41,7 @@ class observer {
         }
         $forum = $DB->get_record("forum", array("id" => $discussion->forum));
         $course = $DB->get_record("course", array("id" => $forum->course));
-        $issue = $DB->get_record('block_edusupport_issues', array('discussionid' => $discussion->id));
+        $issue = $DB->get_record('local_edusupport_issues', array('discussionid' => $discussion->id));
         if (empty($issue->id)) return;
         $author = $DB->get_record('user', array('id' => $post->userid));
         // enhance post data.
@@ -55,12 +55,12 @@ class observer {
         $post->forumname = $forum->name;
         $post->discussionname = $discussion->name;
 
-        $post->issuelink = $CFG->wwwroot . '/blocks/edusupport/issue.php?d=' . $discussion->id;
-        $post->replylink = $CFG->wwwroot . '/blocks/edusupport/issue.php?d=' . $discussion->id . '&replyto=' . $post->id;
+        $post->issuelink = $CFG->wwwroot . '/local/edusupport/issue.php?d=' . $discussion->id;
+        $post->replylink = $CFG->wwwroot . '/local/edusupport/issue.php?d=' . $discussion->id . '&replyto=' . $post->id;
 
         // Get all subscribers
         $fromuser = \core_user::get_support_user();
-        $subscribers = $DB->get_records('block_edusupport_subscr', array('discussionid' => $discussion->id));
+        $subscribers = $DB->get_records('local_edusupport_subscr', array('discussionid' => $discussion->id));
 
         foreach ($subscribers AS $subscriber) {
             // We do not want to send to ourselves...
@@ -70,8 +70,8 @@ class observer {
 
             // Send notification
             $subject = $discussion->name;
-            $mailhtml =  $OUTPUT->render_from_template('block_edusupport/post_mailhtml', $post);
-            $mailtext =  $OUTPUT->render_from_template('block_edusupport/post_mailtext', $post);
+            $mailhtml =  $OUTPUT->render_from_template('local_edusupport/post_mailhtml', $post);
+            $mailtext =  $OUTPUT->render_from_template('local_edusupport/post_mailtext', $post);
 
             \email_to_user($touser, $author, $subject, $mailtext, $mailhtml, "", true);
         }

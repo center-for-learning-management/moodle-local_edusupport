@@ -9,7 +9,7 @@ define(
 
             console.log('setDefault(uniqid, forumid)', uniqid, forumid);
             AJAX.call([{
-                methodname: 'block_edusupport_set_default',
+                methodname: 'local_edusupport_set_default',
                 args: { forumid: forumid },
                 done: function(result) {
                     console.log('Result is', result);

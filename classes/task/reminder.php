@@ -15,28 +15,28 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_edusupport
+ * @package    local_edusupport
  * @copyright  2018 Digital Education Society (http://www.dibig.at)
  * @author     Robert Schrenk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace block_edusupport\task;
+namespace local_edusupport\task;
 
 defined('MOODLE_INTERNAL') || die;
 
 class reminder extends \core\task\scheduled_task {
     public function get_name() {
         // Shown in admin screens.
-        return get_string('cron:reminder:title', 'block_edusupport');
+        return get_string('cron:reminder:title', 'local_edusupport');
     }
 
     public function execute($debug=false) {
-        if (!get_config('block_edusupport', 'sendreminders')) return;
+        if (!get_config('local_edusupport', 'sendreminders')) return;
         echo "Sending";
         global $DB;
         $sql = "SELECT discussionid,currentsupporter
-                    FROM {block_edusupport_issues}
+                    FROM {local_edusupport_issues}
                     WHERE opened=1
                         AND currentsupporter>0
                     ORDER BY currentsupporter ASC";
@@ -69,7 +69,7 @@ class reminder extends \core\task\scheduled_task {
         global $CFG, $OUTPUT;
         if (!empty($supporter->id) && $supporter->id > 0 && count($reminders) > 0) {
             $subject = $this->get_name();
-            $mailhtml =  $OUTPUT->render_from_template('block_edusupport/reminder_discussions', array('discussions' => $reminders, 'wwwroot' => $CFG->wwwroot));
+            $mailhtml =  $OUTPUT->render_from_template('local_edusupport/reminder_discussions', array('discussions' => $reminders, 'wwwroot' => $CFG->wwwroot));
             $mailtext = html_to_text($mailhtml);
 
             if ($debug) {

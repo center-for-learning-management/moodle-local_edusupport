@@ -14,13 +14,13 @@
     You should have received a copy of the GNU General Public License
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
-<div class="block_edusupport chooseforum">
+<div class="local_edusupport chooseforum">
     <table class="generaltable" width="100%">
         <thead>
             <tr>
-                <td width="250">{{#str}} toggle, block_edusupport {{/str}}</td>
+                <td width="250">{{#str}} toggle, local_edusupport {{/str}}</td>
                 <td>{{#str}} name {{/str}}</td>
-                <td width="150">{{#str}} dedicatedsupporter, block_edusupport {{/str}}</td>
+                <td width="150">{{#str}} dedicatedsupporter, local_edusupport {{/str}}</td>
             </tr>
         </thead>
         <tbody>
@@ -28,15 +28,15 @@
                 <tr>
                     <td>
                         {{^state}}
-                            <a href="{{wwwroot}}/blocks/edusupport/chooseforum.php?courseid={{course}}&forumid={{id}}&state=1"
+                            <a href="{{wwwroot}}/local/edusupport/chooseforum.php?courseid={{course}}&forumid={{id}}&state=1"
                                 class="btn btn-block btn-secondary">
-                                {{#str}} supportforum:enable, block_edusupport {{/str}}
+                                {{#str}} supportforum:enable, local_edusupport {{/str}}
                             </a>
                         {{/state}}
                         {{#state}}
-                        <a href="{{wwwroot}}/blocks/edusupport/chooseforum.php?courseid={{course}}&forumid={{id}}&state=-1"
+                        <a href="{{wwwroot}}/local/edusupport/chooseforum.php?courseid={{course}}&forumid={{id}}&state=-1"
                             class="btn btn-block btn-primary">
-                            {{#str}} supportforum:disable, block_edusupport {{/str}}
+                            {{#str}} supportforum:disable, local_edusupport {{/str}}
                         </a>
                         {{/state}}
                     </td>
@@ -46,7 +46,7 @@
                             -
                         {{/state}}
                         {{#state}}
-                        <select name="setsupporter_{{uniqid}}_{{id}}" onchange="top.location.href='{{wwwroot}}/blocks/edusupport/chooseforum.php?courseid={{course}}&forumid={{id}}&dedicatedsupporter=' + this.value;">
+                        <select name="setsupporter_{{uniqid}}_{{id}}" onchange="top.location.href='{{wwwroot}}/local/edusupport/chooseforum.php?courseid={{course}}&forumid={{id}}&dedicatedsupporter=' + this.value;">
                             <option value="-1">{{#str}} none {{/str}}</option>
                             {{#supporters}}
                             <option value="{{userid}}"{{#selected}} selected="selected" {{/selected}}>

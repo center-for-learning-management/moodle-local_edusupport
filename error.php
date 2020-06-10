@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
-* @package    block_edusupport
+* @package    local_edusupport
 * @copyright  2020 Center for Learningmanagement (www.lernmanagement.at)
 * @author     Robert Schrenk
 * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -36,7 +36,7 @@ switch ($error) {
     case 'coursecategorydeletion':
         $categoryid = required_param('categoryid', PARAM_INT);
         $urlparams['categoryid'] = $categoryid;
-        $errparams['content'] = get_string('coursecategorydeletion', 'block_edusupport');
+        $errparams['content'] = get_string('coursecategorydeletion', 'local_edusupport');
         $errparams['url'] = new \moodle_url('/course/management.php', array('categoryid' => 15));
     break;
 
@@ -44,7 +44,7 @@ switch ($error) {
 
 $context = \context_system::instance();
 $PAGE->set_context($context);
-$PAGE->set_url(new moodle_url('/blocks/edusupport/error.php', $urlparams));
+$PAGE->set_url(new moodle_url('/local/edusupport/error.php', $urlparams));
 
 require_login();
 
@@ -54,6 +54,6 @@ $PAGE->set_heading(get_string('error'));
 
 echo $OUTPUT->header();
 
-echo $OUTPUT->render_from_template('block_edusupport/alert', $errparams);
+echo $OUTPUT->render_from_template('local_edusupport/alert', $errparams);
 
 echo $OUTPUT->footer();

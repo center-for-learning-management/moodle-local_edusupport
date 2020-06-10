@@ -15,7 +15,7 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-   @template block_edusupport/issue_options
+   @template local_edusupport/issue_options
 
    The purpose of this template is to render action buttons for issues.
 
@@ -31,7 +31,7 @@
    Example context (json):
    {
        "options": [
-       "title" => get_string('issue_assign', 'block_edusupport'),
+       "title" => get_string('issue_assign', 'local_edusupport'),
        "class" => '',
        "icon" => '/pix/i/users.svg',
        "href" => '#',
@@ -44,7 +44,7 @@
        ]
    }
  }}
-<div class="block_edusupport issue_options" style="float: right;">
+<div class="local_edusupport issue_options" style="float: right;">
     {{#options}}
         <a href="{{href}}"
             class="btn {{#class}} {{class}} {{/class}}"

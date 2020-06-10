@@ -15,13 +15,13 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block_edusupport
+ * @package    local_edusupport
  * @copyright  2020 Center for Learningmanagement (www.lernmanagement.at)
  * @author     Robert Schrenk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace block_edusupport;
+namespace local_edusupport;
 
 require_once('../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
@@ -37,9 +37,9 @@ $courseid = optional_param('courseid', 1, PARAM_INT);
 $context = \context_system::instance();
 $PAGE->set_context($context);
 require_login();
-$PAGE->set_url(new \moodle_url('/blocks/edusupport/choosesupporters.php', array('id' => $id, 'userid' => $userid, 'supportlevel' => $supportlevel, 'remove' => $remove)));
+$PAGE->set_url(new \moodle_url('/local/edusupport/choosesupporters.php', array('id' => $id, 'userid' => $userid, 'supportlevel' => $supportlevel, 'remove' => $remove)));
 
-$title = get_string('supporters', 'block_edusupport');
+$title = get_string('supporters', 'local_edusupport');
 $PAGE->set_title($title);
 $PAGE->set_heading($title);
 
@@ -47,8 +47,8 @@ echo $OUTPUT->header();
 
 if (!is_siteadmin()) {
     $tourl = new moodle_url('/my', array());
-    echo $OUTPUT->render_from_template('block_edusupport/alert', array(
-        'content' => get_string('missing_permission', 'block_edusupport'),
+    echo $OUTPUT->render_from_template('local_edusupport/alert', array(
+        'content' => get_string('missing_permission', 'local_edusupport'),
         'type' => 'danger',
         'url' => $tourl->__toString(),
     ));
@@ -57,9 +57,9 @@ if (!is_siteadmin()) {
         $success = false;
         if (!empty($id)) {
             if (!empty($remove)) {
-                $success = $DB->delete_records('block_edusupport_supporters', array('id' => $id));
+                $success = $DB->delete_records('local_edusupport_supporters', array('id' => $id));
             } else {
-                $success = $DB->update_record('block_edusupport_supporters', array(
+                $success = $DB->update_record('local_edusupport_supporters', array(
                     'id' => $id,
                     'courseid' => $courseid,
                     'userid' => $userid,
@@ -67,24 +67,24 @@ if (!is_siteadmin()) {
                 ));
             }
         } else {
-            $success = $DB->insert_record('block_edusupport_supporters', array(
+            $success = $DB->insert_record('local_edusupport_supporters', array(
                 'courseid' => $courseid,
                 'userid' => $userid,
                 'supportlevel' => $supportlevel,
             ));
         }
         if ($success) {
-            \block_edusupport\lib::supportforum_rolecheck();
+            \local_edusupport\lib::supportforum_rolecheck();
             if (!empty($remove)) {
-                $chk = $DB->get_record('block_edusupport_supporters', array('userid' => $userid));
+                $chk = $DB->get_record('local_edusupport_supporters', array('userid' => $userid));
                 if (empty($chk->id)) {
                     // This supporter left the team. We remove all assignments.
-                    $DB->delete_records('block_edusupport_subscr', array('userid' => $userid));
+                    $DB->delete_records('local_edusupport_subscr', array('userid' => $userid));
                 }
             } elseif (empty($supportlevel)) {
-                $issues = $DB->get_records('block_edusupport_issues', array('currentsupporter' => 0));
+                $issues = $DB->get_records('local_edusupport_issues', array('currentsupporter' => 0));
                 foreach ($issues AS $issue) {
-                    $DB->insert_record('block_edusupport_subscr', array(
+                    $DB->insert_record('local_edusupport_subscr', array(
                         'issueid' => $issue->id,
                         'discussionid' => $issue->discussionid,
                         'userid' => $userid,
@@ -92,18 +92,18 @@ if (!is_siteadmin()) {
                 }
             }
         }
-        echo $OUTPUT->render_from_template('block_edusupport/alert', array(
-            'content' => get_string(($success) ? 'changes_saved_successfully' : 'changes_saved_fail', 'block_edusupport'),
+        echo $OUTPUT->render_from_template('local_edusupport/alert', array(
+            'content' => get_string(($success) ? 'changes_saved_successfully' : 'changes_saved_fail', 'local_edusupport'),
             'type' => ($success) ? 'success' : 'danger',
         ));
     }
 
     $sql = "SELECT bes.*,u.firstname,u.lastname
-                FROM {block_edusupport_supporters} bes, {user} u
+                FROM {local_edusupport_supporters} bes, {user} u
                 WHERE u.id=bes.userid
                 ORDER BY u.lastname ASC, u.firstname ASC, bes.supportlevel ASC";
     $supporters = array_values($DB->get_records_sql($sql, array()));
-    echo $OUTPUT->render_from_template('block_edusupport/choosesupporters', array('supporters' => $supporters, 'wwwroot' => $CFG->wwwroot));
+    echo $OUTPUT->render_from_template('local_edusupport/choosesupporters', array('supporters' => $supporters, 'wwwroot' => $CFG->wwwroot));
 }
 
 echo $OUTPUT->footer();
