@@ -104,7 +104,7 @@ function local_edusupport_extend_navigation($navigation) {
         }
         $label = get_string('issues', 'local_edusupport');
         $link = new moodle_url('/local/edusupport/issues.php', array());
-        $icon = new pix_icon('/docs.svg', '', '');
+        $icon = new pix_icon('docs', '', '');
         $nodecreatecourse = $nodehome->add($label, $link, navigation_node::NODETYPE_LEAF, $label, 'edusupportissues', $icon);
         $nodecreatecourse->showinflatnavigation = true;
     }

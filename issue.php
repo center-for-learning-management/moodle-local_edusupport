@@ -85,7 +85,7 @@ if (empty($issue->id) || !\local_edusupport\lib::is_supportteam()) {
         $user = $DB->get_record('user', array('id' => $supporter->userid));
 
         $options[] = array(
-            "title" => \fullname($user) . ' (' . ($supporter->supportlevel | '2nd Level') . ')',
+            "title" => \fullname($user) . ' (' . (!empty($supporter->supportlevel) ? $supporter->supportlevel : '2nd Level') . ')',
             "class" => '',
             //"icon" => 'i/checkpermissions',
             "href" => $CFG->wwwroot . '/user/profile.php?id' . $supporter->id,
