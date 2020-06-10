@@ -21,7 +21,12 @@
 */
 
 defined('MOODLE_INTERNAL') || die;
-if ($ADMIN->fulltree) {
+
+if ($hassiteconfig) {
+    $settings = new admin_settingpage( 'local_edusupport_settings', ''); // We ommit the label, so that it does not show the heading.
+    $ADMIN->add('localplugins', new admin_category('local_edusupport', get_string('pluginname', 'local_edusupport')));
+    $ADMIN->add('local_edusupport', $settings);
+
     // @TODO a feature from the future.
     // $settings->add(new admin_setting_configcheckbox('local_edusupport/sendreminders', get_string('cron:reminder:title', 'local_edusupport'), '', '', PARAM_INT));
 

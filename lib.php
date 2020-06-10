@@ -96,7 +96,7 @@ function local_edusupport_before_standard_html_head(){
 /**
  * Extend Moodle Navigation.
  */
-function local_eduvidual_extend_navigation($navigation) {
+function local_edusupport_extend_navigation($navigation) {
     if (\local_edusupport\lib::is_supportteam()) {
         $nodehome = $navigation->get('home');
         if (empty($nodehome)){

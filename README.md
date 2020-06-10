@@ -1,7 +1,7 @@
 # moodle-local_edusupport
 
 ## How to configure edusupport?
-This plugin allows to manage a moodle based decentralized helpdesk with three support levels. It basically works with Moodle forums. After you installed the plugin, you should navigate to the Website Administration > Plugins > Blocks > Help and set up your support site's team (only 2nd and 3rd level).
+This plugin allows to manage a moodle based decentralized helpdesk with three support levels. It basically works with Moodle forums. After you installed the plugin, you should navigate to the Website Administration > Plugins > Local plugins > Help and set up your support site's team (only 2nd and 3rd level).
 
 ### Choose your support team (only 2nd and 3rd level supporters)
 
