@@ -92,12 +92,12 @@ class local_edusupport_external extends external_api {
     public static function create_issue_parameters() {
         return new external_function_parameters(array(
             'subject' => new external_value(PARAM_TEXT, 'subject of this issue'),
-            'description' => new external_value(PARAM_RAW, 'default for whole package otherwise channel name'),
+            'description' => new external_value(PARAM_RAW, 'default for whole package otherwise channel name'), // We use PARAM_RAW here, as the editor can send HTML
             'forum_group' => new external_value(PARAM_TEXT, 'Forum-ID and Group-ID to post to in format forumid_groupid.'),
             'postto2ndlevel' => new external_value(PARAM_INT, '1st level supporters can directly call the 2nd level support'),
             'image' => new external_value(PARAM_RAW, 'base64 encoded image as data url or empty string'),
-            'url' => new external_value(PARAM_TEXT, 'URL where the error happened'),
-            'contactphone' => new external_value(PARAM_TEXT, 'Contactphone'),
+            'url' => new external_value(PARAM_TEXT, 'URL where the error happened'), // We use PARAM_TEXT, as any input by the user is valid.
+            'contactphone' => new external_value(PARAM_TEXT, 'Contactphone'), // We use PARAM_TEXT, was the user can enter any contact information.
         ));
     }
 
@@ -110,8 +110,11 @@ class local_edusupport_external extends external_api {
         $params = self::validate_parameters(self::create_issue_parameters(), array('subject' => $subject, 'description' => $description, 'forum_group' => $forum_group, 'postto2ndlevel' => $postto2ndlevel, 'image' => $image, 'url' => $url, 'contactphone' => $contactphone));
 
         $tmp = explode('_', $forum_group);
-        $forumid = $tmp[0];
-        $groupid = $tmp[1];
+        $forumid = 0; $groupid = 0;
+        if (count($tmp) == 2) {
+            $forumid = $tmp[0];
+            $groupid = $tmp[1];
+        }
 
         $PAGE->set_context(\context_system::instance());
 
@@ -123,20 +126,22 @@ class local_edusupport_external extends external_api {
 
             $recipients = array(\core_user::get_support_user());
             $fromuser = $USER;
-            if (!empty($params['image'])) {
-                // @TODO attachments were not tested, as the production server does not send mails by configuration!
-                // Write image to a temporary file
-                $x = explode(",", $params['image']);
-                $f = tmpfile();
-                fwrite($f, base64_decode($x[1]));
 
+            if (!empty($params['image'])) {
+                // Write image to a temporary file
+                error_log('IMAGE IS ' . $params['image']);
+                $x = explode(",", $params['image']);
                 // Get mimetype (e.g. png)
                 $type = str_replace('data:image/', '', $x[0]);
                 $type = str_replace(';base64', '', $type);
-                $filepath = stream_get_meta_data($f)['uri'];
+                // Write the file to a temp target.
+                $filepath = $CFG->tempdir . '/edusupport-' . md5($USER->id . date("Y-m-d H:i:s"));
+                file_put_contents($filepath, base64_decode($x[1]));
+
                 foreach($recipients AS $recipient) {
                     email_to_user($recipient, $fromuser, $subject, $messagetext, $messagehtml, $filepath, 'screenshot.' . $type);
                 }
+                if (file_exists($filepath)) unlink($filepath);
             } else {
                 foreach($recipients AS $recipient) {
                     email_to_user($recipient, $fromuser, $subject, $messagetext, $messagehtml, "", true);

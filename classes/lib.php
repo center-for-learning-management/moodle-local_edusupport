@@ -129,6 +129,7 @@ class lib {
         $course = $DB->get_record('course', array('id' => $forum->course));
 
         $cm = \get_coursemodule_from_instance('forum', $forumid);
+
         $groupmode = \groups_get_activity_groupmode($cm);
         // If we do not use groups in this forum, return without groups.
         if (empty($groupmode)) return;
@@ -143,7 +144,7 @@ class lib {
 
         $groups = array();
         foreach ($_groups AS $k => $group) {
-            if (\forum_user_can_post_discussion($forum, $group)) {
+            if (\forum_user_can_post_discussion($forum, $group, -1, $cm)) {
                 $groups[$k] = $group;
             }
         }
@@ -190,6 +191,7 @@ class lib {
         foreach ($forums AS &$forum) {
             $course = $DB->get_record('course', array('id' => $forum->course), 'id,fullname');
             $coursecontext = \context_course::instance($forum->course);
+            if (empty($coursecontext->id)) continue;
             $forum->name = $course->fullname . $delimiter . $forum->name;
             $forum->postto2ndlevel = has_capability('moodle/course:update', $coursecontext);
             $forum->potentialgroups = self::get_groups_for_user($forum->id);
