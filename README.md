@@ -37,7 +37,7 @@ If a user presses this button a modal dialog appears and the user can describe t
 
 If the user has access to several supportforums he can choose the target, also if the forums use the group feature, the target group can be chosen. If the user has not access to any supportforum the system automatically falls back to an email mode, and the issue is sent to the mailaddress of the supportusers specified in the site administration.
 
-If a user belongs to the first level support of a certain supportforum, it is possible to forward the issue directly to the 2nd level, after it was created.
+If a user has the capability 'edusupport:canforward2ndlevel', which is set by default for the trainer role (1st Level Support), it is possible to forward the issue directly to the 2nd level on creation. You can also decide to grant this capability to other roles as well.
 
 
 ## Who is responsible for a ticket?
