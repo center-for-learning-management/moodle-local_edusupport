@@ -22,7 +22,6 @@
 
 require_once('../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
-require_once($CFG->dirroot . '/local/edusupport/local_edusupport.php');
 
 $context = context_system::instance();
 // Must pass login

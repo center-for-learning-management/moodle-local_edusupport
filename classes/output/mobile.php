@@ -27,7 +27,6 @@ namespace local_edusupport\output;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/local/edusupport/local_edusupport.php');
 
 /**
  * Ouput components to generate mobile app screens.

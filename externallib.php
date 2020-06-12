@@ -35,7 +35,6 @@ class local_edusupport_external extends external_api {
     public static function close_issue($discussionid) {
         global $CFG;
         $params = self::validate_parameters(self::close_issue_parameters(), array('discussionid' => $discussionid));
-        require_once($CFG->dirroot . '/local/edusupport/local_edusupport.php');
         return \local_edusupport\lib::close_issue($params['discussionid']);
     }
     public static function close_issue_returns() {
@@ -56,7 +55,6 @@ class local_edusupport_external extends external_api {
         global $CFG, $DB, $USER;
         $params = self::validate_parameters(self::colorize_parameters(), array('discussionids' => $discussionids));
 
-        require_once($CFG->dirroot . '/local/edusupport/local_edusupport.php');
         $styles = array();
         $forum_check = array();
         foreach($params['discussionids'] AS $discussionid) {
@@ -379,7 +377,6 @@ class local_edusupport_external extends external_api {
         global $CFG, $DB, $PAGE;
 
         $params = self::validate_parameters(self::set_archive_parameters(), array('forumid' => $forumid));
-        require_once($CFG->dirroot . '/local/edusupport/local_edusupport.php');
 
         $forum = $DB->get_record('forum', array('id' => $params['forumid']));
         if (empty($forum->id)) return -1;
@@ -430,7 +427,6 @@ class local_edusupport_external extends external_api {
         global $CFG, $DB, $PAGE;
 
         $params = self::validate_parameters(self::set_default_parameters(), array('forumid' => $forumid, 'asglobal' => $asglobal));
-        require_once($CFG->dirroot . '/local/edusupport/local_edusupport.php');
 
         $forum = $DB->get_record('forum', array('id' => $params['forumid']));
         if (empty($forum->id)) return -1;
@@ -472,7 +468,6 @@ class local_edusupport_external extends external_api {
         global $CFG, $DB, $PAGE;
 
         $params = self::validate_parameters(self::set_supporter_parameters(), array('courseid' => $courseid, 'userid' => $userid, 'supportlevel' => $supportlevel));
-        require_once($CFG->dirroot . '/local/edusupport/local_edusupport.php');
         if (local_edusupport::can_config_course($params['courseid'])){
             if (empty($params['supportlevel'])) {
                 $DB->delete_records('local_edusupport_supporters', array('courseid' => $params['courseid'], 'userid' => $params['userid']));
