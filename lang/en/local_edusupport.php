@@ -30,6 +30,7 @@ $string['assigned'] = 'Assigned';
 $string['autocreate_orggroup'] = 'Automatically create groups for eduvidual-Organizations';
 $string['autocreate_usergroup'] = 'Automatically create a private group for user';
 $string['be_more_accurate'] = 'Please be more accurate when describing your problem!';
+$string['edusupport:canforward2ndlevel'] = 'Can forward issues to 2nd Level Support';
 $string['changes_saved_successfully'] = 'Changes saved successfully.';
 $string['changes_saved_fail'] = 'Changes could not be saved.';
 $string['contactphone'] = 'Telephone';

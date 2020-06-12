@@ -193,7 +193,7 @@ class lib {
             $coursecontext = \context_course::instance($forum->course);
             if (empty($coursecontext->id)) continue;
             $forum->name = $course->fullname . $delimiter . $forum->name;
-            $forum->postto2ndlevel = has_capability('moodle/course:update', $coursecontext);
+            $forum->postto2ndlevel = has_capability('local/edusupport:canforward2ndlevel', $coursecontext);
             $forum->potentialgroups = self::get_groups_for_user($forum->id);
         }
 
@@ -256,7 +256,7 @@ class lib {
         }
         // Check if the user taking the action has trainer permissions.
         $coursecontext = \context_course::instance($discussion->course);
-        if (!has_capability('moodle/course:update', $coursecontext)) {
+        if (!has_capability('local/edusupport:canforward2ndlevel', $coursecontext)) {
             return false;
         }
 

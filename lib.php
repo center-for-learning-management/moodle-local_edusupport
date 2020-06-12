@@ -38,7 +38,7 @@ function local_edusupport_before_standard_html_head(){
         $d = optional_param('d', 0, PARAM_INT);
         $discussion = $DB->get_record('forum_discussions', array('id' => $d));
         $coursecontext = \context_course::instance($discussion->course);
-        if (has_capability('moodle/course:update', $coursecontext)
+        if (has_capability('local/edusupport:canforward2ndlevel', $coursecontext)
                 && \local_edusupport\lib::is_supportforum($discussion->forum)) {
             $sql = "SELECT id
                         FROM {local_edusupport_subscr}
@@ -114,7 +114,7 @@ function local_edusupport_extend_navigation_course($parentnode, $course, $contex
     // If we allow support users on course level, we can remove the next line.
     if (!is_siteadmin()) return;
     //$coursecontext = \context_course::instance($course->id);
-    //if (!has_capability('moodle/course:update', $coursecontext)) return;
+    //if (!has_capability('local/edusupport:canforward2ndlevel', $coursecontext)) return;
 
     // We want to add these new nodes after the Edit settings node, and before the
     // Locally assigned roles node. Of course, both of those are controlled by capabilities.
