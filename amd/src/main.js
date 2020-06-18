@@ -1,6 +1,6 @@
 define(
-    ['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'core/modal_factory', 'core/modal_events'],
-    function($, AJAX, NOTIFICATION, STR, URL, ModalFactory, ModalEvents) {
+    ['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'core/modal_factory', 'core/modal_events', 'core/templates'],
+    function($, AJAX, NOTIFICATION, STR, URL, ModalFactory, ModalEvents, Templates) {
     return {
         debug: 1,
         modal: undefined,
@@ -103,17 +103,14 @@ define(
          */
         injectHelpButton: function() {
             console.log('local_edusupport/main:injectHelpButton()');
-
-            var btn = $('<li class="nav-item">').append(
-                $('<div class="popover-region collapsed">').append(
-                    $('<a href="#" class="nav-link d-inline-block popover-region-toggle position-relative">')
-                        .attr('onclick', 'require(["local_edusupport/main"], function(MAIN){ MAIN.showBox(); }); return false;')
-                        .append(
-                            $('<i class="icon fa fa-medkit fa-fw">')
-                        )
-                )
-            );
-            $(btn).insertBefore($('#page-wrapper>.navbar div.usermenu').closest('li'));
+            AJAX.call([{
+                methodname: 'local_edusupport_get_extralinks',
+                args: {},
+                done: function(result) {
+                    $(result).insertBefore($('#page-wrapper>.navbar div.usermenu').closest('li'));
+                },
+                fail: NOTIFICATION.exception
+            }]);
         },
         /**
          * Scans the page for all discussion posts and adds a reply-button.

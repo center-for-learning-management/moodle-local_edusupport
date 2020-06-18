@@ -1,0 +1,92 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+   @template local_edusupport/injectbutton
+
+   The purpose of this template is to render action buttons
+
+   Classes required for JS:
+   * none
+
+   Data attributes required for JS:
+   * none
+
+   Context variables required for this template:
+   * attributes Array of name / value pairs.
+
+   Example context (json):
+   {
+       "options": [
+       "title" => get_string('issue_assign', 'local_edusupport'),
+       "class" => '',
+       "icon" => '/pix/i/users.svg',
+       "href" => '#',
+       "onclick" => 'require(
+           { "title": "a title" },
+           { "class": "classnames" },
+           { "icon": "an icon to use" },
+           { "href": "the link href" },
+           { "onclick": "onclick" },
+       ]
+   }
+ }}
+
+{{#hasextralinks}}
+    <li class="nav-item d-flex align-items-center">
+        <div class="supportmenu">
+            <div class="action-menu moodle-actionmenu nowrap-items d-inline" id="action-menu-{{uniqid}}" data-enhance="moodle-core-actionmenu">
+                <div class="menubar d-flex " id="action-menu-{{uniqid}}-menubar" role="menubar">
+                    <div class="action-menu-trigger">
+                        <div class="dropdown">
+                            <a href="#" tabindex="0" class="d-inline-block  dropdown-toggle icon-no-margin" id="action-menu-toggle-2" aria-label="Nutzermenü" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" aria-controls="action-menu-2-menu">
+                                <i class="icon fa fa-medkit fa-fw"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right menu  align-tr-br" id="action-menu-{{uniqid}}-menu" data-rel="menu-content" aria-labelledby="action-menu-toggle-{{uniqid}}" role="menu" data-align="tr-br">
+                                <a href="#"  class="dropdown-item menu-action" role="menuitem" data-title="{{#str}} create_issue, local_edusupport {{/str}}" aria-labelledby="actionmenuaction-{{uniqid}}-x"
+                                    onclick="require(['local_edusupport/main'], function(MAIN){ MAIN.showBox(); }); return false;">
+                                    <i class="icon fa fa-medkit fa-fw"></i>
+                                    <span class="menu-action-text" id="actionmenuaction-{{uniqid}}-x">
+                                        {{#str}} create_issue, local_edusupport {{/str}}
+                                    </span>
+                                </a>
+                                <div class="dropdown-divider" role="presentation"><span class="filler">&nbsp;</span></div>
+                                {{#extralinks}}
+                                    <a href="{{url}}" {{#target}} target="{{target}}"{{/target}} class="dropdown-item menu-action" role="menuitem" data-title="{{name}}" aria-labelledby="actionmenuaction-{{uniqid}}-{{id}}">
+                                        <i class="icon fa {{faicon}} fa-fw " aria-hidden="true"></i>
+                                        <span class="menu-action-text" id="actionmenuaction-{{uniqid}}-{{id}}">
+                                            {{name}}
+                                        </span>
+                                    </a>
+                                {{/extralinks}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </li>
+{{/hasextralinks}}
+{{^hasextralinks}}
+    <li class="nav-item">
+        <div class="popover-region collapsed">
+            <a href="#" class="nav-link d-inline-block popover-region-toggle position-relative"
+                onclick="require(['local_edusupport/main'], function(MAIN){ MAIN.showBox(); }); return false;">
+                <i class="icon fa fa-medkit fa-fw"></i>
+            </a>
+        </div>
+    </li>
+{{/hasextralinks}}

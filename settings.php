@@ -27,6 +27,21 @@ if ($hassiteconfig) {
     $ADMIN->add('localplugins', new admin_category('local_edusupport', get_string('pluginname', 'local_edusupport')));
     $ADMIN->add('local_edusupport', $settings);
 
+    // Possibly we changed the menu, therefore we delete the cache.
+    // We should find a better place for this.
+    $cache = cache::make('local_edusupport', 'supportmenu');
+    $cache->delete('rendered');
+
+    $settings->add(
+        new admin_setting_configtextarea(
+            'local_edusupport/extralinks',
+            get_string('extralinks', 'local_edusupport'),
+            get_string('extralinks:description', 'local_edusupport'),
+            '',
+            PARAM_TEXT
+        )
+    );
+
     // @TODO a feature from the future.
     // $settings->add(new admin_setting_configcheckbox('local_edusupport/sendreminders', get_string('cron:reminder:title', 'local_edusupport'), '', '', PARAM_INT));
 

@@ -57,6 +57,14 @@ $functions = array(
         'type'        => 'read',
         'ajax'        => 1,
     ),
+    'local_edusupport_get_extralinks' => array(
+        'classname'   => 'local_edusupport_external',
+        'methodname'  => 'get_extralinks',
+        'classpath'   => 'local/edusupport/externallib.php',
+        'description' => 'Get a html for the help-button',
+        'type'        => 'read',
+        'ajax'        => 1,
+    ),
     'local_edusupport_get_potentialsupporters' => array(
         'classname'   => 'local_edusupport_external',
         'methodname'  => 'get_potentialsupporters',

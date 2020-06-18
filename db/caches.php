@@ -17,15 +17,15 @@
 /**
  * @package    local_edusupport
  * @copyright  2018 Digital Education Society (http://www.dibig.at)
- *             2020 onwards Center for Learningmanagement (www.lernmanagement.at)
+ *             2020 onwards Zentrum für Lernmanagement (http://www.lernmanagement.at)
  * @author     Robert Schrenk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die;
 
-$plugin->version  = 2020061801;
-$plugin->requires = 2014051200;
-$plugin->component = 'local_edusupport';
-$plugin->release = '1.4 (Build: 2020061201)';
-$plugin->maturity = MATURITY_STABLE;
+$definitions = [
+    'supportmenu' => [
+        'mode' => cache_store::MODE_APPLICATION
+    ]
+];
