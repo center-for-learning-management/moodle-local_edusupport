@@ -27,6 +27,7 @@ require_once($CFG->libdir . '/adminlib.php');
 $courseid = required_param('courseid', PARAM_INT);
 $forumid = optional_param('forumid', 0, PARAM_INT);
 $state = optional_param('state', 0, PARAM_INT);
+$central = optional_param('central', 0, PARAM_INT);
 
 $context = context_course::instance($courseid);
 $PAGE->set_context($context);
@@ -67,6 +68,10 @@ if (!is_siteadmin()) {
                 case 1: \local_edusupport\lib::supportforum_enable($forumid); break;
                 case -1: \local_edusupport\lib::supportforum_disable($forumid); break;
             }
+            switch($central) {
+                case 1: \local_edusupport\lib::supportforum_enablecentral($forumid); break;
+                case -1: \local_edusupport\lib::supportforum_disablecentral($forumid); break;
+            }
         }
     }
 
@@ -91,9 +96,12 @@ if (!is_siteadmin()) {
                 ORDER BY name ASC";
     $forums = array_values($DB->get_records_sql($sql, array($courseid)));
 
+    $centralforum = get_config('local_edusupport', 'centralforum');
+
     foreach ($forums AS &$forum) {
         $state = $DB->get_record('local_edusupport', array('forumid' => $forum->id));
         $forum->state = (!empty($state->id));
+        $forum->statecentral = (!empty($centralforum) && $centralforum == $forum->id);
         $forum->dedicatedsupporter = $state->dedicatedsupporter;
         $forum->supporters = $supporters;
         if (!empty($forum->dedicatedsupporter)) {

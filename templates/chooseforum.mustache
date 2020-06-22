@@ -19,6 +19,7 @@
         <thead>
             <tr>
                 <td width="250">{{#str}} toggle, local_edusupport {{/str}}</td>
+                <td width="250">{{#str}} toggle:central, local_edusupport {{/str}}</td>
                 <td>{{#str}} name {{/str}}</td>
                 <td width="150">{{#str}} dedicatedsupporter, local_edusupport {{/str}}</td>
             </tr>
@@ -38,6 +39,25 @@
                             class="btn btn-block btn-primary">
                             {{#str}} supportforum:disable, local_edusupport {{/str}}
                         </a>
+                        {{/state}}
+                    </td>
+                    <td>
+                        {{^state}}
+                            -
+                        {{/state}}
+                        {{#state}}
+                            {{^statecentral}}
+                                <a href="{{wwwroot}}/local/edusupport/chooseforum.php?courseid={{course}}&forumid={{id}}&central=1"
+                                    class="btn btn-block btn-primary">
+                                    {{#str}} supportforum:central:enable, local_edusupport {{/str}}
+                                </a>
+                            {{/statecentral}}
+                            {{#statecentral}}
+                                <a href="{{wwwroot}}/local/edusupport/chooseforum.php?courseid={{course}}&forumid={{id}}&central=-1"
+                                    class="btn btn-block btn-primary">
+                                    {{#str}} supportforum:central:disable, local_edusupport {{/str}}
+                                </a>
+                            {{/statecentral}}
                         {{/state}}
                     </td>
                     <td>{{name}}</td>

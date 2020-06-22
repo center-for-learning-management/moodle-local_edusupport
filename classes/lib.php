@@ -28,6 +28,40 @@ defined('MOODLE_INTERNAL') || die;
 require_once($CFG->libdir . '/adminlib.php');
 
 class lib {
+    /**
+     * Perform some actions before the popup is rendered.
+     */
+    public static function before_popup() {
+        global $CFG, $DB, $USER;
+        $centralforum = get_config('local_edusupport', 'centralforum');
+        if (!empty($centralforum) && self::is_supportforum($centralforum)) {
+            $forum = $DB->get_record('forum', array('id' => $centralforum));
+            $coursectx = \context_course::instance($forum->course);
+            if (!empty($coursectx->id)) {
+                if (!is_enrolled($coursectx, $USER, '', true)) {
+                    // Enrol as student.
+                    self::course_manual_enrolments(array($forum->course), array($USER->id), 5);
+                }
+                require_once("$CFG->dirroot/group/lib.php");
+                $group = $DB->get_record('groups', array('courseid' => $forum->course, 'name' => '#' . $USER->id));
+                if (empty($group->id)) {
+                    // create a group for this user.
+                    $group = (object) array(
+                        'courseid' => $forum->course,
+                        'name' => '#' . $USER->id,
+                        'description' => '',
+                        'descriptionformat' => 1,
+                        'timecreated' => time(),
+                        'timemodified' => time(),
+                    );
+                    $group->id = groups_create_group($group, false);
+                }
+                if (!empty($group->id)) {
+                    groups_add_member($group, $USER);
+                }
+            }
+        }
+    }
     public static function can_config_course($courseid){
         global $USER;
         if (self::can_config_global()) return true;
@@ -77,6 +111,47 @@ class lib {
         return true;
     }
     /**
+     * Enrols users to specific courses
+     * @param courseids array containing courseid or a single courseid
+     * @param userids array containing userids or a single userid
+     * @param roleid roleid to assign, or -1 if wants to unenrol
+     * @return true or false
+    **/
+    public static function course_manual_enrolments($courseids, $userids, $roleid) {
+        global $CFG, $DB;
+        if (!is_array($courseids)) $courseids = array($courseids);
+        if (!is_array($userids)) $userids = array($userids);
+
+        // Check manual enrolment plugin instance is enabled/exist.
+        $enrol = enrol_get_plugin('manual');
+        if (empty($enrol)) {
+            throw new \moodle_exception('manualpluginnotinstalled', 'enrol_manual');
+        }
+        $failures = 0;
+        $instances = array();
+        foreach ($courseids AS $courseid) {
+            // Check if course exists.
+            $course = $DB->get_record('course', array('id' => $courseid), '*', IGNORE_MISSING);
+            //$course = get_course($courseid);
+            if (empty($course->id)) continue;
+            if (empty($instances[$courseid])) {
+                $instances[$courseid] = self::get_enrol_instance($courseid);
+            }
+
+            foreach($userids AS $userid) {
+                $user = $DB->get_record('user', array('id' => $userid));
+                if (empty($user->id)) continue;
+                if ($roleid == -1) {
+                    $enrol->unenrol_user($instances[$courseid], $userid);
+                } else {
+                    $enrol->enrol_user($instances[$courseid], $userid, $roleid, time(), 0, ENROL_USER_ACTIVE);
+                }
+
+            }
+        }
+        return ($failures == 0);
+    }
+    /**
      * Answer to the original discussion post of a discussion.
      * @param discussionid.
      * @param text as content.
@@ -114,6 +189,28 @@ class lib {
         $event->add_record_snapshot('forum_posts', $post);
         $event->trigger();
     }
+
+    /**
+     * Clones an object to reveal private fields.
+     * @param object.
+     * @return object.
+     */
+    public static function expose_properties($object = array()) {
+        global $CFG;
+        $object = (array) $object;
+        $keys = array_keys($object);
+        foreach ($keys AS $key) {
+            $xkey = explode("\0", $key);
+            $xkey = $xkey[count($xkey)-1];
+            $object[$xkey] = $object[$key];
+            unset($object[$key]);
+            if (is_object($object[$xkey])) {
+                $object[$xkey] = self::expose_properties($object[$xkey]);
+            }
+        }
+        return $object;
+    }
+
 
     /**
      * Checks for groupmode in a forum and lists available groups of this user.
@@ -201,27 +298,6 @@ class lib {
     }
 
     /**
-     * Clones an object to reveal private fields.
-     * @param object.
-     * @return object.
-     */
-    public static function expose_properties($object = array()) {
-        global $CFG;
-        $object = (array) $object;
-        $keys = array_keys($object);
-        foreach ($keys AS $key) {
-            $xkey = explode("\0", $key);
-            $xkey = $xkey[count($xkey)-1];
-            $object[$xkey] = $object[$key];
-            unset($object[$key]);
-            if (is_object($object[$xkey])) {
-                $object[$xkey] = self::expose_properties($object[$xkey]);
-            }
-        }
-        return $object;
-    }
-
-    /**
      * Checks if a user belongs to the support team.
      */
     public static function is_supportteam($userid = 0) {
@@ -240,6 +316,31 @@ class lib {
         global $DB;
         $chk = $DB->get_record('local_edusupport', array('forumid' => $forumid));
         return !empty($chk->id);
+    }
+
+    /**
+     * Get the enrol instance for manual enrolments of a course, or create one.
+     * @param courseid
+     * @return object enrolinstance
+     */
+    private static function get_enrol_instance($courseid) {
+        // Check manual enrolment plugin instance is enabled/exist.
+        $enrol = enrol_get_plugin('manual');
+        if (empty($enrol)) {
+            throw new \moodle_exception('manualpluginnotinstalled', 'enrol_manual');
+        }
+        $instance = null;
+        $enrolinstances = enrol_get_instances($courseid, false);
+        foreach ($enrolinstances as $courseenrolinstance) {
+            if ($courseenrolinstance->enrol == "manual") {
+                return $courseenrolinstance;
+            }
+        }
+        if (empty($instance)) {
+            $course = get_course($courseid);
+            $enrol->add_default_instance($course);
+            return self::get_enrol_instance($courseid);
+        }
     }
 
     /**
@@ -413,8 +514,21 @@ class lib {
         $DB->delete_records('local_edusupport', array('forumid' => $forumid));
         self::supportforum_managecaps($forumid, false);
         \local_edusupport\lib::supportforum_rolecheck($forumid);
+        $centralforum = get_config('local_edusupport', 'centralforum');
+        if ($forumid == $centralforum) {
+            self::supportforum_disablecentral();
+        }
         // @TODO shall we check for orphaned discussions too?
     }
+
+    /**
+     * Removes a forum as central support-forum.
+    **/
+    public static function supportforum_disablecentral() {
+        if (!is_siteadmin()) return;
+        set_config('centralforum', 0, 'local_edusupport');
+    }
+
 
     /**
      * Sets a forum as possible support-forum.
@@ -444,6 +558,25 @@ class lib {
         \local_edusupport\lib::supportforum_rolecheck($forumid);
         if (!empty($supportforum->id)) return $supportforum;
         else return false;
+    }
+
+    /**
+     * Sets a forum as central support-forum.
+     * @param forumid.
+     * @return forum as object on success.
+    **/
+    public static function supportforum_enablecentral($forumid) {
+        global $DB, $USER;
+        if (!is_siteadmin()) return false;
+        $forum = $DB->get_record('forum', array('id' => $forumid));
+        if (empty($forum->course)) return false;
+
+        $supportforum = $DB->get_record('local_edusupport', array('forumid' => $forumid));
+        if (!empty($supportforum->id)) {
+            set_config('centralforum', $forum->id, 'local_edusupport');
+            return $forum;
+        }
+        return false;
     }
 
     /**

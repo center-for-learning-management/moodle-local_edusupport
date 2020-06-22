@@ -316,6 +316,8 @@ class local_edusupport_external extends external_api {
 
         $PAGE->set_context(context_system::instance());
 
+        \local_edusupport\lib::before_popup();
+
         require_once($CFG->dirroot . '/local/edusupport/classes/issue_create_form.php');
         $params['contactphone'] = $USER->phone1;
         $form = new \issue_create_form(null, null, 'post', '_self', array('id' => 'local_edusupport_create_form'), true);
