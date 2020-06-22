@@ -11,7 +11,7 @@ If you enter a support level, this user will belong to the 3rd level, you can en
 
 ### Choose your support forums
 
-Now you need to create at least one course with one general forum and mark it as a supportforum in the course settings of each course (only site administrators can do that).
+Now you need to create at least one course with one general forum and mark it as a supportforum in the course settings of each course (only site administrators can do that). You can also decide here if a forum is marked as site wide supportforum. Only 1 forum can be set as site wide supportforum. If you enable it, all users that open the "help"-modal will be automatically enrolled into that course with the student-role and a group for that user will be created. This ensures private communication in that supportforum, so it is recommended to set the groupmode to "separated groups" in that forum.
 
 ![Choose support forums](/doc/chooseforums.png)
 
