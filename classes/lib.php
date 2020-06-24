@@ -292,9 +292,13 @@ class lib {
             $course = $DB->get_record('course', array('id' => $forum->course), 'id,fullname');
             $coursecontext = \context_course::instance($forum->course);
             if (empty($coursecontext->id)) continue;
+
             $fcm = get_coursemodule_from_instance('forum', $forum->id, 0, false, MUST_EXIST);
             $fctx = \context_module::instance($fcm->id);
-            if (has_capability('mod/forum:view', $fctx)) {
+            $modinfo = get_fast_modinfo($course);
+            $cm = $modinfo->get_cm($fcm->id);
+
+            if ($cm->uservisible && has_capability('mod/forum:startdiscussion', $fctx)) {
                 $forum->name = $course->fullname . $delimiter . $forum->name;
                 $forum->postto2ndlevel = has_capability('local/edusupport:canforward2ndlevel', $coursecontext);
                 $forum->potentialgroups = self::get_groups_for_user($forum->id);
