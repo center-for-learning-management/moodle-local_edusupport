@@ -43,12 +43,13 @@ class lib {
                     self::course_manual_enrolments(array($forum->course), array($USER->id), 5);
                 }
                 require_once("$CFG->dirroot/group/lib.php");
-                $group = $DB->get_record('groups', array('courseid' => $forum->course, 'name' => '#' . $USER->id));
+                $groupname = fullname($USER) . ' (' . $USER->id . ')';
+                $group = $DB->get_record('groups', array('courseid' => $forum->course, 'name' => $groupname));
                 if (empty($group->id)) {
                     // create a group for this user.
                     $group = (object) array(
                         'courseid' => $forum->course,
-                        'name' => '#' . $USER->id,
+                        'name' => $groupname,
                         'description' => '',
                         'descriptionformat' => 1,
                         'timecreated' => time(),
