@@ -242,7 +242,8 @@ class lib {
 
         $groups = array();
         foreach ($_groups AS $k => $group) {
-            if (\forum_user_can_post_discussion($forum, $group->id, -1, $cm)) {
+            $ismember = $DB->get_record('groups_members', array('groupid' => $group->id, 'userid' => $USER->id));
+            if (!empty($ismember->id)) {
                 $groups[$k] = $group;
             }
         }
@@ -284,15 +285,21 @@ class lib {
                     WHERE f.course IN ($courseids)
                         AND be.forumid=f.id
                     ORDER BY f.name ASC";
-        $forums = $DB->get_records_sql($sql, array());
+        $_forums = $DB->get_records_sql($sql, array());
+        $forums = array();
         $delimiter = ' > ';
-        foreach ($forums AS &$forum) {
+        foreach ($_forums AS &$forum) {
             $course = $DB->get_record('course', array('id' => $forum->course), 'id,fullname');
             $coursecontext = \context_course::instance($forum->course);
             if (empty($coursecontext->id)) continue;
-            $forum->name = $course->fullname . $delimiter . $forum->name;
-            $forum->postto2ndlevel = has_capability('local/edusupport:canforward2ndlevel', $coursecontext);
-            $forum->potentialgroups = self::get_groups_for_user($forum->id);
+            $fcm = get_coursemodule_from_instance('forum', $forum->id, 0, false, MUST_EXIST);
+            $fctx = \context_module::instance($fcm->id);
+            if (has_capability('mod/forum:view', $fctx)) {
+                $forum->name = $course->fullname . $delimiter . $forum->name;
+                $forum->postto2ndlevel = has_capability('local/edusupport:canforward2ndlevel', $coursecontext);
+                $forum->potentialgroups = self::get_groups_for_user($forum->id);
+                $forums[$forum->id] = $forum;
+            }
         }
 
         return $forums;
@@ -597,9 +604,54 @@ class lib {
         $ctxmod = \context_module::instance($cm->id);
         $ctxcourse = \context_course::instance($forum->course);
 
-        $capabilities = array('moodle/course:activityvisibility', 'moodle/course:changecategory', 'moodle/course:manageactivities', 'moodle/course:delete', 'moodle/course:visibility');
-        $roles = array(7,7,7,7,7);
-        $contexts = array($ctxmod, $ctxcourse, $ctxmod, $ctxcourse, $ctxcourse);
+        $capabilities = array(
+            'moodle/course:activityvisibility',
+            'moodle/course:changecategory',
+            'moodle/course:changefullname',
+            'moodle/course:changeidnumber',
+            'moodle/course:changeshortname',
+            'moodle/course:enrolconfig',
+            'moodle/course:manageactivities',
+            'moodle/course:delete',
+            'moodle/course:reset',
+            'moodle/course:visibility',
+            'moodle/restore:configure',
+            'moodle/restore:restorecourse',
+            'moodle/restore:restoresection',
+            'moodle/restore:viewautomatedfilearea',
+        );
+        $roles = array(
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+        );
+        $contexts = array(
+            $ctxmod,
+            $ctxcourse,
+            $ctxcourse,
+            $ctxcourse,
+            $ctxcourse,
+            $ctxcourse,
+            $ctxmod,
+            $ctxcourse,
+            $ctxcourse,
+            $ctxcourse,
+            $ctxcourse,
+            $ctxcourse,
+            $ctxcourse,
+            $ctxcourse,
+        );
         $permission = ($trigger) ? CAP_PROHIBIT : CAP_INHERIT;
         for ($a = 0; $a < count($capabilities); $a++) {
             \role_change_permission($roles[$a], $contexts[$a], $capabilities[$a], $permission);
