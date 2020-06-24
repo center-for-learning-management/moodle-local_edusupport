@@ -452,7 +452,9 @@ class lib {
         self::subscription_add($discussionid, $userid);
 
         $supporter = $DB->get_record('local_edusupport_supporters', array('userid' => $userid));
-        if (empty($supporter->supportlevel)) $supporter->supportlevel = '2nd Level Support';
+        if (empty($supporter->supportlevel)) {
+            $supporter->supportlevel = get_string('label:2ndlevel', 'local_edusupport');
+        }
         $touser = $DB->get_record('user', array('id' => $userid));
         self::create_post($discussionid,
             get_string(

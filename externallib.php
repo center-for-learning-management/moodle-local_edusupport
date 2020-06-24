@@ -387,7 +387,9 @@ class local_edusupport_external extends external_api {
                     ORDER BY u.lastname ASC,u.firstname ASC";
         $supporters = $DB->get_records_sql($sql, array($discussion->course));
         foreach($supporters AS $supporter) {
-            if (empty($supporter->supportlevel)) $supporter->supportlevel = '2nd Level';
+            if (empty($supporter->supportlevel)) {
+                $supporter->supportlevel = get_string('label:2ndlevel', 'local_edusupport');
+            }
             if (!isset($reply['supporters'][$supporter->supportlevel])) {
                 $reply['supporters'][$supporter->supportlevel] = array();
             }

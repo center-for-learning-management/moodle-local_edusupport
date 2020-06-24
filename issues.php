@@ -89,7 +89,7 @@ if (false && !\local_edusupport\lib::is_supporteam()) {
             $issue->currentsupportername = \fullname($supportuser);
             $issue->currentsupporterid = $issue->currentsupporter;
         } else {
-            $issue->currentsupportername = "2nd Level";
+            $issue->currentsupportername = get_string('label:2ndlevel', 'local_edusupport');
         }
 
         // Now separate between current, assigned and other issues.
