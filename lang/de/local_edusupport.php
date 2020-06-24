@@ -83,6 +83,7 @@ $string['issues:other'] = 'Andere Anfragen';
 $string['issues:openmine'] = '{$a} für mich';
 $string['issues:opennosupporter'] = '{$a} nicht zugeordnet';
 $string['issues:openall'] = '{$a} gesamt offen';
+$string['label:2ndlevel'] = '2nd Level';
 $string['missing_permission'] = 'Fehlende Erlaubnis!';
 $string['missing_targetforum'] = 'Das Zielforum fehlt und muss konfiguriert werden!';
 $string['missing_targetforum_exists'] = 'Das konfigurierte Zielforum existiert nicht. Die fehlerhafte Konfiguration muss behoben werden!';

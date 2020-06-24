@@ -87,6 +87,9 @@ if (!is_siteadmin()) {
         $supporter->firstname = $u->firstname;
         $supporter->lastname = $u->lastname;
         $supporter->email = $u->email;
+        if (empty($supporter->supportlevel)) {
+            $supporter->supportlevel = get_string('label:2ndlevel', 'local_edusupport');
+        }
     }
 
     $sql = "SELECT id,name,course
