@@ -242,7 +242,7 @@ class lib {
 
         $groups = array();
         foreach ($_groups AS $k => $group) {
-            if (\forum_user_can_post_discussion($forum, $group, -1, $cm)) {
+            if (\forum_user_can_post_discussion($forum, $group->id, -1, $cm)) {
                 $groups[$k] = $group;
             }
         }
