@@ -56,7 +56,7 @@ $discussion = $DB->get_record('forum_discussions', array('id' => $discussionid),
 $PAGE->set_title($discussion->name);
 $PAGE->set_heading($discussion->name);
 
-if (empty($issue->id) || !\local_edusupport\lib::is_supportteam() && !is_siteadmin()) {
+if (!\local_edusupport\lib::is_supportteam() && !is_siteadmin()) {
     echo $OUTPUT->header();
     $cm = \get_coursemodule_from_instance('forum', $discussion->forum);
     $tocmurl = new moodle_url('/mod/forum/view.php', array('id' => $cm->id));
@@ -64,6 +64,14 @@ if (empty($issue->id) || !\local_edusupport\lib::is_supportteam() && !is_siteadm
         'content' => get_string('missing_permission', 'local_edusupport'),
         'type' => 'danger',
         'url' => $tocmurl->__toString(),
+    ));
+} else if (empty($issue->id)) {
+    echo $OUTPUT->header();
+    $todiscussionurl = new moodle_url('/mod/forum/discuss.php', array('d' => $discussionid));
+    echo $OUTPUT->render_from_template('local_edusupport/alert', array(
+        'content' => get_string('no_such_issue', 'local_edusupport'),
+        'type' => 'danger',
+        'url' => $todiscussionurl->__toString(),
     ));
 } else {
     $course = $DB->get_record('course', array('id' => $discussion->course), '*', MUST_EXIST);
