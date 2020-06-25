@@ -67,11 +67,14 @@ if (!\local_edusupport\lib::is_supportteam() && !is_siteadmin()) {
     ));
 } else if (empty($issue->id)) {
     echo $OUTPUT->header();
+    $toissuesurl = new moodle_url('/local/edusupport/issues.php', array());
     $todiscussionurl = new moodle_url('/mod/forum/discuss.php', array('d' => $discussionid));
     echo $OUTPUT->render_from_template('local_edusupport/alert', array(
-        'content' => get_string('no_such_issue', 'local_edusupport'),
+        'content' => get_string('no_such_issue', 'local_edusupport', array(
+            'todiscussionurl' => $todiscussionurl->__toString(),
+            'toissuesurl' => $toissuesurl->__toString(),
+        )),
         'type' => 'danger',
-        'url' => $todiscussionurl->__toString(),
     ));
 } else {
     $course = $DB->get_record('course', array('id' => $discussion->course), '*', MUST_EXIST);
