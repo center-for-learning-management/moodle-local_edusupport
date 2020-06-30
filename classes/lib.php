@@ -670,7 +670,7 @@ class lib {
         global $DB;
         if (empty($forumid)) {
             // We have to re-sync all supportforums.
-            $forums = $DB->get_record('local_edusupport', array());
+            $forums = $DB->get_records('local_edusupport', array());
             foreach ($forums AS $forum) {
                 self::supportforum_rolecheck($forum->id);
             }
