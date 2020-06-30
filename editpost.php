@@ -63,8 +63,6 @@ if (!\local_edusupport\lib::is_supportteam()) {
     $PAGE->set_title("$course->shortname: ".format_string($discussion->name));
     $PAGE->set_heading($course->fullname);
 
-    echo $OUTPUT->header();
-
     $options = array();
 
     $vaultfactory = \mod_forum\local\container::get_vault_factory();
@@ -96,8 +94,8 @@ if (!\local_edusupport\lib::is_supportteam()) {
     }
     $post = $DB->get_record('forum_posts', array('id' => $edit));
 
-
     require_once($CFG->dirroot . '/local/edusupport/classes/post_form.php');
+    $thresholdwarning = forum_check_throttling($vforum, $cm);
     $mform_post = new \local_edusupport_post_form($CFG->wwwroot . '/local/edusupport/editpost.php?d=' . $discussionid . '&edit=' . $edit, array(
         'course' => $course,
         'cm' => $cm,
@@ -131,7 +129,6 @@ if (!\local_edusupport\lib::is_supportteam()) {
     $postid = empty($post->id) ? null : $post->id;
     $draftid_editor = file_get_submitted_draft_itemid('message');
     $currenttext = file_prepare_draft_area($draftid_editor, $modcontext->id, 'mod_forum', 'post', $postid, \local_edusupport_post_form::editor_options($modcontext, $postid), $post->message);
-
     $mform_post->set_data(
         array(
             'attachments'=>$draftitemid,
@@ -142,7 +139,6 @@ if (!\local_edusupport\lib::is_supportteam()) {
                 'format'=> editors_get_preferred_format(),
                 'itemid'=>$draftid_editor
             ),
-            'discussionsubscribe' => $post->discussionsubscribe,
             'mailnow'=> 1,
             'userid'=>$post->userid,
             'parent'=>$post->parent,
@@ -150,6 +146,7 @@ if (!\local_edusupport\lib::is_supportteam()) {
             'course'=>$course->id,
             'forum' => $forum->id,
             'edit' => $edit,
+            'itemid' => 0,
         )
         // $page_params
         +(isset($post->format) ? array('format'=>$post->format) : array())
@@ -168,6 +165,10 @@ if (!\local_edusupport\lib::is_supportteam()) {
             $errordestination = $SESSION->fromurl;
         }
 
+        $post->timestart = isset($discussion->timestart) ? $discussion->timestart : 0;
+        $post->timeend = isset($discussion->timeend) ? $discussion->timeend : 0;
+        $post->itemid = 0;
+
         $fromform->itemid        = $fromform->message['itemid'];
         $fromform->messageformat = $fromform->message['format'];
         $fromform->message       = $fromform->message['text'];
@@ -177,7 +178,7 @@ if (!\local_edusupport\lib::is_supportteam()) {
         // Clean message text.
         $fromform = trusttext_pre_edit($fromform, 'message', $modcontext);
 
-        if (!forum_update_post($post, $mformpost)) {
+        if (!forum_update_post($post, $mform_post)) {
             print_error("couldnotupdate", "forum", $errordestination);
         }
 
@@ -194,12 +195,13 @@ if (!\local_edusupport\lib::is_supportteam()) {
 
         redirect(
             forum_go_back_to($discussionurl),
-            $message . $subscribemessage,
+            $message,
             null,
             \core\output\notification::NOTIFY_SUCCESS
         );
         exit;
     }
+    echo $OUTPUT->header();
     $mform_post->display();
 }
 

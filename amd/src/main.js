@@ -121,8 +121,10 @@ define(
                 ]).done(function(s) {
                     // Remove default reply links.
                     $('a[href*="issue.php?discussion=' + discussion + '&parent="]').remove();
+                    $('a[href*="issue.php?discussion=' + discussion + '&delete="]').remove();
+                    $('a[href*="post.php?prune="]').remove();
                     // Add our customized reply links.
-                    $('#page-blocks-edusupport-issue .forum-post-container>.forumpost').each(function() {
+                    $('.forum-post-container>.forumpost').each(function() {
                         var postid = $(this).attr('data-post-id');
                         if ($(this).find('.reply-' + postid).length == 0) {
                             $(this).find('.post-actions:first-child').append(

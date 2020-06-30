@@ -205,7 +205,8 @@ if (!\local_edusupport\lib::is_supportteam() && !is_siteadmin()) {
     if (!$vpost = $postvault->get_from_id($parent)) {
         print_error("notexists", 'forum', "$CFG->wwwroot/mod/forum/view.php?f={$vforum->get_id()}");
     }
-    $post = $DB->get_record('forum_posts', array('id' => $parent->id));
+
+    $post = $DB->get_record('forum_posts', array('id' => $parent));
 
     $rendererfactory = \mod_forum\local\container::get_renderer_factory();
     $discussionrenderer = $rendererfactory->get_discussion_renderer($vforum, $vdiscussion, $displaymode);
@@ -215,7 +216,10 @@ if (!\local_edusupport\lib::is_supportteam() && !is_siteadmin()) {
         return $vpost->get_id();
     }, array_merge([$vpost], array_values($replies)));
 
-    echo $discussionrenderer->render($USER, $vpost, $replies);
+    // we use the first admin account for rendering the forum page.
+    $admins = explode(',', get_config('core', 'siteadmins'));
+    $user = $DB->get_record('user', array('id' => $admins[0]));
+    echo $discussionrenderer->render($user, $vpost, $replies);
 
     $PAGE->requires->js_call_amd("local_edusupport/main", "injectReplyButtons", array($discussionid));
 
@@ -258,6 +262,7 @@ if (!\local_edusupport\lib::is_supportteam() && !is_siteadmin()) {
     if (!empty($replyto)) {
         //require_once($CFG->dirroot . '/mod/forum/classes/post_form.php');
         require_once($CFG->dirroot . '/local/edusupport/classes/post_form.php');
+        $thresholdwarning = forum_check_throttling($vforum, $cm);
         $mform_post = new \local_edusupport_post_form($CFG->wwwroot . '/local/edusupport/issue.php?d=' . $discussionid . '&replyto=' . $replyto, array(
             'course' => $course,
             'cm' => $cm,
@@ -302,7 +307,7 @@ if (!\local_edusupport\lib::is_supportteam() && !is_siteadmin()) {
                     'format'=> editors_get_preferred_format(),
                     'itemid'=>$draftid_editor
                 ),
-                'discussionsubscribe' => $discussionsubscribe,
+                'discussionsubscribe' => 0,
                 'mailnow'=> 1,
                 'userid'=>$USER->id,
                 'parent'=>$replyto,
