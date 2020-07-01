@@ -87,7 +87,7 @@ $string['label:2ndlevel'] = '2nd Level';
 $string['missing_permission'] = 'Fehlende Erlaubnis!';
 $string['missing_targetforum'] = 'Das Zielforum fehlt und muss konfiguriert werden!';
 $string['missing_targetforum_exists'] = 'Das konfigurierte Zielforum existiert nicht. Die fehlerhafte Konfiguration muss behoben werden!';
-$string['no_such_issue'] = 'Dies ist kein offenes Ticket! Sie können die <a href="{$a->todiscussinurl}"><u>Diskussion direkt im Forum</u></a> aufrufen oder zurück zur <a href="{$a->toissuesurl}"><u>Übersicht der offenen Tickets</u></a> wechseln.';
+$string['no_such_issue'] = 'Dies ist kein offenes Ticket! Sie können die <a href="{$a->todiscussionurl}"><u>Diskussion direkt im Forum</u></a> aufrufen oder zurück zur <a href="{$a->toissuesurl}"><u>Übersicht der offenen Tickets</u></a> wechseln.';
 $string['only_you'] = 'Nur Sie und unser Team';
 $string['postto2ndlevel'] = '2nd Level Support';
 $string['postto2ndlevel:description'] = 'Im gewählten Forum gehören Sie zum 1st Level Support. Daher können Sie mit dieser Schaltfläche Ihr Ticket direkt an den 2nd Level Support richten!';

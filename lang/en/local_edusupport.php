@@ -88,7 +88,7 @@ $string['label:2ndlevel'] = '2nd level';
 $string['missing_permission'] = 'Missing required permission';
 $string['missing_targetforum'] = 'Missing target forum, must be configured!';
 $string['missing_targetforum_exists'] = 'The configured target forum does not exist. Wrong configuration!';
-$string['no_such_issue'] = 'This is not an open issue! You can navigate to the <a href="{$a->todiscussinurl}"><u>discussion page</u></a> or go <a href="{$a->toissuesurl}"><u>back to the issues overview</u></a>.';
+$string['no_such_issue'] = 'This is not an open issue! You can navigate to the <a href="{$a->todiscussionurl}"><u>discussion page</u></a> or go <a href="{$a->toissuesurl}"><u>back to the issues overview</u></a>.';
 $string['only_you'] = 'Only you and our team';
 $string['postto2ndlevel'] = 'Call 2nd level support';
 $string['postto2ndlevel:description'] = 'It seems you are the first level support of the forum you selected. If you want to, you can directly call the 2nd level support for your issue!';
