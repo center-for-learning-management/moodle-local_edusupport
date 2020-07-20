@@ -33,7 +33,7 @@ defined('MOODLE_INTERNAL') || die;
  */
 function local_edusupport_before_standard_html_head(){
     global $CFG, $DB, $OUTPUT, $PAGE, $USER;
-    if (isloggedin() && !is_guestuser($USER)) {
+    if (isloggedin() && !isguestuser($USER)) {
         $PAGE->requires->js_call_amd('local_edusupport/main', 'injectHelpButton', array());
     }
 
