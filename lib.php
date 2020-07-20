@@ -32,8 +32,11 @@ defined('MOODLE_INTERNAL') || die;
  *
  */
 function local_edusupport_before_standard_html_head(){
-    global $CFG, $DB, $OUTPUT, $PAGE;
-    $PAGE->requires->js_call_amd('local_edusupport/main', 'injectHelpButton', array());
+    global $CFG, $DB, $OUTPUT, $PAGE, $USER;
+    if (isloggedin() && !is_guestuser($USER)) {
+        $PAGE->requires->js_call_amd('local_edusupport/main', 'injectHelpButton', array());
+    }
+
     if (strpos($_SERVER["SCRIPT_FILENAME"], '/mod/forum/discuss.php') > 0) {
         $d = optional_param('d', 0, PARAM_INT);
         $discussion = $DB->get_record('forum_discussions', array('id' => $d));
