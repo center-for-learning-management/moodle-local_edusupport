@@ -105,7 +105,7 @@ if (!is_siteadmin()) {
         $state = $DB->get_record('local_edusupport', array('forumid' => $forum->id));
         $forum->state = (!empty($state->id));
         $forum->statecentral = (!empty($centralforum) && $centralforum == $forum->id);
-        $forum->dedicatedsupporter = $state->dedicatedsupporter;
+        $forum->dedicatedsupporter = !empty($state->dedicatedsupporter) ? $state->dedicatedsupporter : 0;
         $forum->supporters = $supporters;
         if (!empty($forum->dedicatedsupporter)) {
             foreach ($forum->supporters AS &$supporter) {
