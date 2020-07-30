@@ -281,7 +281,7 @@ class lib {
 
         $forums = array();
         $courseids = implode(',', array_keys(enrol_get_all_users_courses($userid)));
-        if (count($courseids) > 0) {
+        if (strlen($courseids) > 0) {
             $sql = "SELECT f.id,f.name,f.course
                         FROM {local_edusupport} be, {forum} f
                         WHERE f.course IN ($courseids)
