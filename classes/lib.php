@@ -717,10 +717,14 @@ class lib {
      * @param userid.
      **/
     public static function supportforum_setdedicatedsupporter($forumid, $userid) {
-        if (!self::is_supportteam($userid)) return false;
         if (!self::is_supportforum($forumid)) return false;
         global $DB;
-        $DB->set_field('local_edusupport', 'dedicatedsupporter', $userid, array('forumid' => $forumid));
+        if ($userid == -1) {
+            $DB->set_field('local_edusupport', 'dedicatedsupporter', -1, array('forumid' => $forumid));
+        } else {
+            if (!self::is_supportteam($userid)) return false;
+            $DB->set_field('local_edusupport', 'dedicatedsupporter', $userid, array('forumid' => $forumid));
+        }
         return true;
     }
 }
