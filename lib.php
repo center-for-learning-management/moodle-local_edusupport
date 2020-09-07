@@ -79,7 +79,7 @@ function local_edusupport_before_standard_html_head(){
         // Check if the coursecategory exists and is visible.
         $coursecat = \core_course_category::get($categoryid, MUST_EXIST, true);
         if (empty($coursecat->__get('visible'))) {
-            $courecat->update(array('visible' => 1));
+            $coursecat->update(array('visible' => 1));
         }
 
         // Check for any supportforum-courses that are should be contained by this coursecat.
