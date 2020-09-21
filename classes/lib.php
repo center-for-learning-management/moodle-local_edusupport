@@ -28,6 +28,7 @@ defined('MOODLE_INTERNAL') || die;
 require_once($CFG->libdir . '/adminlib.php');
 
 class lib {
+    const SYSTEM_COURSE_ID = 1;
     /**
      * Perform some actions before the popup is rendered.
      */
@@ -313,11 +314,32 @@ class lib {
 
     /**
      * Checks if a user belongs to the support team.
+     * @param userid check particular user, or current user
+     * @param course check for particular course
+     * @param includeglobalteam if checking for particular course, also include global team.
      */
-    public static function is_supportteam($userid = 0) {
+    public static function is_supportteam($userid = 0, $courseid = 0, $includeglobalteam = true) {
         global $DB, $USER;
         if (empty($userid)) $userid = $USER->id;
-        $chk = $DB->get_record('local_edusupport_supporters', array('userid' => $userid));
+        $sql = "SELECT id,userid
+                    FROM {local_edusupport_supporters}
+                    WHERE userid = ?";
+        $params = array($userid);
+
+        if ($courseid > 0 && !$includeglobalteam) {
+            $sql .= " AND courseid = ?";
+            $params[] = $courseid;
+        } elseif ($courseid > 0 && $includeglobalteam) {
+            $sql .= " AND (courseid = ? OR courseid = ?)";
+            $params[] = $courseid;
+            $params[] = self::SYSTEM_COURSE_ID;
+        } else {
+            $sql .= " AND courseid = ?";
+            $params[] = self::SYSTEM_COURSE_ID;
+        }
+
+        $sql .= " LIMIT 0,1";
+        $chk = $DB->get_record_sql($sql, $params);
         return !empty($chk->userid);
     }
 
@@ -414,7 +436,15 @@ class lib {
 
         // @TODO Only subscribe 1 person and make it responsible!
         $supportforum = $DB->get_record('local_edusupport', array('forumid' => $discussion->forum));
-        $supporters = $DB->get_records('local_edusupport_supporters', array('supportlevel' => ''), 'userid');
+        $sql = "SELECT *
+                    FROM {local_edusupport_supporters}
+                    WHERE supportlevel = ''
+                        AND (
+                            courseid = ?
+                            OR
+                            courseid = ?
+                        )";
+        $supporters = $DB->get_records($sql, array(\local_edusupport\lib::SYSTEM_COURSE_ID, $discussion->course));
         if (!empty($supportforum->dedicatedsupporter) && !empty($supporters[$supportforum->dedicatedsupporter]->id)) {
             $dedicated = $supporters[$supportforum->dedicatedsupporter];
         } else {
@@ -456,7 +486,7 @@ class lib {
             return -2;
         }
         // Check if the assigned user belongs to the supportteam as well.
-        if (!self::is_supportteam($userid)) {
+        if (!self::is_supportteam($userid, $discussion->course)) {
             return -3;
         }
 
@@ -496,7 +526,8 @@ class lib {
     public static function subscription_add($discussionid, $userid = 0) {
         global $DB, $USER;
         if (empty($userid)) $userid = $USER->id;
-        if (!self::is_supportteam($userid)) return;
+        $discussion = $DB->get_record('forum_discussions', array('id' => $discussionid));
+        if (!self::is_supportteam($userid, $discussion->course)) return;
         $issue = self::get_issue($discussionid);
         $subscription = $DB->get_record('local_edusupport_subscr', array('discussionid' => $discussionid, 'userid' => $userid));
         if (empty($subscription->id)) {
@@ -674,7 +705,7 @@ class lib {
             // We have to re-sync all supportforums.
             $forums = $DB->get_records('local_edusupport', array());
             foreach ($forums AS $forum) {
-                self::supportforum_rolecheck($forum->id);
+                self::supportforum_rolecheck($forum->forumid);
             }
         } else {
             $forum = $DB->get_record('forum', array('id' => $forumid), '*', IGNORE_MISSING);
@@ -683,6 +714,7 @@ class lib {
 
             $cm = \get_coursemodule_from_instance('forum', $forumid, $forum->course, false, MUST_EXIST);
             $ctx = \context_module::instance($cm->id);
+
             $roleid = get_config('local_edusupport', 'supportteamrole');
 
             // Get all users that currently have the supporter-role.
@@ -692,8 +724,7 @@ class lib {
                 $unassign = false;
                 if (!$issupportforum) $unassign = true;
                 else {
-                    $sql = "SELECT * FROM {local_edusupport_supporters} WHERE userid=? AND (courseid=0 OR courseid=?)";
-                    $issupporter = $DB->get_record_sql($sql, array($curmember, $forum->course));
+                    $issupporter = self::is_supportteam($curmember,  $forum->course);
                     $unassign = empty($issupporter->id);
                 }
                 if ($unassign) {
@@ -703,8 +734,11 @@ class lib {
 
             if ($issupportforum) {
                 // Assign all current supportteam users.
-                $sql = "SELECT * FROM {local_edusupport_supporters} WHERE courseid=1 OR courseid=?";
-                $members = $DB->get_records_sql($sql, array($forum->course));
+                $sql = "SELECT *
+                            FROM {local_edusupport_supporters}
+                            WHERE courseid=? OR courseid=?";
+                $params = array(self::SYSTEM_COURSE_ID, $forum->course);
+                $members = $DB->get_records_sql($sql, $params);
                 foreach ($members AS $member) {
                     role_assign($roleid, $member->userid, $ctx->id);
                 }

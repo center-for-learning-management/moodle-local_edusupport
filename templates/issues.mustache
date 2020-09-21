@@ -18,13 +18,13 @@
     <table class="generaltable" width="100%">
         <thead>
             <tr>
-                <td width="200">#</td>
-                <td>{{#str}} issue, local_edusupport {{/str}}</td>
-                <td>{{#str}} name {{/str}}</td>
-                <td>{{#str}} assigned, local_edusupport {{/str}}</td>
-                <td>{{#str}} lastpost, forum {{/str}}</td>
-                <td>{{#str}} modified {{/str}}</td>
-                <td>{{#str}} action {{/str}}</td>
+                <th width="200">#</th>
+                <th>{{#str}} issue, local_edusupport {{/str}}</th>
+                <th>{{#str}} name {{/str}}</th>
+                <th>{{#str}} assigned, local_edusupport {{/str}}</th>
+                <th>{{#str}} lastpost, forum {{/str}}</th>
+                <th>{{#str}} modified {{/str}}</th>
+                <th>{{#str}} action {{/str}}</th>
             </tr>
         </thead>
         <tbody>
@@ -36,8 +36,13 @@
                     <td>
                         <a href="{{wwwroot}}/local/edusupport/issue.php?d={{discussionid}}">
                             {{id}}
-                        </a></td>
-                    <td>{{name}}</td>
+                        </a>
+                    </td>
+                    <td>
+                        <a href="{{wwwroot}}/local/edusupport/issue.php?d={{discussionid}}">
+                            {{name}}
+                        </a>
+                    </td>
                     <td>
                         <a href="{{wwwroot}}/user/profile.php?id={{userid}}">
                             {{userfullname}}
@@ -58,6 +63,11 @@
                     </td>
                 </tr>
             {{/current}}
+            {{^current}}
+            <tr>
+                <td colspan="7">{{#str}} issues:current:none, local_edusupport {{/str}}</td>
+            </tr>
+            {{/current}}
             <tr>
                 <th colspan="7">{{#str}} issues:assigned, local_edusupport {{/str}}</th>
             </tr>
@@ -66,8 +76,13 @@
                     <td>
                         <a href="{{wwwroot}}/local/edusupport/issue.php?d={{discussionid}}">
                             {{id}}
-                        </a></td>
-                    <td>{{name}}</td>
+                        </a>
+                    </td>
+                    <td>
+                        <a href="{{wwwroot}}/local/edusupport/issue.php?d={{discussionid}}">
+                            {{name}}
+                        </a>
+                    </td>
                     <td>
                         <a href="{{wwwroot}}/user/profile.php?id={{userid}}">
                             {{userfullname}}
@@ -94,6 +109,11 @@
                     </td>
                 </tr>
             {{/assigned}}
+            {{^assigned}}
+            <tr>
+                <td colspan="7">{{#str}} issues:assigned:none, local_edusupport {{/str}}</td>
+            </tr>
+            {{/assigned}}
             <tr>
                 <th colspan="7">{{#str}} issues:other, local_edusupport {{/str}}</th>
             </tr>
@@ -102,8 +122,13 @@
                     <td>
                         <a href="{{wwwroot}}/local/edusupport/issue.php?d={{discussionid}}">
                             {{id}}
-                        </a></td>
-                    <td>{{name}}</td>
+                        </a>
+                    </td>
+                    <td>
+                        <a href="{{wwwroot}}/local/edusupport/issue.php?d={{discussionid}}">
+                            {{name}}
+                        </a>
+                    </td>
                     <td>
                         <a href="{{wwwroot}}/user/profile.php?id={{userid}}">
                             {{userfullname}}
@@ -129,6 +154,11 @@
                         </a>
                     </td>
                 </tr>
+            {{/other}}
+            {{^other}}
+            <tr>
+                <td colspan="7">{{#str}} issues:other:none, local_edusupport {{/str}}</td>
+            </tr>
             {{/other}}
         </tbody>
     </table>
