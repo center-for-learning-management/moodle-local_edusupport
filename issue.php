@@ -227,6 +227,10 @@ if (!\local_edusupport\lib::is_supportteam() && !is_siteadmin()) {
     $out = ob_get_contents();
     ob_end_clean();
 
+    $out = str_replace("class=\"discussion-settings-menu\"", "class=\"discussion-settings-menu\" style=\"display: none;\"", $out);
+    $out = str_replace("class=\"next-discussion\"", "class=\"next-discussion\" style=\"display: none;\"", $out);
+    $out = str_replace("class=\"prev-discussion\"", "class=\"prev-discussion\" style=\"display: none;\"", $out);
+
     $out = str_replace($CFG->wwwroot . '/mod/forum/discuss.php', $CFG->wwwroot . '/local/edusupport/issue.php', $out);
     $out = str_replace($CFG->wwwroot . '/mod/forum/post.php?reply=', $CFG->wwwroot . '/local/edusupport/issue.php?discussion=' . $discussionid . '&parent=', $out);
     $out = str_replace($CFG->wwwroot . '/mod/forum/post.php?edit=', $CFG->wwwroot . '/local/edusupport/editpost.php?discussion=' . $discussionid . '&edit=', $out);
@@ -235,7 +239,7 @@ if (!\local_edusupport\lib::is_supportteam() && !is_siteadmin()) {
     $starts = array(
         //'<div class="singleselect d-inline-block">',
         //'<div class="discussion-nav clearfix">',
-        '<div class="commands">'
+        '<div class="commands">',
     );
     $ends = array(
         //'</div>',

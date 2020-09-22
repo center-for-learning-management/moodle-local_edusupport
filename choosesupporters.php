@@ -32,7 +32,7 @@ $supportlevel = optional_param('supportlevel', '', PARAM_TEXT);
 $remove = optional_param('remove', 0, PARAM_BOOL);
 
 // The next param is not used yet. We could select supporters, that are resposible for certain courses only.
-$courseid = optional_param('courseid', 1, PARAM_INT);
+$courseid = optional_param('courseid', \local_edusupport\lib::SYSTEM_COURSE_ID, PARAM_INT);
 
 $context = \context_system::instance();
 $PAGE->set_context($context);
