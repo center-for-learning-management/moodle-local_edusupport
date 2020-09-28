@@ -444,7 +444,7 @@ class lib {
                             OR
                             courseid = ?
                         )";
-        $supporters = $DB->get_records($sql, array(\local_edusupport\lib::SYSTEM_COURSE_ID, $discussion->course));
+        $supporters = $DB->get_records_sql($sql, array(\local_edusupport\lib::SYSTEM_COURSE_ID, $discussion->course));
         if (!empty($supportforum->dedicatedsupporter) && !empty($supporters[$supportforum->dedicatedsupporter]->id)) {
             $dedicated = $supporters[$supportforum->dedicatedsupporter];
         } else {
