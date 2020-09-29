@@ -456,7 +456,7 @@ class lib {
         self::subscription_add($discussionid, $dedicated->userid);
 
         self::create_post($issue->discussionid,
-            get_string('issue_assign_nextlevel:post', 'local_edusupport', array(
+            get_string('issue_assign_nextlevel:post', 'local_edusupport', (object) array(
                 'fromuserfullname' => \fullname($USER),
                 'fromuserid' => $USER->id,
                 'wwwroot' => $CFG->wwwroot,
@@ -503,7 +503,7 @@ class lib {
             get_string(
                 ($userid == $USER->id) ? 'issue_assign_3rdlevel:postself' : 'issue_assign_3rdlevel:post',
                 'local_edusupport',
-                array(
+                (object) array(
                     'fromuserfullname' => \fullname($USER),
                     'fromuserid' => $USER->id,
                     'touserfullname' => \fullname($touser),
