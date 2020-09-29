@@ -69,7 +69,7 @@ $string['issue_assign_nextlevel'] = 'Forward this issue to 2nd level support';
 $string['issue_assign_nextlevel:error'] = 'Sorry, this issue could not be forwarded to the 2nd level support';
 $string['issue_assign_nextlevel:post'] = '<a href="{$a->wwwroot}/profile/view.php?id={$a->fromuserid}">{$a->fromuserfullname}</a> forwarded this issue to the 2nd level support';
 $string['issue_assigned:subject'] = 'Supportissue assigned';
-$string['issue_assigned:text'] = 'The support issue was assigned to <a href="{$a->wwwroot}/profile/view.php?{$a->id}">{$a->firstname} {$a->lastname}</a>!';
+$string['issue_assigned:text'] = 'The support issue was assigned to <a href="{$a->wwwroot}/profile/view.php?id={$a->id}">{$a->firstname} {$a->lastname}</a>!';
 $string['issue_revoke'] = 'Revoke this issue from higher support level';
 $string['issue_revoke:error'] = 'Sorry, this issue could not be revoked from the higher support levels';
 $string['issue_revoke:post'] = '<a href="{$a->wwwroot}/profile/view.php?id={$a->fromuserid}">{$a->fromuserfullname}</a> revoked this issue from the higher support level';

@@ -509,7 +509,7 @@ class lib {
                     'touserfullname' => \fullname($touser),
                     'touserid' => $userid,
                     'tosupportlevel' => $supporter->supportlevel,
-                    'wwwroot ' => $CFG->wwwroot,
+                    'wwwroot' => $CFG->wwwroot,
                 )
             ),
             get_string('issue_assigned:subject', 'local_edusupport')
