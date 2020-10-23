@@ -355,6 +355,15 @@ class lib {
     }
 
     /**
+     * Get all supporters for a certain course (the trainers).
+     * @param object forum
+     */
+    public static function get_course_supporters($forum) {
+        $ctx = \context_course::instance($forum->course);
+        return \get_users_by_capability($ctx, 'moodle/course:update');
+    }
+
+    /**
      * Get the enrol instance for manual enrolments of a course, or create one.
      * @param courseid
      * @return object enrolinstance
@@ -444,7 +453,7 @@ class lib {
                             OR
                             courseid = ?
                         )";
-        $supporters = $DB->get_records($sql, array(\local_edusupport\lib::SYSTEM_COURSE_ID, $discussion->course));
+        $supporters = $DB->get_records_sql($sql, array(\local_edusupport\lib::SYSTEM_COURSE_ID, $discussion->course));
         if (!empty($supportforum->dedicatedsupporter) && !empty($supporters[$supportforum->dedicatedsupporter]->id)) {
             $dedicated = $supporters[$supportforum->dedicatedsupporter];
         } else {
@@ -456,7 +465,7 @@ class lib {
         self::subscription_add($discussionid, $dedicated->userid);
 
         self::create_post($issue->discussionid,
-            get_string('issue_assign_nextlevel:post', 'local_edusupport', array(
+            get_string('issue_assign_nextlevel:post', 'local_edusupport', (object) array(
                 'fromuserfullname' => \fullname($USER),
                 'fromuserid' => $USER->id,
                 'wwwroot' => $CFG->wwwroot,
@@ -503,13 +512,13 @@ class lib {
             get_string(
                 ($userid == $USER->id) ? 'issue_assign_3rdlevel:postself' : 'issue_assign_3rdlevel:post',
                 'local_edusupport',
-                array(
+                (object) array(
                     'fromuserfullname' => \fullname($USER),
                     'fromuserid' => $USER->id,
                     'touserfullname' => \fullname($touser),
                     'touserid' => $userid,
                     'tosupportlevel' => $supporter->supportlevel,
-                    'wwwroot ' => $CFG->wwwroot,
+                    'wwwroot' => $CFG->wwwroot,
                 )
             ),
             get_string('issue_assigned:subject', 'local_edusupport')

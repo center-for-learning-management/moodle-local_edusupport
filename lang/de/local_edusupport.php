@@ -45,6 +45,7 @@ $string['create_issue_success_title'] = 'Erfolg';
 $string['create_issue_success_description'] = 'Ihre Anfrage wurde gespeichert. Wir kümmern uns darum so rasch wie möglich!';
 $string['create_issue_success_description_mail'] = 'Ihre Anfrage wurde per e-Mail gesendet. Wir kümmern uns darum so rasch wie möglich!';
 $string['create_issue_success_goto'] = 'Anfrage öffnen';
+$string['create_issue_success_responsibles'] = 'Ansprechperson für diese Ticket ist/sind:';
 $string['create_issue_success_close'] = 'Schließen';
 $string['cron:reminder:title'] = 'eduSupport Erinnerung';
 $string['cron:reminder:intro'] = 'Dies ist eine freundlicher Erinnerung an jene offenen Tickets, die Ihnen als eduSupporter zugeteilt wurden!';
@@ -68,7 +69,7 @@ $string['issue_assign_nextlevel'] = 'Dieses Ticket dem 2nd Level Support zuweise
 $string['issue_assign_nextlevel:error'] = 'Entschuldigung, das Ticket konnte nicht dem 2nd Level Support zugewiesen werden.';
 $string['issue_assign_nextlevel:post'] = '<a href="{$a->wwwroot}/profile/view.php?id={$a->fromuserid}">{$a->fromuserfullname}</a> hat dieses Ticket dem nächsthöheren Supportlevel zugewiesen!';
 $string['issue_assigned:subject'] = 'Supportanfrage zugeordnet';
-$string['issue_assigned:text'] = 'Die Supportanfrage wurde <a href="{$a->wwwroot}/profile/view.php?{$a->id}">{$a->firstname} {$a->lastname}</a> zugeordnet!';
+$string['issue_assigned:text'] = 'Die Supportanfrage wurde <a href="{$a->wwwroot}/profile/view.php?id={$a->id}">{$a->firstname} {$a->lastname}</a> zugeordnet!';
 $string['issue_revoke'] = 'Ticket vom höheren Supportlevel zurücknehmen';
 $string['issue_revoke:error'] = 'Entschuldigung, dieses Ticket konnte vom höheren Supportlevel nicht zurückgeholt werden!';
 $string['issue_revoke:post'] = '<a href="{$a->wwwroot}/profile/view.php?id={$a->fromuserid}">{$a->fromuserfullname}</a> hat dieses Ticket vom höheren Supportlevel zurückgenommen';

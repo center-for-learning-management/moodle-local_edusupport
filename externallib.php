@@ -106,6 +106,10 @@ class local_edusupport_external extends external_api {
     public static function create_issue($subject, $description, $forum_group, $postto2ndlevel, $image, $url, $contactphone) {
         global $CFG, $DB, $OUTPUT, $PAGE, $USER;
         $params = self::validate_parameters(self::create_issue_parameters(), array('subject' => $subject, 'description' => $description, 'forum_group' => $forum_group, 'postto2ndlevel' => $postto2ndlevel, 'image' => $image, 'url' => $url, 'contactphone' => $contactphone));
+        $reply = array(
+            'discussionid' => 0,
+            'responsibles' => array(),
+        );
 
         $tmp = explode('_', $forum_group);
         $forumid = 0; $groupid = 0;
@@ -122,7 +126,13 @@ class local_edusupport_external extends external_api {
             $messagehtml = $OUTPUT->render_from_template("local_edusupport/issue_template", $params);
             $messagetext = html_to_text($messagehtml);
 
-            $recipients = array(\core_user::get_support_user());
+            $supportuser = \core_user::get_support_user();
+            $recipients = array($supportuser);
+            $reply['responsibles'][] = array(
+                'userid' => $supportuser->id,
+                'name' => \fullname($supportuser),
+                'email' => $supportuser->email,
+            );
             $fromuser = $USER;
 
             if (!empty($params['image'])) {
@@ -144,7 +154,8 @@ class local_edusupport_external extends external_api {
                     email_to_user($recipient, $fromuser, $subject, $messagetext, $messagehtml, "", true);
                 }
             }
-            return -999;
+            $reply['discussionid'] = -999;
+            return $reply;
         } else {
             $potentialtargets = \local_edusupport\lib::get_potentialtargets();
             if (\local_edusupport\lib::is_supportforum($forumid) && !empty($potentialtargets[$forumid]->id)) {
@@ -155,6 +166,15 @@ class local_edusupport_external extends external_api {
                 // Request and permission validation.
                 $forum = $DB->get_record('forum', array('id' => $forumid), '*', MUST_EXIST);
                 list($course, $cm) = get_course_and_cm_from_instance($forum, 'forum');
+
+                $coursesupporters = \local_edusupport\lib::get_course_supporters($forum);
+                foreach ($coursesupporters as $coursesupporter) {
+                    $reply['responsibles'][] = array(
+                        'userid' => $coursesupporter->id,
+                        'name' => \fullname($coursesupporter),
+                        'email' => $coursesupporter->email,
+                    );
+                }
 
                 $context = context_module::instance($cm->id);
                 self::validate_context($context);
@@ -272,25 +292,39 @@ class local_edusupport_external extends external_api {
                     if ($canpostto2ndlevel && !empty($postto2ndlevel)) {
                         \local_edusupport\lib::set_2nd_level($discussion->id);
                     }
-                    return $discussionid;
+                    $reply['discussionid'] = $discussionid;
+                    return $reply;
                 } else {
                     throw new moodle_exception('couldnotadd', 'forum');
                 }
-                return -2;
+                $reply['discussionid'] = -2;
+                return $reply;
 
             } else {
-                return -1;
+                $reply['discussionid'] = -1;
+                return $reply;
             }
         }
-
-
     }
     /**
      * Return definition.
      * @return external_value
      */
     public static function create_issue_returns() {
-        return new external_value(PARAM_INT, 'Returns the discussion id of the created issue, -999 when mail was sent, or -1 on error');
+        return new \external_single_structure(
+            array(
+                'discussionid' => new \external_value(PARAM_INT, 'Returns the discussion id of the created issue, -999 when mail was sent, or -1 on error'),
+                'responsibles' => new \external_multiple_structure(
+                    new \external_single_structure(
+                        array(
+                            'userid' => new \external_value(PARAM_INT, 'UserID of person or entity'),
+                            'name' => new \external_value(PARAM_TEXT, 'Name of person or entity'),
+                            'email' => new \external_value(PARAM_EMAIL, 'e-Mail of person or entity'),
+                        )
+                    )
+                )
+            )
+        );
     }
 
     /**

@@ -88,7 +88,7 @@ class issue_create_form extends moodleform {
         }
         $supportuser = \core_user::get_support_user();
         if (count($potentialtargets) == 0) {
-            $options['mail'] = get_string('email_to_xyz', 'local_edusupport', array('email' => $supportuser->email));
+            $options['mail'] = get_string('email_to_xyz', 'local_edusupport', (object) array('email' => $supportuser->email));
         }
 
         $hideifs = '["' . implode('","', $hideifs) . '"]';
