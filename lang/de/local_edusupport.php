@@ -45,6 +45,7 @@ $string['create_issue_success_title'] = 'Erfolg';
 $string['create_issue_success_description'] = 'Ihre Anfrage wurde gespeichert. Wir kümmern uns darum so rasch wie möglich!';
 $string['create_issue_success_description_mail'] = 'Ihre Anfrage wurde per e-Mail gesendet. Wir kümmern uns darum so rasch wie möglich!';
 $string['create_issue_success_goto'] = 'Anfrage öffnen';
+$string['create_issue_success_responsibles'] = 'Ansprechperson für diese Ticket ist/sind:';
 $string['create_issue_success_close'] = 'Schließen';
 $string['cron:reminder:title'] = 'eduSupport Erinnerung';
 $string['cron:reminder:intro'] = 'Dies ist eine freundlicher Erinnerung an jene offenen Tickets, die Ihnen als eduSupporter zugeteilt wurden!';

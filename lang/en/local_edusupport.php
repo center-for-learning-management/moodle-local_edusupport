@@ -46,6 +46,7 @@ $string['create_issue_success_title'] = 'Success';
 $string['create_issue_success_description'] = 'Your issue has been stored. We will help you as soon as possible!';
 $string['create_issue_success_description_mail'] = 'Your issue has been sent by mail. We will help you as soon as possible!';
 $string['create_issue_success_goto'] = 'view issue';
+$string['create_issue_success_responsibles'] = 'Contact person for this ticket is/are:';
 $string['create_issue_success_close'] = 'close';
 $string['cron:reminder:title'] = 'eduSupport reminder';
 $string['cron:reminder:intro'] = 'This is a friendly reminder about open issues, that are assigned to you as eduSupporter!';

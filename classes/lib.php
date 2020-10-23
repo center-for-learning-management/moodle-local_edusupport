@@ -355,6 +355,15 @@ class lib {
     }
 
     /**
+     * Get all supporters for a certain course (the trainers).
+     * @param object forum
+     */
+    public static function get_course_supporters($forum) {
+        $ctx = \context_course::instance($forum->course);
+        return \get_users_by_capability($ctx, 'moodle/course:update');
+    }
+
+    /**
      * Get the enrol instance for manual enrolments of a course, or create one.
      * @param courseid
      * @return object enrolinstance

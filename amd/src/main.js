@@ -258,25 +258,51 @@ define(
                     // result is the discussion id, -999 if sent by mail, or -1. if > 0 show confirm box that redirects to post. if -1 show error.
                     if (MAIN.debug > 0) console.log(result);
                     modal.hide();
-                    if (parseInt(result) == -999) {
+
+                    var responsibles = '';
+                    if (typeof result.responsibles !== 'undefined') {
+                        responsibles += '<ul>';
+                        for (var i = 0; i < result.responsibles.length; i++) {
+                            var r = result.responsibles[i];
+                            if (typeof r.userid !== 'undefined' && r.userid > 0) {
+                                responsibles += '<li><a href="' + URL.fileUrl('/user', 'profile.php?id=' + r.userid) + '" target="_blank">' + r.name + '</a></li>';
+                            } else if (typeof r.email !== 'undefined' && r.email != '') {
+                                responsibles += '<li><a href="mailto:' + r.email + '">' + r.name + '</a></li>';
+                            } else {
+                                responsibles += '<li>' + r.name + '</li>';
+                            }
+                        }
+                        responsibles += '</ul>';
+                    }
+                    if (typeof result.discussionid !== 'undefined' && parseInt(result.discussionid) == -999) {
                         // confirmation, was sent by mail.
                         STR.get_strings([
                             {'key' : 'create_issue_success_title', component: 'local_edusupport' },
-                            {'key' : 'create_issue_success_description_mail', component: 'local_edusupport' },
+                            {'key' : 'create_issue_success_description_mail', component: 'local_edusupport'},
+                            {'key' : 'create_issue_success_responsibles', component: 'local_edusupport' },
                             {'key' : 'create_issue_success_close', component: 'local_edusupport' },
                             ]).done(function(s) {
-                                NOTIFICATION.alert(s[0], s[1], s[2]);
+                                var desc = s[1];
+                                if (responsibles != '') {
+                                    desc = s[2] + responsibles;
+                                }
+                                NOTIFICATION.alert(s[0], desc, s[3]);
                             }
                         ).fail(NOTIFICATION.exception);
-                    } else if (parseInt(result) > 0) {
+                    } else if (typeof result.discussionid !== 'undefined' && parseInt(result.discussionid) > 0) {
                         // confirmation
                         STR.get_strings([
                             {'key' : 'create_issue_success_title', component: 'local_edusupport' },
-                            {'key' : 'create_issue_success_description', component: 'local_edusupport' },
+                            {'key' : 'create_issue_success_description', component: 'local_edusupport'},
+                            {'key' : 'create_issue_success_responsibles', component: 'local_edusupport' },
                             {'key' : 'create_issue_success_goto', component: 'local_edusupport' },
                             {'key' : 'create_issue_success_close', component: 'local_edusupport' },
                             ]).done(function(s) {
-                                NOTIFICATION.confirm(s[0], s[1], s[2], s[3], function(){ top.location.href = URL.fileUrl('/mod/forum/discuss.php', '?d=' + result); });
+                                var desc = s[1];
+                                if (responsibles != '') {
+                                    desc = s[2] + responsibles;
+                                }
+                                NOTIFICATION.confirm(s[0], desc, s[3], s[4], function(){ top.location.href = URL.fileUrl('/mod/forum', 'discuss.php?d=' + result.discussionid); });
                             }
                         ).fail(NOTIFICATION.exception);
                     } else {
