@@ -293,7 +293,6 @@ class local_edusupport_external extends external_api {
                         \local_edusupport\lib::set_2nd_level($discussion->id);
                     }
                     $reply['discussionid'] = $discussionid;
-                    error_log(print_r($reply, 1));
                     return $reply;
                 } else {
                     throw new moodle_exception('couldnotadd', 'forum');
