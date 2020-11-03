@@ -284,10 +284,11 @@ class lib {
         $courseids = implode(',', array_keys(enrol_get_all_users_courses($userid)));
         if (strlen($courseids) > 0) {
             $sql = "SELECT f.id,f.name,f.course
-                        FROM {local_edusupport} be, {forum} f
-                        WHERE f.course IN ($courseids)
+                        FROM {local_edusupport} be, {forum} f, {course} c
+                        WHERE f.course=c.id
                             AND be.forumid=f.id
-                        ORDER BY f.name ASC";
+                            AND c.id IN ($courseids)
+                        ORDER BY c.fullname ASC, f.name ASC";
             $_forums = $DB->get_records_sql($sql, array());
             $delimiter = ' > ';
             foreach ($_forums AS &$forum) {
