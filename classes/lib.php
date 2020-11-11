@@ -113,6 +113,22 @@ class lib {
         return true;
     }
     /**
+     * Delete an issue of which the discussion has been deleted.
+     * @param discussionid.
+    **/
+    public static function delete_issue($discussionid) {
+        global $CFG, $DB, $USER;
+
+        $issue = $DB->get_record('local_edusupport_issues', array('discussionid' => $discussionid));
+        if (!empty($issue->id)) {
+            // remove all supporters from the abo-list
+            $DB->delete_records('local_edusupport_subscr', array('discussionid' => $discussionid));
+            // delete issue.
+            $DB->delete_records('local_edusupport_issues', array('discussionid' => $discussionid));
+        }
+        return true;
+    }
+    /**
      * Enrols users to specific courses
      * @param courseids array containing courseid or a single courseid
      * @param userids array containing userids or a single userid
