@@ -110,6 +110,9 @@ class local_edusupport_external extends external_api {
             'discussionid' => 0,
             'responsibles' => array(),
         );
+        if (!empty(get_config('local_edusupport', 'trackhost'))) {
+            $params['webhost'] = gethostname();
+        }
 
         $tmp = explode('_', $forum_group);
         $forumid = 0; $groupid = 0;

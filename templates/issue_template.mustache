@@ -15,8 +15,12 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 
-
-<p>URL: <a href="{{url}}" target="_blank">{{url}}</a></p>
+{{#webhost}}
+    <p>{{#str}} webhost, local_edusupport {{/str}}: {{webhost}}</a></p>
+{{/webhost}}
+{{#url}}
+    <p>{{#str}} weburl, local_edusupport {{/str}}: <a href="{{url}}" target="_blank">{{url}}</a></p>
+{{/url}}
 {{#contactphone}}
     <p><a href="tel:{{contactphone}}">{{contactphone}}</a></p>
 {{/contactphone}}

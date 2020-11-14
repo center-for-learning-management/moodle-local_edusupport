@@ -41,6 +41,14 @@ if ($hassiteconfig) {
             PARAM_TEXT
         )
     );
+    $settings->add(
+        new admin_setting_configcheckbox(
+            'local_edusupport/trackhost',
+            get_string('trackhost', 'local_edusupport'),
+            get_string('trackhost:description', 'local_edusupport'),
+            1
+        )
+    );
 
     // @TODO a feature from the future.
     // $settings->add(new admin_setting_configcheckbox('local_edusupport/sendreminders', get_string('cron:reminder:title', 'local_edusupport'), '', '', PARAM_INT));
