@@ -35,7 +35,7 @@ $PAGE->set_heading($title);
 
 echo $OUTPUT->header();
 
-if (false && !\local_edusupport\lib::is_supporteam()) {
+if (!\local_edusupport\lib::is_supporteam()) {
     $tocmurl = new moodle_url('/course/view.php', array('id' => $courseid));
     echo $OUTPUT->render_from_template('local_edusupport/alert', array(
         'content' => get_string('missing_permission', 'local_edusupport'),
