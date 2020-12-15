@@ -110,10 +110,6 @@ if (!\local_edusupport\lib::is_supportteam()) {
         ), 'post', '', array('id' => 'mformforum')
     );
 
-    $draftitemid = \file_get_submitted_draft_itemid('attachments');
-    //\file_prepare_draft_area($draftitemid, $modcontext->id, 'mod_forum', 'attachment', empty($post->id)?null:$post->id, \mod_forum_post_form::attachment_options($forum));
-    \file_prepare_draft_area($draftitemid, $modcontext->id, 'mod_forum', 'attachment', null, \local_edusupport_post_form::attachment_options($forum));
-
     $formheading = '';
     if (!empty($parent)) {
         $heading = get_string("yourreply", "forum");
@@ -126,16 +122,19 @@ if (!\local_edusupport\lib::is_supportteam()) {
         }
     }
 
-    $postid = empty($post->id) ? null : $post->id;
+    $draftitemid = \file_get_submitted_draft_itemid('attachments');
+    //\file_prepare_draft_area($draftitemid, $modcontext->id, 'mod_forum', 'attachment', empty($post->id)?null:$post->id, \mod_forum_post_form::attachment_options($forum));
+    \file_prepare_draft_area($draftitemid, $modcontext->id, 'mod_forum', 'attachment', $post->id, \local_edusupport_post_form::attachment_options($forum));
+
     $draftid_editor = file_get_submitted_draft_itemid('message');
-    $currenttext = file_prepare_draft_area($draftid_editor, $modcontext->id, 'mod_forum', 'post', $postid, \local_edusupport_post_form::editor_options($modcontext, $postid), $post->message);
+    $currenttext = file_prepare_draft_area($draftid_editor, $modcontext->id, 'mod_forum', 'post', $post->id, \local_edusupport_post_form::editor_options($modcontext, $post->id), $post->message);
     $mform_post->set_data(
         array(
             'attachments'=>$draftitemid,
             'general'=>$heading,
             'subject'=> 'Re: ' . $post->subject,
             'message'=>array(
-                'text'  => $post->message,
+                'text'  => $currenttext,
                 'format'=> editors_get_preferred_format(),
                 'itemid'=>$draftid_editor
             ),
@@ -157,7 +156,7 @@ if (!\local_edusupport\lib::is_supportteam()) {
         +(isset($discussion->id)?array('discussion'=>$discussion->id):array())
     );
     if ($mform_post->is_cancelled()) {
-        redirect($PAGE->url->__toString());
+        redirect($CFG->wwwroot . '/local/edusupport/issue.php?d=' . $discussion->id);
     } else if ($fromform = $mform_post->get_data()) {
         if (empty($SESSION->fromurl)) {
             $errordestination = $PAGE->url->__toString();
@@ -165,22 +164,23 @@ if (!\local_edusupport\lib::is_supportteam()) {
             $errordestination = $SESSION->fromurl;
         }
 
-        $post->timestart = isset($discussion->timestart) ? $discussion->timestart : 0;
-        $post->timeend = isset($discussion->timeend) ? $discussion->timeend : 0;
-        $post->itemid = 0;
-
-        $fromform->itemid        = $fromform->message['itemid'];
-        $fromform->messageformat = $fromform->message['format'];
-        $fromform->message       = $fromform->message['text'];
+        $post->timestart     = isset($discussion->timestart) ? $discussion->timestart : 0;
+        $post->timeend       = isset($discussion->timeend) ? $discussion->timeend : 0;
+        $post->itemid        = $fromform->message['itemid'];
+        $post->messageformat = $fromform->message['format'];
+        $post->message       = $fromform->message['text'];
         // WARNING: the $fromform->message array has been overwritten, do not use it anymore!
-        $fromform->messagetrust  = trusttext_trusted($modcontext);
-
-        // Clean message text.
-        $fromform = trusttext_pre_edit($fromform, 'message', $modcontext);
+        $post->messagetrust  = trusttext_trusted($modcontext);
 
         if (!forum_update_post($post, $mform_post)) {
             print_error("couldnotupdate", "forum", $errordestination);
         }
+        // Move uploaded files manually.
+        //$currenttext = file_prepare_draft_area($draftid_editor, $modcontext->id, 'mod_forum', 'post', $postid, \local_edusupport_post_form::editor_options($modcontext, $postid), $post->message);
+        file_save_draft_area_files($fromform->attachments, $modcontext->id, 'mod_forum', 'attachment',
+                    $post->id, \local_edusupport_post_form::editor_options($modcontext, $post->id));
+        file_save_draft_area_files($fromform->attachments, $modcontext->id, 'mod_forum', 'post',
+                    $post->id, \local_edusupport_post_form::editor_options($modcontext, $post->id));
 
         forum_trigger_post_updated_event($post, $discussion, $modcontext, $forum);
 
@@ -194,7 +194,7 @@ if (!\local_edusupport\lib::is_supportteam()) {
         $discussionurl = $CFG->wwwroot . '/local/edusupport/issue.php?d=' . $discussionid;
 
         redirect(
-            forum_go_back_to($discussionurl),
+            $discussionurl,
             $message,
             null,
             \core\output\notification::NOTIFY_SUCCESS

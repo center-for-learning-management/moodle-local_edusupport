@@ -87,6 +87,164 @@ if (!\local_edusupport\lib::is_supportteam() && !is_siteadmin()) {
     $PAGE->set_title("$course->shortname: ".format_string($discussion->name));
     $PAGE->set_heading($course->fullname);
 
+    $vaultfactory = \mod_forum\local\container::get_vault_factory();
+    $discussionvault = $vaultfactory->get_discussion_vault();
+    $vdiscussion = $discussionvault->get_from_id($discussionid);
+    $discussion = $DB->get_record('forum_discussions', array('id' => $discussionid));
+
+    if (!$vdiscussion) {
+        throw new \moodle_exception('Unable to find discussion with id ' . $discussionid);
+    }
+
+    $forumvault = $vaultfactory->get_forum_vault();
+    $vforum = $forumvault->get_from_id($vdiscussion->get_forum_id());
+    $forum = $DB->get_record('forum', array('id' => $vdiscussion->get_forum_id()));
+
+    if (!$forum) {
+        throw new \moodle_exception('Unable to find forum with id ' . $vdiscussion->get_forum_id());
+    }
+
+    //$course = $forum->get_course_record();
+    $course = get_course($forum->course);
+    //$cm = $forum->get_course_module_record();
+    $cm =  get_coursemodule_from_instance('forum', $forum->id, 0, false, MUST_EXIST);
+
+
+    if (!empty($replyto)) {
+        //require_once($CFG->dirroot . '/mod/forum/classes/post_form.php');
+        require_once($CFG->dirroot . '/local/edusupport/classes/post_form.php');
+        $thresholdwarning = forum_check_throttling($vforum, $cm);
+        $mform_post = new \local_edusupport_post_form($CFG->wwwroot . '/local/edusupport/issue.php?d=' . $discussionid . '&replyto=' . $replyto, array(
+            'course' => $course,
+            'cm' => $cm,
+            'coursecontext' => $coursecontext,
+            'modcontext' => $modcontext,
+            'forum' => $forum,
+            'post' => '',
+            'subscribe' => 0,
+            'thresholdwarning' => $thresholdwarning,
+            'edit' => $edit,
+
+            ), 'post', '', array('id' => 'mformforum')
+        );
+
+        $formheading = '';
+        if (!empty($parent)) {
+            $heading = get_string("yourreply", "forum");
+            $formheading = get_string('reply', 'forum');
+        } else {
+            if ($forum->type == 'qanda') {
+                $heading = get_string('yournewquestion', 'forum');
+            } else {
+                $heading = get_string('yournewtopic', 'forum');
+            }
+        }
+
+        $postid = empty($post->id) ? null : $post->id;
+        $draftitemid = \file_get_submitted_draft_itemid('attachments');
+        //\file_prepare_draft_area($draftitemid, $modcontext->id, 'mod_forum', 'attachment', empty($post->id)?null:$post->id, \mod_forum_post_form::attachment_options($forum));
+        \file_prepare_draft_area($draftitemid, $modcontext->id, 'mod_forum', 'attachment', null, \local_edusupport_post_form::attachment_options($forum));
+        $draftid_editor = file_get_submitted_draft_itemid('message');
+        $currenttext = file_prepare_draft_area($draftid_editor, $modcontext->id, 'mod_forum', 'post', $postid, \local_edusupport_post_form::editor_options($modcontext, $postid), $post->message);
+
+        $mform_post->set_data(
+            array(
+                'attachments'=>$draftitemid,
+                'general'=>$heading,
+                'subject'=> 'Re: ' . $post->subject,
+                'message'=>array(
+                    'text'  => '',
+                    'format'=> editors_get_preferred_format(),
+                    'itemid'=>$draftid_editor
+                ),
+                'discussionsubscribe' => 0,
+                'mailnow'=> 1,
+                'userid'=>$USER->id,
+                'parent'=>$replyto,
+                'discussion'=>$discussionid,
+                'course'=>$course->id,
+                'forum' => $forum->id,
+            )
+            // $page_params
+            +(isset($post->format) ? array('format'=>$post->format) : array())
+            +(isset($discussion->timestart)?array('timestart'=>$discussion->timestart):array())
+            +(isset($discussion->timeend)?array('timeend'=>$discussion->timeend):array())
+            +(isset($discussion->pinned) ? array('pinned' => $discussion->pinned):array())
+            +(isset($post->groupid)?array('groupid'=>$post->groupid):array())
+            +(isset($discussion->id)?array('discussion'=>$discussion->id):array())
+        );
+        if ($mform_post->is_cancelled()) {
+            redirect('/local/edusupport/issue.php?d=' . $discussion->id);
+        } else if ($fromform = $mform_post->get_data()) {
+            $fromform->itemid        = $fromform->message['itemid'];
+            $fromform->messageformat = $fromform->message['format'];
+            $fromform->message       = $fromform->message['text'];
+            // WARNING: the $fromform->message array has been overwritten, do not use it anymore!
+            $fromform->messagetrust  = trusttext_trusted($modcontext);
+
+            // Clean message text.
+            $fromform = trusttext_pre_edit($fromform, 'message', $modcontext);
+
+            if ($fromform->discussion) { // Adding a new post to an existing discussion
+                // Before we add this we must check that the user will not exceed the blocking threshold.
+                \forum_check_blocking_threshold($thresholdwarning);
+
+                unset($fromform->groupid);
+                $message = '';
+                $addpost = $fromform;
+                $addpost->forum=$forum->id;
+                if ($fromform->id = \forum_add_new_post($addpost, $mform_post)) {
+
+                    $fromform->deleted = 0;
+                    $subscribemessage = \forum_post_subscription($fromform, $forum, $discussion);
+
+                    if (!empty($fromform->mailnow)) {
+                        $message .= get_string("postmailnow", "forum");
+                    } else {
+                        $message .= '<p>'.get_string("postaddedsuccess", "forum") . '</p>';
+                        $message .= '<p>'.get_string("postaddedtimeleft", "forum", format_time($CFG->maxeditingtime)) . '</p>';
+                    }
+
+                    $discussionurl = $PAGE->url->__toString();
+
+                    $params = array(
+                        'context' => $modcontext,
+                        'objectid' => $fromform->id,
+                        'other' => array(
+                            'discussionid' => $discussion->id,
+                            'forumid' => $forum->id,
+                            'forumtype' => $forum->type,
+                        )
+                    );
+                    $event = \mod_forum\event\post_created::create($params);
+                    $event->add_record_snapshot('forum_posts', $fromform);
+                    $event->add_record_snapshot('forum_discussions', $discussion);
+                    $event->trigger();
+
+                    // Update completion state
+                    $completion = new \completion_info($course);
+                    if($completion->is_enabled($cm) &&
+                    ($forum->completionreplies || $forum->completionposts)) {
+                        $completion->update_state($cm,COMPLETION_COMPLETE);
+                    }
+
+                    $message = get_string("postaddedsuccess", "forum", fullname($USER));
+                    $discussionurl = $CFG->wwwroot . '/local/edusupport/issue.php?d=' . $discussionid;
+
+                    redirect(
+                        $discussionurl,
+                        $message,
+                        null,
+                        \core\output\notification::NOTIFY_SUCCESS
+                    );
+                } else {
+                    $errordestination = $CFG->wwwroot . '/local/edusupport/issue.php?d=' . $discussionid;
+                    print_error("couldnotadd", "forum", $errordestination);
+                }
+            }
+        }
+    }
+
     echo $OUTPUT->header();
 
     $options = array();
@@ -121,29 +279,6 @@ if (!\local_edusupport\lib::is_supportteam() && !is_siteadmin()) {
 
     // We capture the output, as we need to modify links to attachments!
     ob_start();
-
-    $vaultfactory = \mod_forum\local\container::get_vault_factory();
-    $discussionvault = $vaultfactory->get_discussion_vault();
-    $vdiscussion = $discussionvault->get_from_id($discussionid);
-    $discussion = $DB->get_record('forum_discussions', array('id' => $discussionid));
-
-    if (!$vdiscussion) {
-        throw new \moodle_exception('Unable to find discussion with id ' . $discussionid);
-    }
-
-    $forumvault = $vaultfactory->get_forum_vault();
-    $vforum = $forumvault->get_from_id($vdiscussion->get_forum_id());
-    $forum = $DB->get_record('forum', array('id' => $vdiscussion->get_forum_id()));
-
-    if (!$forum) {
-        throw new \moodle_exception('Unable to find forum with id ' . $vdiscussion->get_forum_id());
-    }
-
-    //$course = $forum->get_course_record();
-    $course = get_course($forum->course);
-    //$cm = $forum->get_course_module_record();
-    $cm =  get_coursemodule_from_instance('forum', $forum->id, 0, false, MUST_EXIST);
-
 
     if (!empty($delete)) {
         $deletepost = $DB->get_record('forum_posts', array('id' => $delete));
@@ -264,143 +399,6 @@ if (!\local_edusupport\lib::is_supportteam() && !is_siteadmin()) {
     echo $out;
 
     if (!empty($replyto)) {
-        //require_once($CFG->dirroot . '/mod/forum/classes/post_form.php');
-        require_once($CFG->dirroot . '/local/edusupport/classes/post_form.php');
-        $thresholdwarning = forum_check_throttling($vforum, $cm);
-        $mform_post = new \local_edusupport_post_form($CFG->wwwroot . '/local/edusupport/issue.php?d=' . $discussionid . '&replyto=' . $replyto, array(
-            'course' => $course,
-            'cm' => $cm,
-            'coursecontext' => $coursecontext,
-            'modcontext' => $modcontext,
-            'forum' => $forum,
-            'post' => '',
-            'subscribe' => 0,
-            'thresholdwarning' => $thresholdwarning,
-            'edit' => $edit,
-
-            ), 'post', '', array('id' => 'mformforum')
-        );
-
-        $draftitemid = \file_get_submitted_draft_itemid('attachments');
-        //\file_prepare_draft_area($draftitemid, $modcontext->id, 'mod_forum', 'attachment', empty($post->id)?null:$post->id, \mod_forum_post_form::attachment_options($forum));
-        \file_prepare_draft_area($draftitemid, $modcontext->id, 'mod_forum', 'attachment', null, \local_edusupport_post_form::attachment_options($forum));
-
-        $formheading = '';
-        if (!empty($parent)) {
-            $heading = get_string("yourreply", "forum");
-            $formheading = get_string('reply', 'forum');
-        } else {
-            if ($forum->type == 'qanda') {
-                $heading = get_string('yournewquestion', 'forum');
-            } else {
-                $heading = get_string('yournewtopic', 'forum');
-            }
-        }
-
-        $postid = empty($post->id) ? null : $post->id;
-        $draftid_editor = file_get_submitted_draft_itemid('message');
-        $currenttext = file_prepare_draft_area($draftid_editor, $modcontext->id, 'mod_forum', 'post', $postid, \local_edusupport_post_form::editor_options($modcontext, $postid), $post->message);
-
-        $mform_post->set_data(
-            array(
-                'attachments'=>$draftitemid,
-                'general'=>$heading,
-                'subject'=> 'Re: ' . $post->subject,
-                'message'=>array(
-                    'text'  => '',
-                    'format'=> editors_get_preferred_format(),
-                    'itemid'=>$draftid_editor
-                ),
-                'discussionsubscribe' => 0,
-                'mailnow'=> 1,
-                'userid'=>$USER->id,
-                'parent'=>$replyto,
-                'discussion'=>$discussionid,
-                'course'=>$course->id,
-                'forum' => $forum->id,
-            )
-            // $page_params
-            +(isset($post->format) ? array('format'=>$post->format) : array())
-            +(isset($discussion->timestart)?array('timestart'=>$discussion->timestart):array())
-            +(isset($discussion->timeend)?array('timeend'=>$discussion->timeend):array())
-            +(isset($discussion->pinned) ? array('pinned' => $discussion->pinned):array())
-            +(isset($post->groupid)?array('groupid'=>$post->groupid):array())
-            +(isset($discussion->id)?array('discussion'=>$discussion->id):array())
-        );
-        if ($mform_post->is_cancelled()) {
-            redirect($PAGE->url->__toString());
-        } else if ($fromform = $mform_post->get_data()) {
-            if (empty($SESSION->fromurl)) {
-                $errordestination = $PAGE->url->__toString();
-            } else {
-                $errordestination = $SESSION->fromurl;
-            }
-
-            $fromform->itemid        = $fromform->message['itemid'];
-            $fromform->messageformat = $fromform->message['format'];
-            $fromform->message       = $fromform->message['text'];
-            // WARNING: the $fromform->message array has been overwritten, do not use it anymore!
-            $fromform->messagetrust  = trusttext_trusted($modcontext);
-
-            // Clean message text.
-            $fromform = trusttext_pre_edit($fromform, 'message', $modcontext);
-
-            if ($fromform->discussion) { // Adding a new post to an existing discussion
-                // Before we add this we must check that the user will not exceed the blocking threshold.
-                \forum_check_blocking_threshold($thresholdwarning);
-
-                unset($fromform->groupid);
-                $message = '';
-                $addpost = $fromform;
-                $addpost->forum=$forum->id;
-                if ($fromform->id = \forum_add_new_post($addpost, $mform_post)) {
-
-                    $fromform->deleted = 0;
-                    $subscribemessage = \forum_post_subscription($fromform, $forum, $discussion);
-
-                    if (!empty($fromform->mailnow)) {
-                        $message .= get_string("postmailnow", "forum");
-                    } else {
-                        $message .= '<p>'.get_string("postaddedsuccess", "forum") . '</p>';
-                        $message .= '<p>'.get_string("postaddedtimeleft", "forum", format_time($CFG->maxeditingtime)) . '</p>';
-                    }
-
-                    $discussionurl = $PAGE->url->__toString();
-
-                    $params = array(
-                        'context' => $modcontext,
-                        'objectid' => $fromform->id,
-                        'other' => array(
-                            'discussionid' => $discussion->id,
-                            'forumid' => $forum->id,
-                            'forumtype' => $forum->type,
-                        )
-                    );
-                    $event = \mod_forum\event\post_created::create($params);
-                    $event->add_record_snapshot('forum_posts', $fromform);
-                    $event->add_record_snapshot('forum_discussions', $discussion);
-                    $event->trigger();
-
-                    // Update completion state
-                    $completion = new \completion_info($course);
-                    if($completion->is_enabled($cm) &&
-                    ($forum->completionreplies || $forum->completionposts)) {
-                        $completion->update_state($cm,COMPLETION_COMPLETE);
-                    }
-
-                    redirect(
-                        forum_go_back_to($discussionurl),
-                        $message . $subscribemessage,
-                        null,
-                        \core\output\notification::NOTIFY_SUCCESS
-                    );
-                } else {
-                    print_error("couldnotadd", "forum", $errordestination);
-                }
-                exit;
-
-            }
-        }
         $mform_post->display();
     }
 }
