@@ -26,6 +26,8 @@ namespace local_edusupport;
 defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->libdir . '/adminlib.php');
+require_once($CFG->dirroot . '/mod/forum/lib.php');
+
 
 class lib {
     const SYSTEM_COURSE_ID = 1;
@@ -109,6 +111,10 @@ class lib {
 
         // 4.) remove issue-link from database
         $DB->delete_records('local_edusupport_issues', array('discussionid' => $discussionid));
+        // Mark post as closed
+        $discussion->name = "[Closed] " . ltrim($discussion->name, "[Closed] ");
+        $discussion->modified = time();
+        $DB->update_record('forum_discussions', $discussion);
 
         return true;
     }
