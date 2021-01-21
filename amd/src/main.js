@@ -265,7 +265,7 @@ define(
                         for (var i = 0; i < result.responsibles.length; i++) {
                             var r = result.responsibles[i];
                             if (typeof r.userid !== 'undefined' && r.userid > 0) {
-                                responsibles += '<li><a href="' + URL.fileUrl('/user', 'profile.php?id=' + r.userid) + '" target="_blank">' + r.name + '</a></li>';
+                                responsibles += '<li><a href="' + URL.fileUrl('/user', 'view.php?id=' + r.userid) + '" target="_blank">' + r.name + '</a></li>';
                             } else if (typeof r.email !== 'undefined' && r.email != '') {
                                 responsibles += '<li><a href="mailto:' + r.email + '">' + r.name + '</a></li>';
                             } else {
