@@ -203,6 +203,17 @@ define(
                 }
             ).fail(NOTIFICATION.exception);
         },
+        injectTest: function() {
+            var discussionname = $(".discussionname");
+            if(discussionname.text().substr(0,2) == "! ") {
+                discussionname.addClass("alert-warning");
+            }
+             if(discussionname.text().substr(0,2) == "!!") {
+                discussionname.addClass("alert-danger");
+            }
+
+       
+        },
         injectForwardModal: function(discussionid, revoke) {
             STR.get_strings([
                     {'key' : 'confirm', component: 'core' },
@@ -237,8 +248,20 @@ define(
             var postto2ndlevel = $('#local_edusupport_create_form #id_postto2ndlevel').prop('checked') ? 1 : 0;
             var post_screenshot = $('#local_edusupport_create_form #id_postscreenshot').prop('checked') ? 1 : 0;
             var screenshot = $('#local_edusupport_create_form img#screenshot').attr('src');
+            var faqread = $('#local_edusupport_create_form #id_faqread').prop('checked') ? 1 : 0;
+            var priority = $('#local_edusupport_create_form #id_prioritylvl').val();
+            subject = priority + " " + subject;
+            console.log.subject;
             var url = top.location.href;
 
+
+            if (faqread  == 0) {
+                var editaPresent = STR.get_string('faqread', 'local_edusupport', {});
+                $.when(editaPresent).done(function(localizedEditString) {
+                    NOTIFICATION.alert('', localizedEditString);
+                });
+                return;
+            }
             if (subject.length < 3 || description.length < 5) {
                 var editaPresent = STR.get_string('be_more_accurate', 'local_edusupport', {});
                 $.when(editaPresent).done(function(localizedEditString) {

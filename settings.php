@@ -50,6 +50,37 @@ if ($hassiteconfig) {
         )
     );
 
+    //FAQ read
+    $settings->add(
+        new admin_setting_configcheckbox(
+            'local_edusupport/faqread',
+            get_string('faqread', 'local_edusupport'),
+            get_string('faqread:description', 'local_edusupport'),
+            1
+        )
+    );
+
+    //Priority LVL
+    $settings->add(
+        new admin_setting_configcheckbox(
+            'local_edusupport/userlinks',
+            get_string('userlinks', 'local_edusupport'),
+            get_string('userlinks:description', 'local_edusupport'),
+            1
+        )
+    );
+
+    //Disable User Profile Links
+    $settings->add(
+        new admin_setting_configcheckbox(
+            'local_edusupport/prioritylvl',
+            get_string('prioritylvl', 'local_edusupport'),
+            get_string('prioritylvl:description', 'local_edusupport'),
+            1
+        )
+    );
+
+
     // @TODO a feature from the future.
     // $settings->add(new admin_setting_configcheckbox('local_edusupport/sendreminders', get_string('cron:reminder:title', 'local_edusupport'), '', '', PARAM_INT));
 

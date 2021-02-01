@@ -35,6 +35,10 @@ class issue_create_form extends moodleform {
     function definition() {
         global $CFG, $COURSE, $DB;
 
+        $faqread = get_config('local_edusupport','faqread');
+        $prioritylvl = get_config('local_edusupport','prioritylvl');
+
+
         $editoroptions = array('subdirs'=>0, 'maxbytes'=>0, 'maxfiles'=>0,
                                'changeformat'=>0, 'context'=>null, 'noclean'=>0,
                                'trusttext'=>0, 'enable_filemanagement' => false);
@@ -114,6 +118,7 @@ class issue_create_form extends moodleform {
         $mform->setType('postscreenshot', PARAM_BOOL);
         $mform->setDefault('postscreenshot', 0);
 
+
         $html = array(
             '<div style="text-align: center;">',
             '<img id="screenshot" src="" alt="Screenshot" style="max-width: 50%; display: none;"/>',
@@ -121,11 +126,31 @@ class issue_create_form extends moodleform {
         );
         $mform->addElement('html', implode("\n", $html));
         $mform->addElement('html', '<script> setTimeout(function() { ' . $postto2ndlevel_hideshow . ' }, 100);</script>');
+
+
+        if ($faqread) {
+            $mform->addElement('checkbox', 'faqread', get_string('faqread', 'local_edusupport'),
+                get_string('faqread:description', 'local_edusupport') . implode("\n", $html));
+            $mform->setType('faqread', PARAM_BOOL);
+            $mform->addRule('faqread', get_string('subject_missing', 'local_edusupport'), 'required', true, 'server');
+        }
+
+        if ($prioritylvl) {
+            $mform->addElement('select', 'prioritylvl', get_string('prioritylvl', 'local_edusupport'), $this->return_priority_options());
+        }
     }
 
     //Custom validation should be added here
     function validation($data, $files) {
         $errors = array();
         return $errors;
+    }
+
+    function return_priority_options() {
+        return [
+            "" => get_string('prioritylvl:low', 'local_edusupport'),
+            "!" => get_string('prioritylvl:mid', 'local_edusupport'),
+            "!!" => get_string('prioritylvl:high', 'local_edusupport'),
+        ];
     }
 }
