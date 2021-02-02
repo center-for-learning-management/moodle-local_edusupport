@@ -109,8 +109,11 @@ class lib {
         // 3.) remove all supporters from the abo-list
         $DB->delete_records('local_edusupport_subscr', array('discussionid' => $discussionid));
 
+        $issue->opened = 0;
+        $issue->discussionid = $discussionid;
+
         // 4.) remove issue-link from database
-        $DB->delete_records('local_edusupport_issues', array('discussionid' => $discussionid));
+        $DB->update_record('local_edusupport_issues', $issue);
         // Mark post as closed
         $discussion->name = "[Closed] " . ltrim($discussion->name, "[Closed] ");
         $discussion->modified = time();
@@ -132,6 +135,29 @@ class lib {
             // delete issue.
             $DB->delete_records('local_edusupport_issues', array('discussionid' => $discussionid));
         }
+        return true;
+    }
+    /**
+     * Close an issue.
+     * @param discussionid.
+    **/
+    public static function reopen_issue($discussionid) {
+        global $CFG, $DB, $USER;
+
+        $discussion = $DB->get_record('forum_discussions', array('id' => $discussionid));
+        $issue = self::get_issue($discussionid);
+
+        $issue->opened = 1;
+        $issue->discussionid = $discussionid;
+
+        // 4.) remove issue-link from database
+        $DB->update_record('local_edusupport_issues', $issue);
+        // Mark post as closed
+        $discussion->name = ltrim($discussion->name, "[Closed] ");
+        $discussion->modified = time();
+        $DB->update_record('forum_discussions', $discussion);
+
+
         return true;
     }
     /**

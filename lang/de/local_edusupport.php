@@ -64,6 +64,10 @@ $string['faqread'] = 'faq...';
 $string['faqread:description'] =  'faq:description...';
 $string['header'] = 'Hilfe in <i>{$a}</i> anfordern';
 $string['issue'] = 'Ticket';
+$string['issue:countcurrent'] = 'offene Tickets';
+$string['issue:countassigned'] = 'verfolgte Tickets';
+$string['issue:countother'] = 'andere Tickets';
+$string['issue:countclosed'] = 'geschlossene Tickets';
 $string['issue_assign'] = 'Zuordnen';
 $string['issue_assign_3rdlevel:post'] = '<a href="{$a->wwwroot}/user/view.php?id={$a->fromuserid}">{$a->fromuserfullname}</a> hat dieses Ticket an <a href="{$a->wwwroot}/user/view.php?id={$a->touserid}">{$a->touserfullname}</a> weitergeleitet.';
 $string['issue_assign_3rdlevel:postself'] = '<a href="{$a->wwwroot}/user/view.php?id={$a->fromuserid}">{$a->fromuserfullname}</a> hat die Verantwortung für dieses Ticket übernommen.';
@@ -82,6 +86,7 @@ $string['issue_closed:post'] = 'Dieses Ticket wurde von <a href="{$a->wwwroot}/u
 $string['issues'] = 'Anfragen';
 $string['issues:assigned'] = 'Abonniert';
 $string['issues:assigned:none'] = 'Es sind keine weiteren Anfragen abonniert worden.';
+$string['issues:closed'] = 'Geschlossen';
 $string['issues:current'] = 'Meine Verantwortung';
 $string['issues:current:none'] = 'Gönn dir ne Pause - es ist alles erledigt!';
 $string['issues:other'] = 'Andere Anfragen';

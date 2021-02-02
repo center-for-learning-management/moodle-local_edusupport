@@ -65,6 +65,10 @@ $string['faqread'] = 'faq...';
 $string['faqread:description'] =  'faq:description...';
 $string['header'] = 'Request for help in <i>{$a}</i>';
 $string['issue'] = 'Issue';
+$string['issue:countcurrent'] = 'open issues';
+$string['issue:countassigned'] = 'subscribed issues';
+$string['issue:countother'] = 'other issues';
+$string['issue:countclosed'] = 'closed issues';
 $string['issue_assign'] = 'Assign issue';
 $string['issue_assign_3rdlevel:post'] = '<a href="{$a->wwwroot}/user/view.php?id={$a->fromuserid}">{$a->fromuserfullname}</a> has assigned this issue to <a href="{$a->wwwroot}/user/view.php?id={$a->touserid}">{$a->touserfullname}</a>.';
 $string['issue_assign_3rdlevel:postself'] = '<a href="{$a->wwwroot}/user/view.php?id={$a->fromuserid}">{$a->fromuserfullname}</a> has taken responsibility for this issue.';
@@ -83,6 +87,7 @@ $string['issue_closed:post'] = 'This issue closed was closed by <a href="{$a->ww
 $string['issues'] = 'Issues';
 $string['issues:assigned'] = 'Subscribed';
 $string['issues:assigned:none'] = 'You have not subscribed any other issues.';
+$string['issues:closed'] = 'Closed issues';
 $string['issues:current'] = 'My issues';
 $string['issues:current:none'] = 'Seems you deserve a break - no issue left for your!';
 $string['issues:other'] = 'Other issues';

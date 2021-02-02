@@ -46,7 +46,9 @@ if (!\local_edusupport\lib::is_supportteam()) {
     $assign = optional_param('assign', 0, PARAM_INT); // discussion id we want to assign to
     $unassign = optional_param('unassign', 0, PARAM_INT); // discussion id we want to unassign from
     $take = optional_param('take', 0, PARAM_INT); // discussion id we want to unassign from
-
+    $give = optional_param('give', 0, PARAM_INT);
+    $reopen = optional_param('reopen', 0, PARAM_INT);
+    $close = optional_param('close', 0, PARAM_INT);
     $sql = "SELECT id,discussionid FROM {local_edusupport_issues}";
     $issues = $DB->get_records('local_edusupport_issues', array(), 'id,discussionid');
 
@@ -55,8 +57,12 @@ if (!\local_edusupport\lib::is_supportteam()) {
         'assigned' => array(), // issues the user receives notifications for
         'other' => array(), // all other issues
         'wwwroot' => $CFG->wwwroot,
+        'count' => array(),
     );
-
+     $params['count']['current'] = 0;
+     $params['count']['closed'] = 0;
+     $params['count']['assigned'] = 0;
+     $params['count']['other'] = 0;
     foreach ($issues AS $issue) {
         // Collect certain data about this issue.
         $discussion = $DB->get_record('forum_discussions', array('id' => $issue->discussionid));
@@ -85,6 +91,23 @@ if (!\local_edusupport\lib::is_supportteam()) {
             $assigned = \local_edusupport\lib::subscription_add($issue->discussionid);
             $issue->currentsupporter = $USER->id;
         }
+        if (!empty($give) && $give == $issue->discussionid) {
+            \local_edusupport\lib::set_current_supporter($issue->discussionid, "1");
+            $assigned = \local_edusupport\lib::subscription_add($issue->discussionid);
+            $issue->currentsupporter = "1";
+        }
+        if (!empty($reopen) && $reopen == $issue->discussionid) {
+            \local_edusupport\lib::reopen_issue($issue->discussionid);
+            $issue->opened = "1";
+            $issue->name = ltrim($issue->name, "[Closed] ");
+        }
+        if (!empty($close) && $close == $issue->discussionid) {
+            \local_edusupport\lib::close_issue($issue->discussionid);
+            $issue->opened = "0";
+            $issue->name = "[Closed] " . ltrim($discussion->name, "[Closed] ");
+        }
+
+
 
         // Now get the current supporter
         if (!empty($issue->currentsupporter)) {
@@ -96,13 +119,21 @@ if (!\local_edusupport\lib::is_supportteam()) {
         }
 
         // Now separate between current, assigned and other issues.
-        if ($issue->currentsupporter == $USER->id) {
+        if ($issue->currentsupporter == $USER->id && $issue->opened == 1) {
             $params['current'][] = $issue;
+            $params['count']['current'] = $params['count']['current'] + 1;
         } elseif (!empty($assigned->id)) {
             $params['assigned'][] = $issue;
-        } else {
+            $params['count']['assigned'] = $params['count']['assigned'] + 1;
+        } elseif($issue->opened == 1) {
             $params['other'][] = $issue;
+            $params['count']['other'] = $params['count']['other'] + 1;
         }
+        elseif($issue->currentsupporter == $USER->id && $issue->opened == 0) {
+            $params['closed'][] = $issue;
+            $params['count']['closed'] = $params['count']['closed'] + 1;
+        }
+
     }
     echo $OUTPUT->render_from_template('local_edusupport/issues', $params);
 }

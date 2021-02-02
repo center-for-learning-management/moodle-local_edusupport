@@ -5,10 +5,9 @@ define(
         debug: 1,
         modal: undefined,
         triggerSteps: 0,
-        assignSupporter: function(discussionid, userid){
+        assignSupporter: function(discussionid /*, userid*/){
             var MAIN = this;
-            if (MAIN.debug > 0) console.log('local_edusupport/main:assignSupporter(discussionid, userid)', discussionid, userid);
-            if (typeof userid === 'undefined') {
+            //if (MAIN.debug > 0) //console.log('local_edusupport/main:assignSupporter(discussionid, userid)', discussionid, userid);
                 console.log('ajax call');
                 // Show a selection of possible supporters.
                 AJAX.call([{
@@ -63,9 +62,7 @@ define(
                     },
                     fail: NOTIFICATION.exception
                 }]);
-            } else {
-                // Assign the supporter.
-            }
+           
         },
         /**
          * Checks if a particular support form has a screenshot. If not, it hides the modal and creates one.
@@ -417,6 +414,44 @@ define(
                 }]);
             }
         },
+        showSupporter: function(forumid){
+            if (typeof forumid === 'undefined') forumid = 0;
+            var MAIN = this;
+            // @todo no functional requirement that screenshot works.
+            // @todo screenshot creation parallel to modal?
+            // @todo save modal in object for manipulation
+            delete(MAIN.canvas);
+            if (typeof MAIN.modal !== 'undefined') {
+                MAIN.prepareBox(forumid);
+            } else {
+                console.log('Fetching modal');
+                MAIN.triggerSpinner(1);
+                AJAX.call([{
+                    methodname: 'local_edusupport_create_form',
+                    args: { url: top.location.href, image: '', forumid: forumid },
+                    done: function(result) {
+                        console.log('Got modal');
+                        MAIN.triggerSpinner(-1);
+                        // Remove any previously created forms.
+                        $('#local_edusupport_create_form').remove();
+                        //console.log(result);
+                        ModalFactory.create({
+                            //title: 'create issue',
+                            type: ModalFactory.types.SAVE_CANCEL,
+                            body: result,
+                            large: 1,
+                            //footer: 'footer',
+                        }).done(function(modal) {
+                            console.log('Created modal');
+                            MAIN.modal = modal;
+                            MAIN.prepareBox();
+                        });
+                    },
+                    fail: NOTIFICATION.exception
+                }]);
+            }
+        },
+
         supportCourseMovedAlert: function(title, msg) {
             ModalFactory.create({
                 title: title,

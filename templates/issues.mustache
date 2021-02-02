@@ -15,6 +15,28 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 <div class="local_edusupport issues">
+    <ul class="info">
+    {{#count}}
+    <div class="row">
+            <div class="col-md-3">
+                <h3>{{current}}</h3>
+                <p>{{#str}} issue:countcurrent, local_edusupport {{/str}} </p>
+            </div>
+            <div class="col-md-3">
+                <h3>{{assigned}}</h3>
+                <p>{{#str}} issue:countassigned, local_edusupport {{/str}}</p>
+            </div>
+            <div class="col-md-3">
+                <h3>{{other}}</h3>            
+                <p>{{#str}} issue:countother, local_edusupport {{/str}}</p>
+            </div>
+            <div class="col-md-3">                
+                <h3>{{closed}}</h3>            
+                <p>{{#str}} issue:countclosed, local_edusupport {{/str}}</p>
+            </div>       
+        </div>
+     {{/count}}
+   </ul>
     <table class="generaltable" width="100%">
         <thead>
             <tr>
@@ -60,6 +82,12 @@
                     </td>
                     <td>{{#userdate}} {{lastmodified}}, %F %X {{/userdate}}</td>
                     <td>
+                        <a href="{{wwwroot}}/local/edusupport/issues.php?asignto={{discussionid}}" onclick="require(['local_edusupport/main'], function(MAIN){ MAIN.assignSupporter({{discussionid}}); }); return false;">
+                            {{#pix}} i/enrolusers, core {{/pix}}
+                        </a>
+                        <a href="{{wwwroot}}/local/edusupport/issues.php?close={{discussionid}}">
+                            <i class="fa fa-window-close" aria-hidden="true"></i>
+                        </a>
                     </td>
                 </tr>
             {{/current}}
@@ -104,7 +132,10 @@
                             {{#pix}} i/show, core {{/pix}}
                         </a>
                         <a href="{{wwwroot}}/local/edusupport/issues.php?take={{discussionid}}">
-                            {{#pix}} i/enrolusers, core {{/pix}}
+                            <i class="fa fa-plus" aria-hidden="true"></i>
+                        </a>
+                        <a href="{{wwwroot}}/local/edusupport/issues.php?close={{discussionid}}">
+                            <i class="fa fa-window-close" aria-hidden="true"></i>
                         </a>
                     </td>
                 </tr>
@@ -150,16 +181,67 @@
                             {{#pix}} i/hide, core {{/pix}}
                         </a>
                         <a href="{{wwwroot}}/local/edusupport/issues.php?take={{discussionid}}">
+                            <i class="fa fa-plus" aria-hidden="true"></i>
+                        </a>
+                        <a href="{{wwwroot}}/local/edusupport/issues.php?asignto={{discussionid}}" onclick="require(['local_edusupport/main'], function(MAIN){ MAIN.assignSupporter({{discussionid}}); }); return false;">
                             {{#pix}} i/enrolusers, core {{/pix}}
+                        </a>
+                        <a href="{{wwwroot}}/local/edusupport/issues.php?close={{discussionid}}">
+                            <i class="fa fa-window-close" aria-hidden="true"></i>
+                        </a>
+                    </td>
+                    </td>
+                </tr>
+            {{/other}}<tr class="accordion-toggle collapsed" id="accordion1" data-toggle="collapse" data-parent="#accordion1" href="#collapseOne" aria-expanded="false">
+            <tr>
+                <th colspan="7">{{#str}} issues:closed, local_edusupport {{/str}}</th>
+            </tr>
+            {{#closed}}
+                <tr>
+                    <td>
+                        <a href="{{wwwroot}}/local/edusupport/issue.php?d={{discussionid}}">
+                            {{id}}
+                        </a>
+                    </td>
+                    <td>
+                        <a href="{{wwwroot}}/local/edusupport/issue.php?d={{discussionid}}">
+                            {{name}}
+                        </a>
+                    </td>
+                    <td>
+                        <a href="{{wwwroot}}/user/view.php?id={{userid}}">
+                            {{userfullname}}
+                        </a>
+                    </td>
+                    <td>
+                        {{#currentsupporterid}}<a href="{{wwwroot}}/user/view.php?id={{currentsupporterid}}">{{/currentsupporterid}}
+                            {{currentsupportername}}
+                        {{#currentsupporterid}}</a>{{/currentsupporterid}}
+                    </td>
+                    <td>
+                        <a href="{{wwwroot}}/user/view.php?id={{lastpostuserid}}">
+                            {{lastpostuserfullname}}
+                        </a>
+                    </td>
+                    <td>{{#userdate}} {{lastmodified}}, %F %X {{/userdate}}</td>
+                    <td>
+                        <a href="{{wwwroot}}/local/edusupport/issues.php?assign={{discussionid}}">
+                            {{#pix}} i/hide, core {{/pix}}
+                        </a>
+                        <a href="{{wwwroot}}/local/edusupport/issues.php?take={{discussionid}}">
+                            <i class="fa fa-plus" aria-hidden="true"></i>
+                        </a>
+                        <a href="{{wwwroot}}/local/edusupport/issues.php?asignto={{discussionid}}" onclick="require(['local_edusupport/main'], function(MAIN){ MAIN.assignSupporter({{discussionid}}); }); return false;">
+                            {{#pix}} i/enrolusers, core {{/pix}}
+                        </a>
+                        <a href="{{wwwroot}}/local/edusupport/issues.php?reopen={{discussionid}}">
+                            <i class="fa fa-refresh" aria-hidden="true"></i>
                         </a>
                     </td>
                 </tr>
-            {{/other}}
-            {{^other}}
-            <tr>
-                <td colspan="7">{{#str}} issues:other:none, local_edusupport {{/str}}</td>
-            </tr>
-            {{/other}}
+            {{/closed}}
+
+
         </tbody>
     </table>
 </div>
