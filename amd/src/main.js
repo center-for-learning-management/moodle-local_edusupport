@@ -72,9 +72,11 @@ define(
             if (MAIN.debug > 0) console.log('local_edusupport/main:checkHasScreenshot(c)', c);
             if ($(c).closest("form").find("#screenshot").attr('src') == '') {
                 $(c).closest("form").find('#screenshot_ok').css("display", "block");
+
             } else {
                 $(c).closest("form").find('#screenshot_ok').css("display", "none");
                 $(c).closest("form").find("#screenshot").css("display", ($(c).is(":checked") ? "inline" : "none"));
+                $(c).closest("form").find("#screenshot_new").css("display", ($(c).is(":checked") ? "block" : "none"));
             }
         },
         /**
@@ -358,9 +360,9 @@ define(
             $.when(editaPresent).done(function(localizedEditString) {
                 MAIN.modal.setSaveButtonText(localizedEditString);
             });
-            $('#id_postscreenshot').closest('div.fitem').css('display', 'none');
+            /*$('#id_postscreenshot').closest('div.fitem').css('display', 'none');
             $('#screenshot').closest('div').css('display', 'none');
-
+*/
             MAIN.modal.show();
         },
         /**
@@ -384,6 +386,7 @@ define(
             // @todo screenshot creation parallel to modal?
             // @todo save modal in object for manipulation
             delete(MAIN.canvas);
+
             if (typeof MAIN.modal !== 'undefined') {
                 MAIN.prepareBox(forumid);
             } else {

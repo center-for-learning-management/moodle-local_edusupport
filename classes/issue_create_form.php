@@ -105,9 +105,9 @@ class issue_create_form extends moodleform {
         $mform->setDefault('postto2ndlevel', 0);
 
         $html = array(
-            '<div id="screenshot_ok" style="display: none;">',
+            '<div id="screenshot_ok"  style="display: none;"><p>',
             get_string('screenshot:generateinfo', 'local_edusupport'),
-            '<br /><a href="#" onclick="var b = this; require([\'local_edusupport/main\'], function(M) { M.generateScreenshot(b); }); return false;" class="btn btn-primary btn-block">',
+            '</p><a href="#" onclick="var b = this; require([\'local_edusupport/main\'], function(M) { M.generateScreenshot(b); }); return false;" class="btn btn-primary btn-block">',
             get_string('ok'),
             '</a></div>'
         );
@@ -122,7 +122,11 @@ class issue_create_form extends moodleform {
         $html = array(
             '<div style="text-align: center;">',
             '<img id="screenshot" src="" alt="Screenshot" style="max-width: 50%; display: none;"/>',
-            '</div>',
+            '</div>',   
+            '<div id="screenshot_new" class="text-center m-2" style="display:none;">',
+            '<a href="#" onclick="var b = this; require([\'local_edusupport/main\'], function(M) { M.generateScreenshot(b); }); return false;" class="btn btn-primary">',
+            get_string('new'),
+            '</a></div>'
         );
         $mform->addElement('html', implode("\n", $html));
         $mform->addElement('html', '<script> setTimeout(function() { ' . $postto2ndlevel_hideshow . ' }, 100);</script>');
@@ -130,7 +134,7 @@ class issue_create_form extends moodleform {
 
         if ($faqread) {
             $mform->addElement('checkbox', 'faqread', get_string('faqread', 'local_edusupport'),
-                get_string('faqread:description', 'local_edusupport') . implode("\n", $html));
+                get_string('faqread:description', 'local_edusupport'));
             $mform->setType('faqread', PARAM_BOOL);
             $mform->addRule('faqread', get_string('subject_missing', 'local_edusupport'), 'required', true, 'server');
         }
