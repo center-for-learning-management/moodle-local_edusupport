@@ -60,7 +60,7 @@ if ($hassiteconfig) {
         )
     );
 
-    //Priority LVL
+    //Disable User Profile Links
     $settings->add(
         new admin_setting_configcheckbox(
             'local_edusupport/userlinks',
@@ -70,12 +70,22 @@ if ($hassiteconfig) {
         )
     );
 
-    //Disable User Profile Links
+    //Priority LVL
     $settings->add(
         new admin_setting_configcheckbox(
             'local_edusupport/prioritylvl',
             get_string('prioritylvl', 'local_edusupport'),
             get_string('prioritylvl:description', 'local_edusupport'),
+            1
+        )
+    );
+
+    //Disable Telephone Link
+    $settings->add(
+        new admin_setting_configcheckbox(
+            'local_edusupport/disablephonefield',
+            get_string('telephonefield', 'local_edusupport'),
+            get_string('telephonefield:description', 'local_edusupport'),
             1
         )
     );

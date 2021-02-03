@@ -47,15 +47,19 @@
                 <th>{{#str}} lastpost, forum {{/str}}</th>
                 <th>{{#str}} modified {{/str}}</th>
                 <th>{{#str}} action {{/str}}</th>
+                {{#hasprio}}
+                <th>{{#str}} priority {{/str}}</th>
+                {{/hasprio}}
             </tr>
         </thead>
         <tbody>
             <tr>
-                <th colspan="7">{{#str}} issues:current, local_edusupport {{/str}}</th>
+                <th colspan="8">{{#str}} issues:current, local_edusupport {{/str}}</th>
             </tr>
             {{#current}}
-                <tr>
+                <tr class="{{prioclass}}">
                     <td>
+                        {{{prio}}}
                         <a href="{{wwwroot}}/local/edusupport/issue.php?d={{discussionid}}">
                             {{id}}
                         </a>
@@ -66,38 +70,67 @@
                         </a>
                     </td>
                     <td>
-                        <a href="{{wwwroot}}/user/view.php?id={{userid}}">
+                        {{#userlinks}}
+                            <a href="{{wwwroot}}/user/view.php?id={{userid}}">
+                                {{userfullname}}
+                            </a>
+                        {{/userlinks}}
+                        {{^userlinks}}
                             {{userfullname}}
-                        </a>
+                        {{/userlinks}}
                     </td>
                     <td>
-                        {{#currentsupporterid}}<a href="{{wwwroot}}/user/view.php?id={{currentsupporterid}}">{{/currentsupporterid}}
+                        {{#userlinks}}
+                            {{#currentsupporterid}}<a href="{{wwwroot}}/user/view.php?id={{currentsupporterid}}">{{/currentsupporterid}}
                             {{currentsupportername}}
-                        {{#currentsupporterid}}</a>{{/currentsupporterid}}
+                            {{#currentsupporterid}}</a>{{/currentsupporterid}}
+                        {{/userlinks}}
+                        {{^userlinks}}
+                            {{currentsupportername}}
+                        {{/userlinks}}
                     </td>
                     <td>
-                        <a href="{{wwwroot}}/user/view.php?id={{lastpostuserid}}">
+                        {{#userlinks}}
+                            <a href="{{wwwroot}}/user/view.php?id={{lastpostuserid}}">
+                                {{lastpostuserfullname}}
+                            </a>
+                        {{/userlinks}}
+                        {{^userlinks}}
                             {{lastpostuserfullname}}
-                        </a>
+                        {{/userlinks}}
                     </td>
                     <td>{{#userdate}} {{lastmodified}}, %F %X {{/userdate}}</td>
                     <td>
-                        <a href="{{wwwroot}}/local/edusupport/issues.php?asignto={{discussionid}}" onclick="require(['local_edusupport/main'], function(MAIN){ MAIN.assignSupporter({{discussionid}}); }); return false;">
+                        <a href="{{wwwroot}}/local/edusupport/issues.php?asignto={{discussionid}}" onclick="require(['local_edusupport/main'], function(MAIN){ MAIN.assignSupporter({{discussionid}}); }); return false;" data-toggle="tooltip" data-placement="top" title="assign someone">
                             {{#pix}} i/enrolusers, core {{/pix}}
                         </a>
                         <a href="{{wwwroot}}/local/edusupport/issues.php?close={{discussionid}}">
-                            <i class="fa fa-window-close" aria-hidden="true"></i>
+                            <i class="fa fa-window-close" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="close issue"></i>
+                        </a>
+                        
+                    </td>
+                    {{#hasprio}}
+                    <td>
+                        <a href="{{wwwroot}}/local/edusupport/issues.php?prio={{discussionid}}&lvl=1">
+                            <i class="fa fa-exclamation text-success mr-2" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="priortiy low"></i>
+                        </a>
+                        <a href="{{wwwroot}}/local/edusupport/issues.php?prio={{discussionid}}&lvl=2"  data-toggle="tooltip" data-placement="top" title="priortiy mid">
+                            <i class="fa fa-exclamation text-warning mr-2" aria-hidden="true"></i>
+                        </a>
+                        <a href="{{wwwroot}}/local/edusupport/issues.php?prio={{discussionid}}&lvl=3"  data-toggle="tooltip" data-placement="top" title="priortiy high">
+                            <i class="fa fa-exclamation text-danger mr-2" aria-hidden="true"></i>
                         </a>
                     </td>
+                    {{/hasprio}}
                 </tr>
             {{/current}}
             {{^current}}
             <tr>
-                <td colspan="7">{{#str}} issues:current:none, local_edusupport {{/str}}</td>
+                <td colspan="8">{{#str}} issues:current:none, local_edusupport {{/str}}</td>
             </tr>
             {{/current}}
             <tr>
-                <th colspan="7">{{#str}} issues:assigned, local_edusupport {{/str}}</th>
+                <th colspan="8">{{#str}} issues:assigned, local_edusupport {{/str}}</th>
             </tr>
             {{#assigned}}
                 <tr>
@@ -112,41 +145,69 @@
                         </a>
                     </td>
                     <td>
-                        <a href="{{wwwroot}}/user/view.php?id={{userid}}">
+                        {{#userlinks}}
+                            <a href="{{wwwroot}}/user/view.php?id={{userid}}">
+                                {{userfullname}}
+                            </a>
+                        {{/userlinks}}
+                        {{^userlinks}}
                             {{userfullname}}
-                        </a>
+                        {{/userlinks}}
                     </td>
                     <td>
-                        {{#currentsupporterid}}<a href="{{wwwroot}}/user/view.php?id={{currentsupporterid}}">{{/currentsupporterid}}
+                        {{#userlinks}}
+                            {{#currentsupporterid}}<a href="{{wwwroot}}/user/view.php?id={{currentsupporterid}}">{{/currentsupporterid}}
                             {{currentsupportername}}
-                        {{#currentsupporterid}}</a>{{/currentsupporterid}}
+                            {{#currentsupporterid}}</a>{{/currentsupporterid}}
+                        {{/userlinks}}
+                        {{^userlinks}}
+                            {{currentsupportername}}
+                        {{/userlinks}}
                     </td>
                     <td>
-                        <a href="{{wwwroot}}/user/view.php?id={{lastpostuserid}}">
-                            {{lastpostuserfullname}}
-                        </a>
+                        {{#userlinks}}
+                            <a href="{{wwwroot}}/user/view.php?id={{lastpostuserid}}">
+                                {{lastpostuserfullname}}
+                            </a>
+                        {{/userlinks}}
+                        {{^userlinks}}
+                                {{lastpostuserfullname}}
+                        {{/userlinks}}
                     </td>
                     <td>{{#userdate}} {{lastmodified}}, %F %X {{/userdate}}</td>
                     <td>
-                        <a href="{{wwwroot}}/local/edusupport/issues.php?unassign={{discussionid}}">
+                        <a href="{{wwwroot}}/local/edusupport/issues.php?unassign={{discussionid}}" data-toggle="tooltip" data-placement="top" title="unsubscribe">
                             {{#pix}} i/show, core {{/pix}}
                         </a>
-                        <a href="{{wwwroot}}/local/edusupport/issues.php?take={{discussionid}}">
+                        <a href="{{wwwroot}}/local/edusupport/issues.php?take={{discussionid}}" data-toggle="tooltip" data-placement="top" title="assign myself">
                             <i class="fa fa-plus" aria-hidden="true"></i>
                         </a>
-                        <a href="{{wwwroot}}/local/edusupport/issues.php?close={{discussionid}}">
+                        <a href="{{wwwroot}}/local/edusupport/issues.php?close={{discussionid}}" data-toggle="tooltip" data-placement="top" title="close issue">
                             <i class="fa fa-window-close" aria-hidden="true"></i>
                         </a>
                     </td>
+                    {{#hasprio}}
+                    <td>
+                        <a href="{{wwwroot}}/local/edusupport/issues.php?prio={{discussionid}}&lvl=1"  data-toggle="tooltip" data-placement="top" title="priortiy low">
+                            <i class="fa fa-exclamation text-success" aria-hidden="true"></i>
+                        </a>
+                        <a href="{{wwwroot}}/local/edusupport/issues.php?prio={{discussionid}}&lvl=2"  data-toggle="tooltip" data-placement="top" title="priortiy mid">
+                            <i class="fa fa-exclamation text-warning" aria-hidden="true"></i>
+                        </a>
+                        <a href="{{wwwroot}}/local/edusupport/issues.php?prio={{discussionid}}&lvl=3"  data-toggle="tooltip" data-placement="top" title="priortiy high">
+                            <i class="fa fa-exclamation text-danger" aria-hidden="true"></i>
+                        </a>
+                    </td>
+                    {{/hasprio}}
                 </tr>
             {{/assigned}}
             {{^assigned}}
             <tr>
-                <td colspan="7">{{#str}} issues:assigned:none, local_edusupport {{/str}}</td>
+                <td colspan="8">{{#str}} issues:assigned:none, local_edusupport {{/str}}</td>
             </tr>
             {{/assigned}}
             <tr>
-                <th colspan="7">{{#str}} issues:other, local_edusupport {{/str}}</th>
+                <th colspan="8">{{#str}} issues:other, local_edusupport {{/str}}</th>
             </tr>
             {{#other}}
                 <tr>
@@ -161,43 +222,70 @@
                         </a>
                     </td>
                     <td>
-                        <a href="{{wwwroot}}/user/view.php?id={{userid}}">
+                        {{#userlinks}}
+                            <a href="{{wwwroot}}/user/view.php?id={{userid}}">
+                                {{userfullname}}
+                            </a>
+                        {{/userlinks}}
+                        {{^userlinks}}
                             {{userfullname}}
-                        </a>
+                        {{/userlinks}}
                     </td>
                     <td>
-                        {{#currentsupporterid}}<a href="{{wwwroot}}/user/view.php?id={{currentsupporterid}}">{{/currentsupporterid}}
+                        {{#userlinks}}
+                            {{#currentsupporterid}}<a href="{{wwwroot}}/user/view.php?id={{currentsupporterid}}">{{/currentsupporterid}}
                             {{currentsupportername}}
-                        {{#currentsupporterid}}</a>{{/currentsupporterid}}
+                            {{#currentsupporterid}}</a>{{/currentsupporterid}}
+                        {{/userlinks}}
+                        {{^userlinks}}
+                            {{currentsupportername}}
+                        {{/userlinks}}
                     </td>
                     <td>
-                        <a href="{{wwwroot}}/user/view.php?id={{lastpostuserid}}">
-                            {{lastpostuserfullname}}
-                        </a>
+                        {{#userlinks}}
+                            <a href="{{wwwroot}}/user/view.php?id={{lastpostuserid}}">
+                                {{lastpostuserfullname}}
+                            </a>
+                        {{/userlinks}}
+                        {{^userlinks}}
+                                {{lastpostuserfullname}}
+                        {{/userlinks}}
                     </td>
                     <td>{{#userdate}} {{lastmodified}}, %F %X {{/userdate}}</td>
                     <td>
-                        <a href="{{wwwroot}}/local/edusupport/issues.php?assign={{discussionid}}">
+                        <a href="{{wwwroot}}/local/edusupport/issues.php?assign={{discussionid}}" data-toggle="tooltip" data-placement="top" title="watch">
                             {{#pix}} i/hide, core {{/pix}}
                         </a>
-                        <a href="{{wwwroot}}/local/edusupport/issues.php?take={{discussionid}}">
+                        <a href="{{wwwroot}}/local/edusupport/issues.php?take={{discussionid}}" data-toggle="tooltip" data-placement="top" title="assign myself">
                             <i class="fa fa-plus" aria-hidden="true"></i>
                         </a>
-                        <a href="{{wwwroot}}/local/edusupport/issues.php?asignto={{discussionid}}" onclick="require(['local_edusupport/main'], function(MAIN){ MAIN.assignSupporter({{discussionid}}); }); return false;">
+                        <a href="{{wwwroot}}/local/edusupport/issues.php?asignto={{discussionid}}" onclick="require(['local_edusupport/main'], function(MAIN){ MAIN.assignSupporter({{discussionid}}); }); return false;" data-toggle="tooltip" data-placement="top" title="assign someone">
                             {{#pix}} i/enrolusers, core {{/pix}}
                         </a>
-                        <a href="{{wwwroot}}/local/edusupport/issues.php?close={{discussionid}}">
+                        <a href="{{wwwroot}}/local/edusupport/issues.php?close={{discussionid}}" data-toggle="tooltip" data-placement="top" title="close issue">
                             <i class="fa fa-window-close" aria-hidden="true"></i>
                         </a>
                     </td>
+                    {{#hasprio}}
+                    <td>
+                        <a href="{{wwwroot}}/local/edusupport/issues.php?prio={{discussionid}}&lvl=1"  data-toggle="tooltip" data-placement="top" title="priortiy low">
+                            <i class="fa fa-exclamation text-success" aria-hidden="true"></i>
+                        </a>
+                        <a href="{{wwwroot}}/local/edusupport/issues.php?prio={{discussionid}}&lvl=2"  data-toggle="tooltip" data-placement="top" title="priortiy mid">
+                            <i class="fa fa-exclamation text-warning" aria-hidden="true"></i>
+                        </a>
+                        <a href="{{wwwroot}}/local/edusupport/issues.php?prio={{discussionid}}&lvl=3"  data-toggle="tooltip" data-placement="top" title="priortiy high">
+                            <i class="fa fa-exclamation text-danger" aria-hidden="true"></i>
+                        </a>
                     </td>
+                    {{/hasprio}}
                 </tr>
             {{/other}}<tr class="accordion-toggle collapsed" id="accordion1" data-toggle="collapse" data-parent="#accordion1" href="#collapseOne" aria-expanded="false">
             <tr>
-                <th colspan="7">{{#str}} issues:closed, local_edusupport {{/str}}</th>
+                <th colspan="8">{{#str}} issues:closed, local_edusupport {{/str}}</th>
             </tr>
             {{#closed}}
-                <tr>
+                <tr class="alert-success">
                     <td>
                         <a href="{{wwwroot}}/local/edusupport/issue.php?d={{discussionid}}">
                             {{id}}
@@ -209,35 +297,46 @@
                         </a>
                     </td>
                     <td>
-                        <a href="{{wwwroot}}/user/view.php?id={{userid}}">
+                        {{#userlinks}}
+                            <a href="{{wwwroot}}/user/view.php?id={{userid}}">
+                                {{userfullname}}
+                            </a>
+                        {{/userlinks}}
+                        {{^userlinks}}
                             {{userfullname}}
-                        </a>
+                        {{/userlinks}}
                     </td>
                     <td>
-                        {{#currentsupporterid}}<a href="{{wwwroot}}/user/view.php?id={{currentsupporterid}}">{{/currentsupporterid}}
+                        {{#userlinks}}
+                            {{#currentsupporterid}}<a href="{{wwwroot}}/user/view.php?id={{currentsupporterid}}">{{/currentsupporterid}}
                             {{currentsupportername}}
-                        {{#currentsupporterid}}</a>{{/currentsupporterid}}
+                            {{#currentsupporterid}}</a>{{/currentsupporterid}}
+                        {{/userlinks}}
+                        {{^userlinks}}
+                            {{currentsupportername}}
+                        {{/userlinks}}
+                       
                     </td>
                     <td>
-                        <a href="{{wwwroot}}/user/view.php?id={{lastpostuserid}}">
-                            {{lastpostuserfullname}}
-                        </a>
+                        {{#userlinks}}
+                            <a href="{{wwwroot}}/user/view.php?id={{lastpostuserid}}">
+                                {{lastpostuserfullname}}
+                            </a>
+                        {{/userlinks}}
+                        {{^userlinks}}
+                                {{lastpostuserfullname}}
+                        {{/userlinks}}
                     </td>
                     <td>{{#userdate}} {{lastmodified}}, %F %X {{/userdate}}</td>
                     <td>
-                        <a href="{{wwwroot}}/local/edusupport/issues.php?assign={{discussionid}}">
-                            {{#pix}} i/hide, core {{/pix}}
-                        </a>
-                        <a href="{{wwwroot}}/local/edusupport/issues.php?take={{discussionid}}">
-                            <i class="fa fa-plus" aria-hidden="true"></i>
-                        </a>
-                        <a href="{{wwwroot}}/local/edusupport/issues.php?asignto={{discussionid}}" onclick="require(['local_edusupport/main'], function(MAIN){ MAIN.assignSupporter({{discussionid}}); }); return false;">
-                            {{#pix}} i/enrolusers, core {{/pix}}
-                        </a>
-                        <a href="{{wwwroot}}/local/edusupport/issues.php?reopen={{discussionid}}">
+                        <a href="{{wwwroot}}/local/edusupport/issues.php?reopen={{discussionid}}" data-toggle="tooltip" data-placement="top" title="reopen">
                             <i class="fa fa-refresh" aria-hidden="true"></i>
                         </a>
                     </td>
+                    {{#hasprio}}
+                    <td>
+                    </td>
+                    {{/hasprio}}
                 </tr>
             {{/closed}}
 

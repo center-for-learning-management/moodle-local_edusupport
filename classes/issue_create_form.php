@@ -37,6 +37,7 @@ class issue_create_form extends moodleform {
 
         $faqread = get_config('local_edusupport','faqread');
         $prioritylvl = get_config('local_edusupport','prioritylvl');
+        $disablephonefield = get_config('local_edusupport','disablephonefield');
 
 
         $editoroptions = array('subdirs'=>0, 'maxbytes'=>0, 'maxfiles'=>0,
@@ -60,10 +61,11 @@ class issue_create_form extends moodleform {
         $mform->setType('subject', PARAM_TEXT);
         $mform->addRule('subject', get_string('subject_missing', 'local_edusupport'), 'required', null, 'server');
 
-        $mform->addElement('text', 'contactphone', get_string('contactphone', 'local_edusupport'), array('style' => 'width: 100%;'));
-        $mform->setType('contactphone', PARAM_TEXT);
-        //$mform->addRule('contactphone', get_string('contactphone_missing', 'local_edusupport'), 'required', null, 'server');
-
+        if(!$disablephonefield) {
+            $mform->addElement('text', 'contactphone', get_string('contactphone', 'local_edusupport'), array('style' => 'width: 100%;'));
+            $mform->setType('contactphone', PARAM_TEXT);
+            //$mform->addRule('contactphone', get_string('contactphone_missing', 'local_edusupport'), 'required', null, 'server');
+        }
         $mform->addElement('textarea', 'description', get_string('description', 'local_edusupport'), array('style' => 'width: 100%;', 'rows' => 10));
         $mform->setType('description', PARAM_RAW);
         $mform->addRule('description', get_string('description_missing', 'local_edusupport'), 'required', null, 'server');

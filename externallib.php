@@ -72,7 +72,7 @@ class local_edusupport_external extends external_api {
                 $styles[$discussionid] = local_edusupport::$STYLE_UNASSIGNED;
             } elseif ($issue->currentsupporter == $USER->id) {
                 $styles[$discussionid] = local_edusupport::$STYLE_MINE;
-            } elseif ($issue->opened == 1) {
+            } elseif ($issue->opened > 0) {
                 $styles[$discussionid] = local_edusupport::$STYLE_OPENED;
             } elseif ($issue->opened == 0) {
                 $styles[$discussionid] = local_edusupport::$STYLE_CLOSED;
@@ -394,7 +394,8 @@ class local_edusupport_external extends external_api {
                 if (!empty($tmp[3])) $extralink->target = $tmp[3];
                 $extralinks[] = $extralink;
             }
-        }
+        }      
+        
         $nav = $OUTPUT->render_from_template('local_edusupport/injectbutton', array('extralinks' => $extralinks, 'hasextralinks' => count($extralinks) > 0));
         $cache->set('rendered', $nav);
         return $nav;

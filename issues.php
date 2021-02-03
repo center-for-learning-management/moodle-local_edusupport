@@ -49,20 +49,24 @@ if (!\local_edusupport\lib::is_supportteam()) {
     $give = optional_param('give', 0, PARAM_INT);
     $reopen = optional_param('reopen', 0, PARAM_INT);
     $close = optional_param('close', 0, PARAM_INT);
+    $prio= optional_param('prio', 0, PARAM_INT);
+    $lvl= optional_param('lvl', 0, PARAM_INT);
     $sql = "SELECT id,discussionid FROM {local_edusupport_issues}";
-    $issues = $DB->get_records('local_edusupport_issues', array(), 'id,discussionid');
+    $issues = $DB->get_records('local_edusupport_issues', array(), 'opened,id,discussionid');
 
     $params = array(
         'current' => array(), // issues the user is responsible for
         'assigned' => array(), // issues the user receives notifications for
         'other' => array(), // all other issues
         'wwwroot' => $CFG->wwwroot,
-        'count' => array(),
+        'count' => array()
     );
-     $params['count']['current'] = 0;
-     $params['count']['closed'] = 0;
-     $params['count']['assigned'] = 0;
-     $params['count']['other'] = 0;
+    $params['count']['current'] = 0;
+    $params['count']['closed'] = 0;
+    $params['count']['assigned'] = 0;
+    $params['count']['other'] = 0;
+    $params['userlinks'] = get_config('local_edusupport','userlinks');
+    $params['hasprio'] = get_config('local_edusupport','prioritylvl');
     foreach ($issues AS $issue) {
         // Collect certain data about this issue.
         $discussion = $DB->get_record('forum_discussions', array('id' => $issue->discussionid));
@@ -77,7 +81,10 @@ if (!\local_edusupport\lib::is_supportteam()) {
         $lastuser = $DB->get_record('user', array('id' => $issue->lastpostuserid));
         $issue->lastpostuserfullname = fullname($lastuser);
         $assigned = $DB->get_record('local_edusupport_subscr', array('discussionid' => $issue->discussionid, 'userid' => $USER->id));
+        $issue->prio = "";
+        $issue->prioclass = "";
 
+     
         // Check for any actions.
         if (!empty($assign) && $assign == $issue->discussionid && empty($assigned->id)) {
             $assigned = \local_edusupport\lib::subscription_add($issue->discussionid);
@@ -101,13 +108,16 @@ if (!\local_edusupport\lib::is_supportteam()) {
             $issue->opened = "1";
             $issue->name = ltrim($issue->name, "[Closed] ");
         }
-        if (!empty($close) && $close == $issue->discussionid) {
+       if (!empty($close) && $close == $issue->discussionid) {
             \local_edusupport\lib::close_issue($issue->discussionid);
             $issue->opened = "0";
             $issue->name = "[Closed] " . ltrim($discussion->name, "[Closed] ");
         }
-
-
+        if (!empty($prio) && $prio == $issue->discussionid && !empty($lvl)) {
+            \local_edusupport\lib::set_prioritylvl($issue->discussionid,$lvl);
+            $issue->opened = $lvl;
+            //$issue->name = "[Closed] " . ltrim($discussion->name, "[Closed] ");
+        }
 
         // Now get the current supporter
         if (!empty($issue->currentsupporter)) {
@@ -118,14 +128,26 @@ if (!\local_edusupport\lib::is_supportteam()) {
             $issue->currentsupportername = get_string('label:2ndlevel', 'local_edusupport');
         }
 
+
+
+        for ($i = 1; $i < $issue->opened; $i++) {
+            $issue->prio .= '<i class="fa fa-exclamation" aria-hidden="true"></i>';
+        }
+
+        if ($issue->opened > 1) {
+            $issue->prioclass = "alert-warning";
+        }
+        if ($issue->opened > 2) {
+            $issue->prioclass = "alert-danger";
+        }
         // Now separate between current, assigned and other issues.
-        if ($issue->currentsupporter == $USER->id && $issue->opened == 1) {
+        if ($issue->currentsupporter == $USER->id && $issue->opened > 0) {
             $params['current'][] = $issue;
             $params['count']['current'] = $params['count']['current'] + 1;
         } elseif (!empty($assigned->id)) {
             $params['assigned'][] = $issue;
             $params['count']['assigned'] = $params['count']['assigned'] + 1;
-        } elseif($issue->opened == 1) {
+        } elseif($issue->opened > 0) {
             $params['other'][] = $issue;
             $params['count']['other'] = $params['count']['other'] + 1;
         }

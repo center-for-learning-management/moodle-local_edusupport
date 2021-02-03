@@ -576,6 +576,19 @@ class lib {
         return true;
     }
 
+    public static function set_prioritylvl($discussionid,$priority) {
+        global $CFG, $DB, $USER;
+
+        $issue = self::get_issue($discussionid);
+        $issue->opened = $priority;
+        $issue->discussionid = $discussionid;
+
+        $DB->update_record('local_edusupport_issues', $issue);
+        return true;
+
+    }
+
+
     /**
      * Add support user to the list of assigned users.
      * @param int dicussionid
