@@ -133,8 +133,9 @@
                 <th colspan="8">{{#str}} issues:assigned, local_edusupport {{/str}}</th>
             </tr>
             {{#assigned}}
-                <tr>
+                <tr class="{{prioclass}}">
                     <td>
+                        {{{prio}}}
                         <a href="{{wwwroot}}/local/edusupport/issue.php?d={{discussionid}}">
                             {{id}}
                         </a>
@@ -210,7 +211,8 @@
                 <th colspan="8">{{#str}} issues:other, local_edusupport {{/str}}</th>
             </tr>
             {{#other}}
-                <tr>
+                <tr class="{{prioclass}}">
+                    {{{prio}}}
                     <td>
                         <a href="{{wwwroot}}/local/edusupport/issue.php?d={{discussionid}}">
                             {{id}}
