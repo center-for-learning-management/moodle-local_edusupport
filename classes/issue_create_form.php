@@ -64,13 +64,10 @@ class issue_create_form extends moodleform {
         if(!$disablephonefield) {
             $mform->addElement('text', 'contactphone', get_string('contactphone', 'local_edusupport'), array('style' => 'width: 100%;'));
             $mform->setType('contactphone', PARAM_TEXT);
-            $mform->setDefault('contactphone', ''); 
-            //$mform->addRule('contactphone', get_string('contactphone_missing', 'local_edusupport'), 'required', null, 'server');
         }
         else {
-            $mform->addElement('hidden', 'contactphone', get_string('contactphone', 'local_edusupport'));
+            $mform->addElement('hidden', 'contactphone', '');
             $mform->setType('contactphone', PARAM_TEXT);
-            //$mform->addRule('contactphone', get_string('contactphone_missing', 'local_edusupport'), 'required', null, 'server');
         }
         $mform->addElement('textarea', 'description', get_string('description', 'local_edusupport'), array('style' => 'width: 100%;', 'rows' => 10));
         $mform->setType('description', PARAM_RAW);

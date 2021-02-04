@@ -242,7 +242,8 @@ define(
             }
             if (MAIN.debug > 0) console.log('MAIN.postBox(modal)', modal);
             var subject = $('#local_edusupport_create_form #id_subject').val();
-            var contactphone = $('#local_edusupport_create_form #id_contactphone').val();
+            var contactphone = $('#local_edusupport_create_form #id_contactphone').val() || '';
+            console.log(contactphone);
             var description = $('#local_edusupport_create_form #id_description').val();
             var forum_group = $('#local_edusupport_create_form #id_forum_group').val();
             var postto2ndlevel = $('#local_edusupport_create_form #id_postto2ndlevel').prop('checked') ? 1 : 0;
