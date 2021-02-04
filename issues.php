@@ -111,6 +111,7 @@ if (!\local_edusupport\lib::is_supportteam()) {
        if (!empty($close) && $close == $issue->discussionid) {
             \local_edusupport\lib::close_issue($issue->discussionid);
             $issue->opened = "0";
+            unset($assigned);
             $issue->name = "[Closed] " . ltrim($discussion->name, "[Closed] ");
         }
         if (!empty($prio) && $prio == $issue->discussionid && !empty($lvl)) {
