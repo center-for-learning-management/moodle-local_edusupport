@@ -64,6 +64,7 @@ class issue_create_form extends moodleform {
         if(!$disablephonefield) {
             $mform->addElement('text', 'contactphone', get_string('contactphone', 'local_edusupport'), array('style' => 'width: 100%;'));
             $mform->setType('contactphone', PARAM_TEXT);
+            $mform->setDefault('contactphone', ''); 
             //$mform->addRule('contactphone', get_string('contactphone_missing', 'local_edusupport'), 'required', null, 'server');
         }
         else {
