@@ -104,6 +104,7 @@ $string['only_you'] = 'Only you and our team';
 $string['postto2ndlevel'] = 'Call 2nd level support';
 $string['postto2ndlevel:description'] = 'It seems you are the first level support of the forum you selected. If you want to, you can directly call the 2nd level support for your issue!';
 $string['privacy:metadata'] = 'This plugin does not store any personal data as it uses a forum as target.';
+$string['priority'] = 'set priority';
 $string['prioritylvl'] = 'prioritylvl...';
 $string['prioritylvl:description'] =  'prioritylvl:description...';
 $string['prioritylvl:low'] = 'low priority';

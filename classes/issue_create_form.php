@@ -66,6 +66,11 @@ class issue_create_form extends moodleform {
             $mform->setType('contactphone', PARAM_TEXT);
             //$mform->addRule('contactphone', get_string('contactphone_missing', 'local_edusupport'), 'required', null, 'server');
         }
+        else {
+            $mform->addElement('hidden', 'contactphone', get_string('contactphone', 'local_edusupport'));
+            $mform->setType('contactphone', PARAM_TEXT);
+            //$mform->addRule('contactphone', get_string('contactphone_missing', 'local_edusupport'), 'required', null, 'server');
+        }
         $mform->addElement('textarea', 'description', get_string('description', 'local_edusupport'), array('style' => 'width: 100%;', 'rows' => 10));
         $mform->setType('description', PARAM_RAW);
         $mform->addRule('description', get_string('description_missing', 'local_edusupport'), 'required', null, 'server');
@@ -140,10 +145,11 @@ class issue_create_form extends moodleform {
             $mform->setType('faqread', PARAM_BOOL);
             $mform->addRule('faqread', get_string('subject_missing', 'local_edusupport'), 'required', true, 'server');
         }
-
+        /*
         if ($prioritylvl) {
             $mform->addElement('select', 'prioritylvl', get_string('prioritylvl', 'local_edusupport'), $this->return_priority_options());
         }
+        */
     }
 
     //Custom validation should be added here

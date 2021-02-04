@@ -249,9 +249,9 @@ define(
             var post_screenshot = $('#local_edusupport_create_form #id_postscreenshot').prop('checked') ? 1 : 0;
             var screenshot = $('#local_edusupport_create_form img#screenshot').attr('src');
             var faqread = $('#local_edusupport_create_form #id_faqread').prop('checked') ? 1 : 0;
-            var priority = $('#local_edusupport_create_form #id_prioritylvl').val();
+            /*var priority = $('#local_edusupport_create_form #id_prioritylvl').val();
             subject = priority + " " + subject;
-            console.log.subject;
+            console.log.subject; */
             var url = top.location.href;
 
 
