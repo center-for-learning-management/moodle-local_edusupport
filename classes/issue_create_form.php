@@ -58,17 +58,17 @@ class issue_create_form extends moodleform {
         $mform->addElement('hidden', 'image', ''); // base64 encoded image
         $mform->setType('image', PARAM_RAW);
 
+        $mform->addElement('header', 'header', get_string('header', 'local_edusupport', $COURSE->fullname));
+
 
         if ($faqread) {
-            $mform->addElement('html','<h3>'.get_string('faqread:description', 'local_edusupport',$faqlink).'</h3>');
-            $mform->addElement('checkbox', 'faqread', '',
-                '');
+            $mform->addElement('checkbox', 'faqread','', get_string('faqread:description', 'local_edusupport',$faqlink));
             $mform->setType('faqread', PARAM_BOOL);
             $mform->addRule('faqread', get_string('subject_missing', 'local_edusupport'), 'required', true, 'server');
         }
 
-        $mform->addElement('header', 'header', get_string('header', 'local_edusupport', $COURSE->fullname));
 
+        $mform->addElement('html','<div id="create_issue_input">');
         $mform->addElement('text', 'subject', get_string('subject', 'local_edusupport'), array('style' => 'width: 100%;', 'type' => 'tel'));
         $mform->setType('subject', PARAM_TEXT);
         $mform->addRule('subject', get_string('subject_missing', 'local_edusupport'), 'required', null, 'server');
@@ -148,7 +148,7 @@ class issue_create_form extends moodleform {
         $mform->addElement('html', implode("\n", $html));
         $mform->addElement('html', '<script> setTimeout(function() { ' . $postto2ndlevel_hideshow . ' }, 100);</script>');
 
-
+        $mform->addElement('html','</div>');
     
         /*
         if ($prioritylvl) {

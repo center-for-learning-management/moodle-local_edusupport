@@ -184,9 +184,11 @@ define(
         },
         faqtoogle: function() {
             if ($('input#id_faqread').length) {
-                $('#id_header').toggle(); 
+                $('#create_issue_input').toggle(); 
+                $('#local_edusupport_create_form .fdescription.required').toggle();
                 $('input#id_faqread').click(function() { 
-                    $('#id_header').toggle(); 
+                    $('#create_issue_input').toggle();
+                    $('#local_edusupport_create_form .fdescription.required').toggle(); 
                 }); 
             }
         },
