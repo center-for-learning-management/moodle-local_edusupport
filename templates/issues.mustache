@@ -59,9 +59,8 @@
             {{#current}}
                 <tr class="{{prioclass}}">
                     <td>
-                        {{{prio}}}
                         <a href="{{wwwroot}}/local/edusupport/issue.php?d={{discussionid}}">
-                            {{id}}
+                            {{{prio}}}{{id}}
                         </a>
                     </td>
                     <td>
@@ -190,13 +189,13 @@
                     {{#hasprio}}
                     <td>
                         <a href="{{wwwroot}}/local/edusupport/issues.php?prio={{discussionid}}&lvl=1"  data-toggle="tooltip" data-placement="top" title="priortiy low">
-                            <i class="fa fa-exclamation text-success" aria-hidden="true"></i>
+                            <i class="fa fa-exclamation text-success mr-2" aria-hidden="true"></i>
                         </a>
                         <a href="{{wwwroot}}/local/edusupport/issues.php?prio={{discussionid}}&lvl=2"  data-toggle="tooltip" data-placement="top" title="priortiy mid">
-                            <i class="fa fa-exclamation text-warning" aria-hidden="true"></i>
+                            <i class="fa fa-exclamation text-warning mr-2" aria-hidden="true"></i>
                         </a>
                         <a href="{{wwwroot}}/local/edusupport/issues.php?prio={{discussionid}}&lvl=3"  data-toggle="tooltip" data-placement="top" title="priortiy high">
-                            <i class="fa fa-exclamation text-danger" aria-hidden="true"></i>
+                            <i class="fa fa-exclamation text-danger mr-2" aria-hidden="true"></i>
                         </a>
                     </td>
                     {{/hasprio}}
@@ -212,8 +211,9 @@
             </tr>
             {{#other}}
                 <tr class="{{prioclass}}">
-                    {{{prio}}}
+                    
                     <td>
+                         {{{prio}}}   
                         <a href="{{wwwroot}}/local/edusupport/issue.php?d={{discussionid}}">
                             {{id}}
                         </a>
@@ -271,13 +271,13 @@
                     {{#hasprio}}
                     <td>
                         <a href="{{wwwroot}}/local/edusupport/issues.php?prio={{discussionid}}&lvl=1"  data-toggle="tooltip" data-placement="top" title="priortiy low">
-                            <i class="fa fa-exclamation text-success" aria-hidden="true"></i>
+                            <i class="fa fa-exclamation text-success mr-2" aria-hidden="true"></i>
                         </a>
                         <a href="{{wwwroot}}/local/edusupport/issues.php?prio={{discussionid}}&lvl=2"  data-toggle="tooltip" data-placement="top" title="priortiy mid">
-                            <i class="fa fa-exclamation text-warning" aria-hidden="true"></i>
+                            <i class="fa fa-exclamation text-warning mr-2" aria-hidden="true"></i>
                         </a>
                         <a href="{{wwwroot}}/local/edusupport/issues.php?prio={{discussionid}}&lvl=3"  data-toggle="tooltip" data-placement="top" title="priortiy high">
-                            <i class="fa fa-exclamation text-danger" aria-hidden="true"></i>
+                            <i class="fa fa-exclamation text-danger mr-2" aria-hidden="true"></i>
                         </a>
                     </td>
                     {{/hasprio}}
