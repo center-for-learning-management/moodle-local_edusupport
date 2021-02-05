@@ -61,12 +61,13 @@ if (!\local_edusupport\lib::is_supportteam()) {
         'wwwroot' => $CFG->wwwroot,
         'count' => array()
     );
+    $hasprio = get_config('local_edusupport','prioritylvl');
     $params['count']['current'] = 0;
     $params['count']['closed'] = 0;
     $params['count']['assigned'] = 0;
     $params['count']['other'] = 0;
     $params['userlinks'] = get_config('local_edusupport','userlinks');
-    $params['hasprio'] = get_config('local_edusupport','prioritylvl');
+    $params['hasprio'] = $hasprio;
     foreach ($issues AS $issue) {
         // Collect certain data about this issue.
         $discussion = $DB->get_record('forum_discussions', array('id' => $issue->discussionid));
@@ -130,16 +131,17 @@ if (!\local_edusupport\lib::is_supportteam()) {
         }
 
 
+        if ($hasprio) {
+            for ($i = 1; $i < $issue->opened; $i++) {
+                $issue->prio .= '<i class="fa fa-exclamation" aria-hidden="true"></i>';
+            }
 
-        for ($i = 1; $i < $issue->opened; $i++) {
-            $issue->prio .= '<i class="fa fa-exclamation" aria-hidden="true"></i>';
-        }
-
-        if ($issue->opened > 1) {
-            $issue->prioclass = "alert-warning";
-        }
-        if ($issue->opened > 2) {
-            $issue->prioclass = "alert-danger";
+            if ($issue->opened > 1) {
+                $issue->prioclass = "alert-warning";
+            }
+            if ($issue->opened > 2) {
+                $issue->prioclass = "alert-danger";
+            }
         }
         // Now separate between current, assigned and other issues.
         if ($issue->currentsupporter == $USER->id && $issue->opened > 0) {

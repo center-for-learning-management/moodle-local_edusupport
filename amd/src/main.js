@@ -182,6 +182,14 @@ define(
                 fail: NOTIFICATION.exception
             }]);
         },
+        faqtoogle: function() {
+            if ($('input#id_faqread').length) {
+                $('#id_header').toggle(); 
+                $('input#id_faqread').click(function() { 
+                    $('#id_header').toggle(); 
+                }); 
+            }
+        },
         /**
          * Let's inject a button to call the 2nd level support.
          * @param discussionid.
@@ -352,6 +360,7 @@ define(
             }
 
             MAIN.modal.setLarge();
+        
             MAIN.modal.getRoot().on(ModalEvents.save, function(e) {
                 // Stop the default save button behaviour which is to close the modal.
                 MAIN.postBox(MAIN.modal);
@@ -412,7 +421,9 @@ define(
                         }).done(function(modal) {
                             console.log('Created modal');
                             MAIN.modal = modal;
+
                             MAIN.prepareBox();
+                            MAIN.faqtoogle();
                         });
                     },
                     fail: NOTIFICATION.exception

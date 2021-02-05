@@ -36,6 +36,7 @@ class issue_create_form extends moodleform {
         global $CFG, $COURSE, $DB;
 
         $faqread = get_config('local_edusupport','faqread');
+        $faqlink = get_config('local_edusupport','faqlink');
         $prioritylvl = get_config('local_edusupport','prioritylvl');
         $disablephonefield = get_config('local_edusupport','disablephonefield');
 
@@ -45,6 +46,8 @@ class issue_create_form extends moodleform {
                                'trusttext'=>0, 'enable_filemanagement' => false);
 
         $mform = $this->_form;
+
+
         $mform->addElement('hidden', 'id', 0);
         $mform->setType('id', PARAM_INT);
 
@@ -54,6 +57,15 @@ class issue_create_form extends moodleform {
         $mform->setType('url', PARAM_TEXT);
         $mform->addElement('hidden', 'image', ''); // base64 encoded image
         $mform->setType('image', PARAM_RAW);
+
+
+        if ($faqread) {
+            $mform->addElement('html','<h3>'.get_string('faqread:description', 'local_edusupport',$faqlink).'</h3>');
+            $mform->addElement('checkbox', 'faqread', '',
+                '');
+            $mform->setType('faqread', PARAM_BOOL);
+            $mform->addRule('faqread', get_string('subject_missing', 'local_edusupport'), 'required', true, 'server');
+        }
 
         $mform->addElement('header', 'header', get_string('header', 'local_edusupport', $COURSE->fullname));
 
@@ -137,12 +149,7 @@ class issue_create_form extends moodleform {
         $mform->addElement('html', '<script> setTimeout(function() { ' . $postto2ndlevel_hideshow . ' }, 100);</script>');
 
 
-        if ($faqread) {
-            $mform->addElement('checkbox', 'faqread', get_string('faqread', 'local_edusupport'),
-                get_string('faqread:description', 'local_edusupport'));
-            $mform->setType('faqread', PARAM_BOOL);
-            $mform->addRule('faqread', get_string('subject_missing', 'local_edusupport'), 'required', true, 'server');
-        }
+    
         /*
         if ($prioritylvl) {
             $mform->addElement('select', 'prioritylvl', get_string('prioritylvl', 'local_edusupport'), $this->return_priority_options());

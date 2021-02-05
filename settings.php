@@ -55,8 +55,18 @@ if ($hassiteconfig) {
         new admin_setting_configcheckbox(
             'local_edusupport/faqread',
             get_string('faqread', 'local_edusupport'),
-            get_string('faqread:description', 'local_edusupport'),
+            '',
             1
+        )
+    );
+
+    //FAQ Link
+    $settings->add(
+        new admin_setting_configtext(
+            'local_edusupport/faqlink',
+            get_string('faqlink', 'local_edusupport'),
+            get_string('faqlink:description', 'local_edusupport'),
+            ''
         )
     );
 
