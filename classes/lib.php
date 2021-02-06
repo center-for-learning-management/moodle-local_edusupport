@@ -577,7 +577,7 @@ class lib {
     }
 
     public static function set_prioritylvl($discussionid,$priority) {
-        global $CFG, $DB, $USER;
+        global $DB;
 
         $issue = self::get_issue($discussionid);
         $issue->opened = $priority;

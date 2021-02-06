@@ -27,13 +27,13 @@
                 <p>{{#str}} issue:countassigned, local_edusupport {{/str}}</p>
             </div>
             <div class="col-md-3">
-                <h3>{{other}}</h3>            
+                <h3>{{other}}</h3>
                 <p>{{#str}} issue:countother, local_edusupport {{/str}}</p>
             </div>
-            <div class="col-md-3">                
-                <h3>{{closed}}</h3>            
+            <div class="col-md-3">
+                <h3>{{closed}}</h3>
                 <p>{{#str}} issue:countclosed, local_edusupport {{/str}}</p>
-            </div>       
+            </div>
         </div>
      {{/count}}
    </ul>
@@ -57,7 +57,7 @@
                 <th colspan="8">{{#str}} issues:current, local_edusupport {{/str}}</th>
             </tr>
             {{#current}}
-                <tr class="{{prioclass}}">
+                <tr>
                     <td>
                         <a href="{{wwwroot}}/local/edusupport/issue.php?d={{discussionid}}">
                             {{{prio}}}{{id}}
@@ -100,24 +100,23 @@
                     </td>
                     <td>{{#userdate}} {{lastmodified}}, %F %X {{/userdate}}</td>
                     <td>
-                        <a href="{{wwwroot}}/local/edusupport/issues.php?asignto={{discussionid}}" onclick="require(['local_edusupport/main'], function(MAIN){ MAIN.assignSupporter({{discussionid}}); }); return false;" data-toggle="tooltip" data-placement="top" title="assign someone">
+                        <a class="btn btn-outline-info" href="{{wwwroot}}/local/edusupport/issues.php?asignto={{discussionid}}" onclick="require(['local_edusupport/main'], function(MAIN){ MAIN.assignSupporter({{discussionid}}); }); return false;" data-toggle="tooltip" data-placement="top" title="assign someone">
                             {{#pix}} i/enrolusers, core {{/pix}}
                         </a>
-                        <a href="{{wwwroot}}/local/edusupport/issues.php?close={{discussionid}}">
+                        <a class="btn btn-outline-danger" href="{{wwwroot}}/local/edusupport/issues.php?close={{discussionid}}">
                             <i class="fa fa-window-close" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="close issue"></i>
                         </a>
-                        
                     </td>
                     {{#hasprio}}
                     <td>
-                        <a href="{{wwwroot}}/local/edusupport/issues.php?prio={{discussionid}}&lvl=1">
-                            <i class="fa fa-exclamation text-success mr-2" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="priortiy low"></i>
+                        <a class="btn btn-outline-primary {{priolow}}" href="{{wwwroot}}/local/edusupport/issues.php?prio={{discussionid}}&lvl=1" data-toggle="tooltip" data-placement="top" title="priortiy low">
+                            !
                         </a>
-                        <a href="{{wwwroot}}/local/edusupport/issues.php?prio={{discussionid}}&lvl=2"  data-toggle="tooltip" data-placement="top" title="priortiy mid">
-                            <i class="fa fa-exclamation text-warning mr-2" aria-hidden="true"></i>
+                        <a class="btn btn-outline-warning {{priomid}}" href="{{wwwroot}}/local/edusupport/issues.php?prio={{discussionid}}&lvl=2"  data-toggle="tooltip" data-placement="top" title="priortiy mid">
+                            !!
                         </a>
-                        <a href="{{wwwroot}}/local/edusupport/issues.php?prio={{discussionid}}&lvl=3"  data-toggle="tooltip" data-placement="top" title="priortiy high">
-                            <i class="fa fa-exclamation text-danger mr-2" aria-hidden="true"></i>
+                        <a class="btn btn-outline-danger {{priohigh}}" href="{{wwwroot}}/local/edusupport/issues.php?prio={{discussionid}}&lvl=3"  data-toggle="tooltip" data-placement="top" title="priortiy high">
+                            !!!
                         </a>
                     </td>
                     {{/hasprio}}
@@ -132,7 +131,7 @@
                 <th colspan="8">{{#str}} issues:assigned, local_edusupport {{/str}}</th>
             </tr>
             {{#assigned}}
-                <tr class="{{prioclass}}">
+                <tr>
                     <td>
                         {{{prio}}}
                         <a href="{{wwwroot}}/local/edusupport/issue.php?d={{discussionid}}">
@@ -176,26 +175,26 @@
                     </td>
                     <td>{{#userdate}} {{lastmodified}}, %F %X {{/userdate}}</td>
                     <td>
-                        <a href="{{wwwroot}}/local/edusupport/issues.php?unassign={{discussionid}}" data-toggle="tooltip" data-placement="top" title="unsubscribe">
+                        <a class="btn btn-outline-secondary" href="{{wwwroot}}/local/edusupport/issues.php?unassign={{discussionid}}" data-toggle="tooltip" data-placement="top" title="unsubscribe">
                             {{#pix}} i/show, core {{/pix}}
                         </a>
-                        <a href="{{wwwroot}}/local/edusupport/issues.php?take={{discussionid}}" data-toggle="tooltip" data-placement="top" title="assign myself">
+                        <a class="btn btn-outline-info" href="{{wwwroot}}/local/edusupport/issues.php?take={{discussionid}}" data-toggle="tooltip" data-placement="top" title="assign myself">
                             <i class="fa fa-plus" aria-hidden="true"></i>
                         </a>
-                        <a href="{{wwwroot}}/local/edusupport/issues.php?close={{discussionid}}" data-toggle="tooltip" data-placement="top" title="close issue">
+                        <a class="btn btn-outline-danger" href="{{wwwroot}}/local/edusupport/issues.php?close={{discussionid}}" data-toggle="tooltip" data-placement="top" title="close issue">
                             <i class="fa fa-window-close" aria-hidden="true"></i>
                         </a>
                     </td>
                     {{#hasprio}}
                     <td>
-                        <a href="{{wwwroot}}/local/edusupport/issues.php?prio={{discussionid}}&lvl=1"  data-toggle="tooltip" data-placement="top" title="priortiy low">
-                            <i class="fa fa-exclamation text-success mr-2" aria-hidden="true"></i>
+                        <a class="btn btn-outline-primary  {{priolow}}" href="{{wwwroot}}/local/edusupport/issues.php?prio={{discussionid}}&lvl=1" data-toggle="tooltip" data-placement="top" title="priortiy low">
+                        !
                         </a>
-                        <a href="{{wwwroot}}/local/edusupport/issues.php?prio={{discussionid}}&lvl=2"  data-toggle="tooltip" data-placement="top" title="priortiy mid">
-                            <i class="fa fa-exclamation text-warning mr-2" aria-hidden="true"></i>
+                        <a class="btn btn-outline-warning {{priomid}}" href="{{wwwroot}}/local/edusupport/issues.php?prio={{discussionid}}&lvl=2"  data-toggle="tooltip" data-placement="top" title="priortiy mid">
+                        !!
                         </a>
-                        <a href="{{wwwroot}}/local/edusupport/issues.php?prio={{discussionid}}&lvl=3"  data-toggle="tooltip" data-placement="top" title="priortiy high">
-                            <i class="fa fa-exclamation text-danger mr-2" aria-hidden="true"></i>
+                        <a class="btn btn-outline-danger {{priohigh}}" href="{{wwwroot}}/local/edusupport/issues.php?prio={{discussionid}}&lvl=3"  data-toggle="tooltip" data-placement="top" title="priortiy high">
+                        !!!
                         </a>
                     </td>
                     {{/hasprio}}
@@ -210,10 +209,9 @@
                 <th colspan="8">{{#str}} issues:other, local_edusupport {{/str}}</th>
             </tr>
             {{#other}}
-                <tr class="{{prioclass}}">
-                    
+                <tr>
                     <td>
-                         {{{prio}}}   
+                         {{{prio}}}
                         <a href="{{wwwroot}}/local/edusupport/issue.php?d={{discussionid}}">
                             {{id}}
                         </a>
@@ -255,29 +253,29 @@
                     </td>
                     <td>{{#userdate}} {{lastmodified}}, %F %X {{/userdate}}</td>
                     <td>
-                        <a href="{{wwwroot}}/local/edusupport/issues.php?assign={{discussionid}}" data-toggle="tooltip" data-placement="top" title="watch">
+                        <a class="btn btn-outline-secondary" href="{{wwwroot}}/local/edusupport/issues.php?assign={{discussionid}}" data-toggle="tooltip" data-placement="top" title="watch">
                             {{#pix}} i/hide, core {{/pix}}
                         </a>
-                        <a href="{{wwwroot}}/local/edusupport/issues.php?take={{discussionid}}" data-toggle="tooltip" data-placement="top" title="assign myself">
+                        <a class="btn btn-outline-secondary" href="{{wwwroot}}/local/edusupport/issues.php?take={{discussionid}}" data-toggle="tooltip" data-placement="top" title="assign myself">
                             <i class="fa fa-plus" aria-hidden="true"></i>
                         </a>
-                        <a href="{{wwwroot}}/local/edusupport/issues.php?asignto={{discussionid}}" onclick="require(['local_edusupport/main'], function(MAIN){ MAIN.assignSupporter({{discussionid}}); }); return false;" data-toggle="tooltip" data-placement="top" title="assign someone">
+                        <a class="btn btn-outline-info" href="{{wwwroot}}/local/edusupport/issues.php?asignto={{discussionid}}" onclick="require(['local_edusupport/main'], function(MAIN){ MAIN.assignSupporter({{discussionid}}); }); return false;" data-toggle="tooltip" data-placement="top" title="assign someone">
                             {{#pix}} i/enrolusers, core {{/pix}}
                         </a>
-                        <a href="{{wwwroot}}/local/edusupport/issues.php?close={{discussionid}}" data-toggle="tooltip" data-placement="top" title="close issue">
+                        <a class="btn btn-outline-danger" href="{{wwwroot}}/local/edusupport/issues.php?close={{discussionid}}" data-toggle="tooltip" data-placement="top" title="close issue">
                             <i class="fa fa-window-close" aria-hidden="true"></i>
                         </a>
                     </td>
                     {{#hasprio}}
                     <td>
-                        <a href="{{wwwroot}}/local/edusupport/issues.php?prio={{discussionid}}&lvl=1"  data-toggle="tooltip" data-placement="top" title="priortiy low">
-                            <i class="fa fa-exclamation text-success mr-2" aria-hidden="true"></i>
+                        <a class="btn btn-outline-primary {{priolow}}"  href="{{wwwroot}}/local/edusupport/issues.php?prio={{discussionid}}&lvl=1"  data-toggle="tooltip" data-placement="top" title="priortiy low">
+                            !
                         </a>
-                        <a href="{{wwwroot}}/local/edusupport/issues.php?prio={{discussionid}}&lvl=2"  data-toggle="tooltip" data-placement="top" title="priortiy mid">
-                            <i class="fa fa-exclamation text-warning mr-2" aria-hidden="true"></i>
+                        <a class="btn btn-outline-warning {{priomid}}" href="{{wwwroot}}/local/edusupport/issues.php?prio={{discussionid}}&lvl=2"  data-toggle="tooltip" data-placement="top" title="priortiy mid">
+                            !!
                         </a>
-                        <a href="{{wwwroot}}/local/edusupport/issues.php?prio={{discussionid}}&lvl=3"  data-toggle="tooltip" data-placement="top" title="priortiy high">
-                            <i class="fa fa-exclamation text-danger mr-2" aria-hidden="true"></i>
+                        <a class="btn btn-outline-danger {{priohigh}}" href="{{wwwroot}}/local/edusupport/issues.php?prio={{discussionid}}&lvl=3"  data-toggle="tooltip" data-placement="top" title="priortiy high">
+                            !!!
                         </a>
                     </td>
                     {{/hasprio}}
@@ -317,7 +315,7 @@
                         {{^userlinks}}
                             {{currentsupportername}}
                         {{/userlinks}}
-                       
+
                     </td>
                     <td>
                         {{#userlinks}}

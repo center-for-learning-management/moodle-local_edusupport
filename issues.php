@@ -83,9 +83,10 @@ if (!\local_edusupport\lib::is_supportteam()) {
         $issue->lastpostuserfullname = fullname($lastuser);
         $assigned = $DB->get_record('local_edusupport_subscr', array('discussionid' => $issue->discussionid, 'userid' => $USER->id));
         $issue->prio = "";
-        $issue->prioclass = "";
+        $issue->priolow = "";
+        $issue->priomid = "";
+        $issue->priohigh = "";
 
-     
         // Check for any actions.
         if (!empty($assign) && $assign == $issue->discussionid && empty($assigned->id)) {
             $assigned = \local_edusupport\lib::subscription_add($issue->discussionid);
@@ -132,15 +133,20 @@ if (!\local_edusupport\lib::is_supportteam()) {
 
 
         if ($hasprio) {
-            for ($i = 1; $i < $issue->opened; $i++) {
-                $issue->prio .= '<i class="fa fa-exclamation" aria-hidden="true"></i>';
+            if ($issue->opened <= 1) {
+                $issue->priolow = "active";
+                $issue->priomid = "";
+                $issue->priohigh = "";
             }
-
             if ($issue->opened > 1) {
-                $issue->prioclass = "alert-warning";
+                $issue->priolow = "";
+                $issue->priomid = "active";
+                $issue->priohigh = "";
             }
             if ($issue->opened > 2) {
-                $issue->prioclass = "alert-danger";
+                $issue->priolow = "";
+                $issue->priomid = "";
+                $issue->priohigh = "active";
             }
         }
         // Now separate between current, assigned and other issues.
