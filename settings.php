@@ -27,8 +27,7 @@ if ($hassiteconfig) {
     $ADMIN->add('localplugins', new admin_category('local_edusupport', get_string('pluginname', 'local_edusupport')));
     $ADMIN->add('local_edusupport', $settings);
 
-    // Possibly we changed the menu, therefore we delete the cache.
-    // We should find a better place for this.
+    // Possibly we changed the menu, therefore we delete the cache. We should find a better place for this.
     $cache = cache::make('local_edusupport', 'supportmenu');
     $cache->delete('rendered');
 
@@ -50,7 +49,7 @@ if ($hassiteconfig) {
         )
     );
 
-    //FAQ read
+    // FAQ read.
     $settings->add(
         new admin_setting_configcheckbox(
             'local_edusupport/faqread',
@@ -60,7 +59,7 @@ if ($hassiteconfig) {
         )
     );
 
-    //FAQ Link
+    // FAQ Link.
     $settings->add(
         new admin_setting_configtext(
             'local_edusupport/faqlink',
@@ -70,7 +69,7 @@ if ($hassiteconfig) {
         )
     );
 
-    //Disable User Profile Links
+    // Disable User Profile Links.
     $settings->add(
         new admin_setting_configcheckbox(
             'local_edusupport/userlinks',
@@ -80,7 +79,7 @@ if ($hassiteconfig) {
         )
     );
 
-    //Priority LVL
+    // Priority LVL.
     $settings->add(
         new admin_setting_configcheckbox(
             'local_edusupport/prioritylvl',
@@ -90,7 +89,7 @@ if ($hassiteconfig) {
         )
     );
 
-    //Disable Telephone Link
+    // Disable Telephone Link.
     $settings->add(
         new admin_setting_configcheckbox(
             'local_edusupport/phonefield',
@@ -100,13 +99,13 @@ if ($hassiteconfig) {
         )
     );
 
-    //Delete treshhold
+    // Delete treshhold.
     $settings->add(
         new admin_setting_configduration(
             'local_edusupport/deletetreshhold',
             get_string('deletetreshhold', 'local_edusupport'),
             get_string('deletetreshhold:description', 'local_edusupport'),
-            0)
+            4 * WEEKSECS)
     );
 
 
@@ -119,7 +118,8 @@ if ($hassiteconfig) {
     );
     $links = "<div class=\"grid-eq-3\">";
     foreach($actions AS $action) {
-        $links .= '<a class="btn btn-secondary" href="' . $CFG->wwwroot . '/local/edusupport/' . $action->href . '">' . get_string($action->name, 'local_edusupport') . '</a>';
+        $links .= '<a class="btn btn-secondary" href="' . $CFG->wwwroot . '/local/edusupport/' . $action->href . '">' .
+            get_string($action->name, 'local_edusupport') . '</a>';
     }
     $links .= "</div>";
     $settings->add(new admin_setting_heading('local_edusupport_actions', get_string('settings'), $links));
