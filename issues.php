@@ -160,7 +160,7 @@ if (!\local_edusupport\lib::is_supportteam()) {
             $params['other'][] = $issue;
             $params['count']['other'] = $params['count']['other'] + 1;
         }
-        elseif($issue->currentsupporter == $USER->id && $issue->opened == 0) {
+        elseif($issue->opened == 0) {
             $params['closed'][] = $issue;
             $params['count']['closed'] = $params['count']['closed'] + 1;
         }
