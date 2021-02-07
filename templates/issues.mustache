@@ -181,6 +181,9 @@
                         <a class="btn btn-outline-info" href="{{wwwroot}}/local/edusupport/issues.php?take={{discussionid}}" data-toggle="tooltip" data-placement="top" title="assign myself">
                             <i class="fa fa-plus" aria-hidden="true"></i>
                         </a>
+                        <a class="btn btn-outline-info" href="{{wwwroot}}/local/edusupport/issues.php?asignto={{discussionid}}" onclick="require(['local_edusupport/main'], function(MAIN){ MAIN.assignSupporter({{discussionid}}); }); return false;" data-toggle="tooltip" data-placement="top" title="assign someone">
+                            {{#pix}} i/enrolusers, core {{/pix}}
+                        </a>
                         <a class="btn btn-outline-danger" href="{{wwwroot}}/local/edusupport/issues.php?close={{discussionid}}" data-toggle="tooltip" data-placement="top" title="close issue">
                             <i class="fa fa-window-close" aria-hidden="true"></i>
                         </a>

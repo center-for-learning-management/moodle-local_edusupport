@@ -109,6 +109,8 @@ if ($hassiteconfig) {
             0)
     );
 
+    var_dump(get_config('local_edusupport','deletetreshhold'));
+
 
     // @TODO a feature from the future.
     // $settings->add(new admin_setting_configcheckbox('local_edusupport/sendreminders', get_string('cron:reminder:title', 'local_edusupport'), '', '', PARAM_INT));
