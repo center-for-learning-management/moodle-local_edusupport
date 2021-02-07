@@ -38,7 +38,7 @@ class issue_create_form extends moodleform {
         $faqread = get_config('local_edusupport','faqread');
         $faqlink = get_config('local_edusupport','faqlink');
         $prioritylvl = get_config('local_edusupport','prioritylvl');
-        $disablephonefield = get_config('local_edusupport','disablephonefield');
+        $disablephonefield = get_config('local_edusupport','phonefield');
 
 
         $editoroptions = array('subdirs'=>0, 'maxbytes'=>0, 'maxfiles'=>0,

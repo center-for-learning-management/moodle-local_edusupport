@@ -93,9 +93,9 @@ if ($hassiteconfig) {
     //Disable Telephone Link
     $settings->add(
         new admin_setting_configcheckbox(
-            'local_edusupport/disablephonefield',
-            get_string('telephonefield', 'local_edusupport'),
-            get_string('telephonefield:description', 'local_edusupport'),
+            'local_edusupport/phonefield',
+            get_string('phonefield', 'local_edusupport'),
+            get_string('phonefield:description', 'local_edusupport'),
             1
         )
     );
