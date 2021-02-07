@@ -367,7 +367,12 @@ class lib {
     public static function get_expiredissues() {  
 
         global $DB;
-        $expirationtime = strtotime('-1 month');   
+        $time =   get_config('local_edusupport', 'deletetreshhold');
+        $expirationtime = time() - $time;
+        if (!$time || $time == 0) {
+            $expirationtime = 0;
+        } 
+
         $sql = "SELECT edu.id, edu.discussionid, edu.opened, f.id, f.timemodified 
                 FROM {local_edusupport_issues} edu
                 JOIN {forum_discussions} f
