@@ -109,7 +109,6 @@ if ($hassiteconfig) {
             0)
     );
 
-    var_dump(get_config('local_edusupport','deletetreshhold'));
 
 
     // @TODO a feature from the future.
