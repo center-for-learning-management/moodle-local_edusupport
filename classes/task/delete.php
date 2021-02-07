@@ -21,19 +21,20 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace local_edusupport\task;
+
 defined('MOODLE_INTERNAL') || die;
 
-$tasks = array(
-    array(
-        'classname' => 'local_edusupport\task\delete',
-        'blocking' => 0,
-        'minute' => '0',
-        'hour' => '8',
-        'day' => '*',
-        'dayofweek' => '1',
-        'month' => '*',
-    ),
-);
+class delete extends \core\task\scheduled_task {
+    public function get_name() {
+        // Shown in admin screens.
+        return get_string('cron:deleteexpiredissues:title', 'local_edusupport');
+    }
 
-
-
+    public function execute($debug=false) {
+        $issues = \local_edusupport\lib::get_expiredissues();
+        foreach ($issues AS $issue) {
+            \local_edusupport\lib::delete_issue($issue->discussionid);
+        }
+    }
+}

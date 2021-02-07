@@ -49,6 +49,7 @@ $string['create_issue_success_responsibles'] = 'Ansprechperson für diese Ticket
 $string['create_issue_success_close'] = 'Schließen';
 $string['cron:reminder:title'] = 'eduSupport Erinnerung';
 $string['cron:reminder:intro'] = 'Dies ist eine freundlicher Erinnerung an jene offenen Tickets, die Ihnen als eduSupporter zugeteilt wurden!';
+$string['cron:deleteexpiredissues:title'] = 'Lösche alte Tickets';
 $string['dedicatedsupporter'] = 'Zugewiesen';
 $string['dedicatedsupporter:not_successfully_set'] = 'Konnte bevorzugte/n Supportmitarbeiter/in nicht auswählen.';
 $string['dedicatedsupporter:successfully_set'] = 'Erfolgreich eine/n bevorzugte/n Supportmitarbeiter/in ausgewählt.';
