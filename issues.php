@@ -68,7 +68,7 @@ if (!\local_edusupport\lib::is_supportteam()) {
     $params['count']['other'] = 0;
     $params['userlinks'] = get_config('local_edusupport','userlinks');
     $params['hasprio'] = $hasprio;
-    foreach ($issues AS $issue) {
+    foreach (array_reverse($issues) AS $issue) {
         // Collect certain data about this issue.
         $discussion = $DB->get_record('forum_discussions', array('id' => $issue->discussionid));
         $issue->name = $discussion->name;
