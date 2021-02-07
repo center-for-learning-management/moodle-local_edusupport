@@ -143,7 +143,6 @@ class lib {
     **/
     public static function reopen_issue($discussionid) {
         global $CFG, $DB, $USER;
-
         $discussion = $DB->get_record('forum_discussions', array('id' => $discussionid));
         $issue = self::get_issue($discussionid);
 
@@ -360,6 +359,25 @@ class lib {
 
         return $forums;
     }
+
+    /**
+     * Get issues closed a month ago
+     * @return array containing discussionids of closed and expired issues.
+     */
+    public static function get_expiredissues() {  
+
+        global $DB;
+        $expirationtime = strtotime('-1 month');   
+        $sql = "SELECT edu.id, edu.discussionid, edu.opened, f.id, f.timemodified 
+                FROM {local_edusupport_issues} edu
+                JOIN {forum_discussions} f
+                    ON edu.discussionid = f.id
+                WHERE edu.opened = 0
+                AND f.timemodified < {$expirationtime}";
+        $records = $DB->get_records_sql($sql);    
+        return $records;
+    }
+
 
     /**
      * Checks if a user belongs to the support team.
