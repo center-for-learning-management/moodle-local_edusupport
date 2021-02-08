@@ -364,14 +364,14 @@ class lib {
      * Get issues closed a month ago
      * @return array containing discussionids of closed and expired issues.
      */
-    public static function get_expiredissues() {  
+    public static function get_expiredissues() {
 
         global $DB;
-        $time =   get_config('local_edusupport', 'deletetreshhold');
+        $time =   get_config('local_edusupport', 'deletethreshhold');
         $expirationtime = time() - $time;
         if (!$time || $time == 0) {
             $expirationtime = 0;
-        } 
+        }
 
         $sql = "SELECT edu.id, edu.discussionid, edu.opened, f.id, f.timemodified 
                 FROM {local_edusupport_issues} edu
@@ -379,7 +379,7 @@ class lib {
                     ON edu.discussionid = f.id
                 WHERE edu.opened = 0
                 AND f.timemodified < {$expirationtime}";
-        $records = $DB->get_records_sql($sql);    
+        $records = $DB->get_records_sql($sql);
         return $records;
     }
 

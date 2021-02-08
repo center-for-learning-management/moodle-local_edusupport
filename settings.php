@@ -99,12 +99,12 @@ if ($hassiteconfig) {
         )
     );
 
-    // Delete treshhold.
+    // Delete threshhold.
     $settings->add(
         new admin_setting_configduration(
-            'local_edusupport/deletetreshhold',
-            get_string('deletetreshhold', 'local_edusupport'),
-            get_string('deletetreshhold:description', 'local_edusupport'),
+            'local_edusupport/deletethreshhold',
+            get_string('deletethreshhold', 'local_edusupport'),
+            get_string('deletethreshhold:description', 'local_edusupport'),
             4 * WEEKSECS)
     );
 
