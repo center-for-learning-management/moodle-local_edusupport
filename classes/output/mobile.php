@@ -36,7 +36,7 @@ class mobile {
      * Get the IDs of courses where the user should see the block.
      */
     public static function edusupport_init(array $args) : array {
-        global $CFG, $DB; $USER;
+        global $DB, $USER;
         $courseids = array();
         $allsupportforums = $DB->get_records('local_edusupport', array());
         foreach ($allsupportforums AS $supportforum) {

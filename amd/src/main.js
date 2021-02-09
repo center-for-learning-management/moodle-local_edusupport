@@ -5,10 +5,9 @@ define(
         debug: 1,
         modal: undefined,
         triggerSteps: 0,
-        assignSupporter: function(discussionid, userid){
+        assignSupporter: function(discussionid /*, userid*/){
             var MAIN = this;
-            if (MAIN.debug > 0) console.log('local_edusupport/main:assignSupporter(discussionid, userid)', discussionid, userid);
-            if (typeof userid === 'undefined') {
+            //if (MAIN.debug > 0) //console.log('local_edusupport/main:assignSupporter(discussionid, userid)', discussionid, userid);
                 console.log('ajax call');
                 // Show a selection of possible supporters.
                 AJAX.call([{
@@ -63,9 +62,7 @@ define(
                     },
                     fail: NOTIFICATION.exception
                 }]);
-            } else {
-                // Assign the supporter.
-            }
+           
         },
         /**
          * Checks if a particular support form has a screenshot. If not, it hides the modal and creates one.
@@ -75,9 +72,11 @@ define(
             if (MAIN.debug > 0) console.log('local_edusupport/main:checkHasScreenshot(c)', c);
             if ($(c).closest("form").find("#screenshot").attr('src') == '') {
                 $(c).closest("form").find('#screenshot_ok').css("display", "block");
+
             } else {
                 $(c).closest("form").find('#screenshot_ok').css("display", "none");
                 $(c).closest("form").find("#screenshot").css("display", ($(c).is(":checked") ? "inline" : "none"));
+                $(c).closest("form").find("#screenshot_new").css("display", ($(c).is(":checked") ? "block" : "none"));
             }
         },
         /**
@@ -107,10 +106,11 @@ define(
                 methodname: 'local_edusupport_get_extralinks',
                 args: {},
                 done: function(result) {
-                    $(result).insertBefore($('#page-wrapper>.navbar div.usermenu').closest('li'));
+                    $(result).insertBefore($('.nav .usermenu'));
                 },
                 fail: NOTIFICATION.exception
             }]);
+            this.colorize();
         },
         /**
          * Scans the page for all discussion posts and adds a reply-button.
@@ -182,6 +182,16 @@ define(
                 fail: NOTIFICATION.exception
             }]);
         },
+        faqtoogle: function() {
+            if ($('input#id_faqread').length) {
+                $('#create_issue_input').toggle(); 
+                $('#local_edusupport_create_form .fdescription.required').toggle();
+                $('input#id_faqread').click(function() { 
+                    $('#create_issue_input').toggle();
+                    $('#local_edusupport_create_form .fdescription.required').toggle(); 
+                }); 
+            }
+        },
         /**
          * Let's inject a button to call the 2nd level support.
          * @param discussionid.
@@ -202,6 +212,17 @@ define(
                     );
                 }
             ).fail(NOTIFICATION.exception);
+        },
+        injectTest: function() {
+            var discussionname = $(".discussionname");
+            if(discussionname.text().substr(0,2) == "! ") {
+                discussionname.addClass("alert-warning");
+            }
+             if(discussionname.text().substr(0,2) == "!!") {
+                discussionname.addClass("alert-danger");
+            }
+
+       
         },
         injectForwardModal: function(discussionid, revoke) {
             STR.get_strings([
@@ -231,14 +252,27 @@ define(
             }
             if (MAIN.debug > 0) console.log('MAIN.postBox(modal)', modal);
             var subject = $('#local_edusupport_create_form #id_subject').val();
-            var contactphone = $('#local_edusupport_create_form #id_contactphone').val();
+            var contactphone = $('#local_edusupport_create_form #id_contactphone').val() || '';
+            console.log(contactphone);
             var description = $('#local_edusupport_create_form #id_description').val();
             var forum_group = $('#local_edusupport_create_form #id_forum_group').val();
             var postto2ndlevel = $('#local_edusupport_create_form #id_postto2ndlevel').prop('checked') ? 1 : 0;
             var post_screenshot = $('#local_edusupport_create_form #id_postscreenshot').prop('checked') ? 1 : 0;
             var screenshot = $('#local_edusupport_create_form img#screenshot').attr('src');
+            var faqread = $('#local_edusupport_create_form #id_faqread').prop('checked') ? 1 : 0;
+            /*var priority = $('#local_edusupport_create_form #id_prioritylvl').val();
+            subject = priority + " " + subject;
+            console.log.subject; */
             var url = top.location.href;
 
+
+            if (faqread  == 0) {
+                var editaPresent = STR.get_string('faqread', 'local_edusupport', {});
+                $.when(editaPresent).done(function(localizedEditString) {
+                    NOTIFICATION.alert('', localizedEditString);
+                });
+                return;
+            }
             if (subject.length < 3 || description.length < 5) {
                 var editaPresent = STR.get_string('be_more_accurate', 'local_edusupport', {});
                 $.when(editaPresent).done(function(localizedEditString) {
@@ -265,7 +299,7 @@ define(
                         for (var i = 0; i < result.responsibles.length; i++) {
                             var r = result.responsibles[i];
                             if (typeof r.userid !== 'undefined' && r.userid > 0) {
-                                responsibles += '<li><a href="' + URL.fileUrl('/user', 'profile.php?id=' + r.userid) + '" target="_blank">' + r.name + '</a></li>';
+                                responsibles += '<li><a href="' + URL.fileUrl('/user', 'view.php?id=' + r.userid) + '" target="_blank">' + r.name + '</a></li>';
                             } else if (typeof r.email !== 'undefined' && r.email != '') {
                                 responsibles += '<li><a href="mailto:' + r.email + '">' + r.name + '</a></li>';
                             } else {
@@ -328,6 +362,7 @@ define(
             }
 
             MAIN.modal.setLarge();
+        
             MAIN.modal.getRoot().on(ModalEvents.save, function(e) {
                 // Stop the default save button behaviour which is to close the modal.
                 MAIN.postBox(MAIN.modal);
@@ -338,9 +373,9 @@ define(
             $.when(editaPresent).done(function(localizedEditString) {
                 MAIN.modal.setSaveButtonText(localizedEditString);
             });
-            $('#id_postscreenshot').closest('div.fitem').css('display', 'none');
+            /*$('#id_postscreenshot').closest('div.fitem').css('display', 'none');
             $('#screenshot').closest('div').css('display', 'none');
-
+*/
             MAIN.modal.show();
         },
         /**
@@ -358,6 +393,46 @@ define(
             delete(MAIN.canvas);
         },
         showBox: function(forumid){
+            if (typeof forumid === 'undefined') forumid = 0;
+            var MAIN = this;
+            // @todo no functional requirement that screenshot works.
+            // @todo screenshot creation parallel to modal?
+            // @todo save modal in object for manipulation
+            delete(MAIN.canvas);
+
+            if (typeof MAIN.modal !== 'undefined') {
+                MAIN.prepareBox(forumid);
+            } else {
+                console.log('Fetching modal');
+                MAIN.triggerSpinner(1);
+                AJAX.call([{
+                    methodname: 'local_edusupport_create_form',
+                    args: { url: top.location.href, image: '', forumid: forumid },
+                    done: function(result) {
+                        console.log('Got modal');
+                        MAIN.triggerSpinner(-1);
+                        // Remove any previously created forms.
+                        $('#local_edusupport_create_form').remove();
+                        //console.log(result);
+                        ModalFactory.create({
+                            //title: 'create issue',
+                            type: ModalFactory.types.SAVE_CANCEL,
+                            body: result,
+                            large: 1,
+                            //footer: 'footer',
+                        }).done(function(modal) {
+                            console.log('Created modal');
+                            MAIN.modal = modal;
+
+                            MAIN.prepareBox();
+                            MAIN.faqtoogle();
+                        });
+                    },
+                    fail: NOTIFICATION.exception
+                }]);
+            }
+        },
+        showSupporter: function(forumid){
             if (typeof forumid === 'undefined') forumid = 0;
             var MAIN = this;
             // @todo no functional requirement that screenshot works.
@@ -394,6 +469,7 @@ define(
                 }]);
             }
         },
+
         supportCourseMovedAlert: function(title, msg) {
             ModalFactory.create({
                 title: title,

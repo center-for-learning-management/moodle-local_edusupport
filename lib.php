@@ -51,6 +51,11 @@ function local_edusupport_before_standard_html_head(){
             $PAGE->requires->js_call_amd('local_edusupport/main', 'injectForwardButton', array($d, !empty($chk->id)));
         }
     }
+
+    if (\local_edusupport\lib::is_supportforum($discussion->forum)) {
+        $PAGE->requires->js_call_amd('local_edusupport/main', 'injectTest');
+    }
+
     if (strpos($_SERVER["SCRIPT_FILENAME"], '/course/management.php') > 0) {
         // The user could potentially move a supportforum-course,
         // or delete a course category, that contains a supportforum-course.

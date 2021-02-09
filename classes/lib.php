@@ -26,6 +26,8 @@ namespace local_edusupport;
 defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->libdir . '/adminlib.php');
+require_once($CFG->dirroot . '/mod/forum/lib.php');
+
 
 class lib {
     const SYSTEM_COURSE_ID = 1;
@@ -107,8 +109,15 @@ class lib {
         // 3.) remove all supporters from the abo-list
         $DB->delete_records('local_edusupport_subscr', array('discussionid' => $discussionid));
 
+        $issue->opened = 0;
+        $issue->discussionid = $discussionid;
+
         // 4.) remove issue-link from database
-        $DB->delete_records('local_edusupport_issues', array('discussionid' => $discussionid));
+        $DB->update_record('local_edusupport_issues', $issue);
+        // Mark post as closed
+        $discussion->name = "[Closed] " . ltrim($discussion->name, "[Closed] ");
+        $discussion->modified = time();
+        $DB->update_record('forum_discussions', $discussion);
 
         return true;
     }
@@ -126,6 +135,28 @@ class lib {
             // delete issue.
             $DB->delete_records('local_edusupport_issues', array('discussionid' => $discussionid));
         }
+        return true;
+    }
+    /**
+     * Close an issue.
+     * @param discussionid.
+    **/
+    public static function reopen_issue($discussionid) {
+        global $CFG, $DB, $USER;
+        $discussion = $DB->get_record('forum_discussions', array('id' => $discussionid));
+        $issue = self::get_issue($discussionid);
+
+        $issue->opened = 1;
+        $issue->discussionid = $discussionid;
+
+        // 4.) remove issue-link from database
+        $DB->update_record('local_edusupport_issues', $issue);
+        // Mark post as closed
+        $discussion->name = ltrim($discussion->name, "[Closed] ");
+        $discussion->modified = time();
+        $DB->update_record('forum_discussions', $discussion);
+
+
         return true;
     }
     /**
@@ -328,6 +359,30 @@ class lib {
 
         return $forums;
     }
+
+    /**
+     * Get issues closed a month ago
+     * @return array containing discussionids of closed and expired issues.
+     */
+    public static function get_expiredissues() {
+
+        global $DB;
+        $time =   get_config('local_edusupport', 'deletethreshhold');
+        $expirationtime = time() - $time;
+        if (!$time || $time == 0) {
+            $expirationtime = 0;
+        }
+
+        $sql = "SELECT edu.id, edu.discussionid, edu.opened, f.id, f.timemodified 
+                FROM {local_edusupport_issues} edu
+                JOIN {forum_discussions} f
+                    ON edu.discussionid = f.id
+                WHERE edu.opened = 0
+                AND f.timemodified < {$expirationtime}";
+        $records = $DB->get_records_sql($sql);
+        return $records;
+    }
+
 
     /**
      * Checks if a user belongs to the support team.
@@ -543,6 +598,19 @@ class lib {
 
         return true;
     }
+
+    public static function set_prioritylvl($discussionid,$priority) {
+        global $DB;
+
+        $issue = self::get_issue($discussionid);
+        $issue->opened = $priority;
+        $issue->discussionid = $discussionid;
+
+        $DB->update_record('local_edusupport_issues', $issue);
+        return true;
+
+    }
+
 
     /**
      * Add support user to the list of assigned users.

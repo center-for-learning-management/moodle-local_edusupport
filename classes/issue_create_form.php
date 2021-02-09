@@ -35,11 +35,19 @@ class issue_create_form extends moodleform {
     function definition() {
         global $CFG, $COURSE, $DB;
 
+        $faqread = get_config('local_edusupport','faqread');
+        $faqlink = get_config('local_edusupport','faqlink');
+        $prioritylvl = get_config('local_edusupport','prioritylvl');
+        $disablephonefield = get_config('local_edusupport','phonefield');
+
+
         $editoroptions = array('subdirs'=>0, 'maxbytes'=>0, 'maxfiles'=>0,
                                'changeformat'=>0, 'context'=>null, 'noclean'=>0,
                                'trusttext'=>0, 'enable_filemanagement' => false);
 
         $mform = $this->_form;
+
+
         $mform->addElement('hidden', 'id', 0);
         $mform->setType('id', PARAM_INT);
 
@@ -52,14 +60,27 @@ class issue_create_form extends moodleform {
 
         $mform->addElement('header', 'header', get_string('header', 'local_edusupport', $COURSE->fullname));
 
+
+        if ($faqread) {
+            $mform->addElement('checkbox', 'faqread','', get_string('faqread:description', 'local_edusupport',$faqlink));
+            $mform->setType('faqread', PARAM_BOOL);
+            $mform->addRule('faqread', get_string('subject_missing', 'local_edusupport'), 'required', true, 'server');
+        }
+
+
+        $mform->addElement('html','<div id="create_issue_input">');
         $mform->addElement('text', 'subject', get_string('subject', 'local_edusupport'), array('style' => 'width: 100%;', 'type' => 'tel'));
         $mform->setType('subject', PARAM_TEXT);
         $mform->addRule('subject', get_string('subject_missing', 'local_edusupport'), 'required', null, 'server');
 
-        $mform->addElement('text', 'contactphone', get_string('contactphone', 'local_edusupport'), array('style' => 'width: 100%;'));
-        $mform->setType('contactphone', PARAM_TEXT);
-        //$mform->addRule('contactphone', get_string('contactphone_missing', 'local_edusupport'), 'required', null, 'server');
-
+        if(!$disablephonefield) {
+            $mform->addElement('text', 'contactphone', get_string('contactphone', 'local_edusupport'), array('style' => 'width: 100%;'));
+            $mform->setType('contactphone', PARAM_TEXT);
+        }
+        else {
+            $mform->addElement('hidden', 'contactphone', '');
+            $mform->setType('contactphone', PARAM_TEXT);
+        }
         $mform->addElement('textarea', 'description', get_string('description', 'local_edusupport'), array('style' => 'width: 100%;', 'rows' => 10));
         $mform->setType('description', PARAM_RAW);
         $mform->addRule('description', get_string('description_missing', 'local_edusupport'), 'required', null, 'server');
@@ -101,9 +122,9 @@ class issue_create_form extends moodleform {
         $mform->setDefault('postto2ndlevel', 0);
 
         $html = array(
-            '<div id="screenshot_ok" style="display: none;">',
+            '<div id="screenshot_ok"  style="display: none;"><p>',
             get_string('screenshot:generateinfo', 'local_edusupport'),
-            '<br /><a href="#" onclick="var b = this; require([\'local_edusupport/main\'], function(M) { M.generateScreenshot(b); }); return false;" class="btn btn-primary btn-block">',
+            '</p><a href="#" onclick="var b = this; require([\'local_edusupport/main\'], function(M) { M.generateScreenshot(b); }); return false;" class="btn btn-primary btn-block">',
             get_string('ok'),
             '</a></div>'
         );
@@ -114,18 +135,39 @@ class issue_create_form extends moodleform {
         $mform->setType('postscreenshot', PARAM_BOOL);
         $mform->setDefault('postscreenshot', 0);
 
+
         $html = array(
             '<div style="text-align: center;">',
             '<img id="screenshot" src="" alt="Screenshot" style="max-width: 50%; display: none;"/>',
-            '</div>',
+            '</div>',   
+            '<div id="screenshot_new" class="text-center m-2" style="display:none;">',
+            '<a href="#" onclick="var b = this; require([\'local_edusupport/main\'], function(M) { M.generateScreenshot(b); }); return false;" class="btn btn-primary">',
+            get_string('new'),
+            '</a></div>'
         );
         $mform->addElement('html', implode("\n", $html));
         $mform->addElement('html', '<script> setTimeout(function() { ' . $postto2ndlevel_hideshow . ' }, 100);</script>');
+
+        $mform->addElement('html','</div>');
+    
+        /*
+        if ($prioritylvl) {
+            $mform->addElement('select', 'prioritylvl', get_string('prioritylvl', 'local_edusupport'), $this->return_priority_options());
+        }
+        */
     }
 
     //Custom validation should be added here
     function validation($data, $files) {
         $errors = array();
         return $errors;
+    }
+
+    function return_priority_options() {
+        return [
+            "" => get_string('prioritylvl:low', 'local_edusupport'),
+            "!" => get_string('prioritylvl:mid', 'local_edusupport'),
+            "!!" => get_string('prioritylvl:high', 'local_edusupport'),
+        ];
     }
 }

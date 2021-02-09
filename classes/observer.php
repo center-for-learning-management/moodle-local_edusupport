@@ -51,7 +51,7 @@ class observer {
             // enhance post data.
             $post->wwwroot = $CFG->wwwroot;
             $post->authorfullname = \fullname($author);
-            $post->authorlink = $CFG->wwwroot . '/user/profile.php?id=' . $author->id;
+            $post->authorlink = $CFG->wwwroot . '/user/view.php?id=' . $author->id;
             $post->authorpicture = $OUTPUT->user_picture($author, array('size' => 40));
             $post->postdate = strftime('%d. %B %Y, %H:%m', $post->created);
 

@@ -27,8 +27,7 @@ if ($hassiteconfig) {
     $ADMIN->add('localplugins', new admin_category('local_edusupport', get_string('pluginname', 'local_edusupport')));
     $ADMIN->add('local_edusupport', $settings);
 
-    // Possibly we changed the menu, therefore we delete the cache.
-    // We should find a better place for this.
+    // Possibly we changed the menu, therefore we delete the cache. We should find a better place for this.
     $cache = cache::make('local_edusupport', 'supportmenu');
     $cache->delete('rendered');
 
@@ -50,6 +49,67 @@ if ($hassiteconfig) {
         )
     );
 
+    // FAQ read.
+    $settings->add(
+        new admin_setting_configcheckbox(
+            'local_edusupport/faqread',
+            get_string('faqread', 'local_edusupport'),
+            '',
+            1
+        )
+    );
+
+    // FAQ Link.
+    $settings->add(
+        new admin_setting_configtext(
+            'local_edusupport/faqlink',
+            get_string('faqlink', 'local_edusupport'),
+            get_string('faqlink:description', 'local_edusupport'),
+            ''
+        )
+    );
+
+    // Disable User Profile Links.
+    $settings->add(
+        new admin_setting_configcheckbox(
+            'local_edusupport/userlinks',
+            get_string('userlinks', 'local_edusupport'),
+            get_string('userlinks:description', 'local_edusupport'),
+            1
+        )
+    );
+
+    // Priority LVL.
+    $settings->add(
+        new admin_setting_configcheckbox(
+            'local_edusupport/prioritylvl',
+            get_string('prioritylvl', 'local_edusupport'),
+            get_string('prioritylvl:description', 'local_edusupport'),
+            1
+        )
+    );
+
+    // Disable Telephone Link.
+    $settings->add(
+        new admin_setting_configcheckbox(
+            'local_edusupport/phonefield',
+            get_string('phonefield', 'local_edusupport'),
+            get_string('phonefield:description', 'local_edusupport'),
+            1
+        )
+    );
+
+    // Delete threshhold.
+    $settings->add(
+        new admin_setting_configduration(
+            'local_edusupport/deletethreshhold',
+            get_string('deletethreshhold', 'local_edusupport'),
+            get_string('deletethreshhold:description', 'local_edusupport'),
+            4 * WEEKSECS)
+    );
+
+
+
     // @TODO a feature from the future.
     // $settings->add(new admin_setting_configcheckbox('local_edusupport/sendreminders', get_string('cron:reminder:title', 'local_edusupport'), '', '', PARAM_INT));
 
@@ -58,7 +118,8 @@ if ($hassiteconfig) {
     );
     $links = "<div class=\"grid-eq-3\">";
     foreach($actions AS $action) {
-        $links .= '<a class="btn btn-secondary" href="' . $CFG->wwwroot . '/local/edusupport/' . $action->href . '">' . get_string($action->name, 'local_edusupport') . '</a>';
+        $links .= '<a class="btn btn-secondary" href="' . $CFG->wwwroot . '/local/edusupport/' . $action->href . '">' .
+            get_string($action->name, 'local_edusupport') . '</a>';
     }
     $links .= "</div>";
     $settings->add(new admin_setting_heading('local_edusupport_actions', get_string('settings'), $links));

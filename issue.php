@@ -257,7 +257,7 @@ if (!\local_edusupport\lib::is_supportteam() && !is_siteadmin()) {
             "title" => \fullname($user) . ' (' . (!empty($supporter->supportlevel) ? $supporter->supportlevel : get_string('label:2ndlevel', 'local_edusupport')) . ')',
             "class" => '',
             //"icon" => 'i/checkpermissions',
-            "href" => $CFG->wwwroot . '/user/profile.php?id' . $supporter->id,
+            "href" => $CFG->wwwroot . '/user/view.php?id' . $supporter->id,
         );
     }
 
