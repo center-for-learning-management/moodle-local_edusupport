@@ -52,12 +52,11 @@
             href="#" title="{{#str}} pluginname, local_edusupport {{/str}}"
             aria-controls="drop-down-menu-{{uniqid}}" style="padding-right:0; padding-left:0;">
             <!-- {{#str}} Browse_org, local_eduvidual {{/str}} -->
-             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><path d="M21 12.22C21 6.73 16.74 3 12 3c-4.69 0-9 3.65-9 9.28c-.6.34-1 .98-1 1.72v2c0 1.1.9 2 2 2h1v-6.1c0-3.87 3.13-7 7-7s7 3.13 7 7V19h-8v2h8c1.1 0 2-.9 2-2v-1.22c.59-.31 1-.92 1-1.64v-2.3c0-.7-.41-1.31-1-1.62z"  fill="#2E3942" opacity="0.8"/><circle cx="9" cy="13" r="1"  fill="#2E3942" opacity="0.8"/><circle cx="15" cy="13" r="1"  fill="#2E3942" opacity="0.8"/><path d="M18 11.03A6.04 6.04 0 0 0 12.05 6c-3.03 0-6.29 2.51-6.03 6.45a8.075 8.075 0 0 0 4.86-5.89c1.31 2.63 4 4.44 7.12 4.47z"  fill="#2E3942" opacity="0.8"/></svg>
-                    {{#pix}} supp, local_edusupport, test {{/pix}}
+            <i class="icon fa fa-medkit fa-fw"></i>
         </a>
         <div class="dropdown-menu dropdown-menu-right" role="menu" id="drop-down-menu-{{uniqid}}" aria-labelledby="drop-down-{{uniqid}}">
             <a href="#"  class="dropdown-item menu-action" role="menuitem" data-title="{{#str}} create_issue, local_edusupport {{/str}}" aria-labelledby="actionmenuaction-{{uniqid}}-x"
-                onclick="require(['local_edusupport/main'], function(MAIN){ MAIN.assignSupporter(); }); return false;">
+                onclick="require(['local_edusupport/main'], function(MAIN){ MAIN.showBox(); }); return false;">
                 <span class="menu-action-text" id="actionmenuaction-{{uniqid}}-x">
                     {{#str}} create_issue, local_edusupport {{/str}}
                 </span>
@@ -78,7 +77,7 @@
         <div class="popover-region collapsed">
             <a href="#" class="nav-link d-inline-block popover-region-toggle position-relative"
                 onclick="require(['local_edusupport/main'], function(MAIN){ MAIN.showBox(); }); return false;" style="padding-right:0; padding-left:0;">
-                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false"  style=" -ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><path d="M21 12.22C21 6.73 16.74 3 12 3c-4.69 0-9 3.65-9 9.28c-.6.34-1 .98-1 1.72v2c0 1.1.9 2 2 2h1v-6.1c0-3.87 3.13-7 7-7s7 3.13 7 7V19h-8v2h8c1.1 0 2-.9 2-2v-1.22c.59-.31 1-.92 1-1.64v-2.3c0-.7-.41-1.31-1-1.62z"  fill="#2E3942" opacity="0.8"/><circle cx="9" cy="13" r="1"  fill="#2E3942" opacity="0.8"/><circle cx="15" cy="13" r="1"  fill="#2E3942" opacity="0.8"/><path d="M18 11.03A6.04 6.04 0 0 0 12.05 6c-3.03 0-6.29 2.51-6.03 6.45a8.075 8.075 0 0 0 4.86-5.89c1.31 2.63 4 4.44 7.12 4.47z"  fill="#2E3942" opacity="0.8"/></svg>
+                <i class="icon fa fa-medkit fa-fw"></i>
             </a>
         </div>
     </li>

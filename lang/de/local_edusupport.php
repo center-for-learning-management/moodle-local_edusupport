@@ -63,7 +63,7 @@ $string['extralinks:description'] = 'Wenn Sie hier Links eintragen, dann wird de
 $string['faqlink'] = 'FAQ-Link';
 $string['faqlink:description'] =  'Addresse zum FAQ';
 $string['faqread'] = 'FAQ gelesen Toggler';
-$string['faqread:description'] =  'Ich bestätige hiermit das <a href="{$a}">FAQ</a> gelesen zu haben';
+$string['faqread:description'] =  'Ich bestätige hiermit die <a href="{$a}">FAQ</a> gelesen zu haben';
 $string['header'] = 'Hilfe in <i>{$a}</i> anfordern';
 $string['issue'] = 'Ticket';
 $string['issue:countcurrent'] = 'offene Tickets';
