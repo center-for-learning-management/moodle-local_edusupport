@@ -149,3 +149,17 @@ $string['userlinks:description'] =  'show userlinks in issues list';
 $string['your_issues'] = 'Your issues';
 $string['webhost'] = 'Host';
 $string['weburl'] = 'URL';
+
+/* PrivaCY API */
+$string['privacy:metadata:edusupport:subscr'] = 'All subscribed issues';
+$string['privacy:metadata:edusupport:issues'] = 'Issues of supporters';
+$string['privacy:metadata:edusupport:fieldid'] = 'Id';
+$string['privacy:metadata:edusupport:issueid'] = 'Issue Id';
+$string['privacy:metadata:edusupport:discussionid'] = 'Forum discussion Id ';
+$string['privacy:metadata:edusupport:userid'] = 'User Id';
+$string['privacy:metadata:edusupport:supporters'] = 'All defined supporters';
+$string['privacy:metadata:edusupport:supportlvl'] = 'Supportlevel';
+$string['privacy:metadata:edusupport:courseid'] = 'Course Id with supportforum';
+$string['privacy:metadata:edusupport:currentsupporter'] = 'User Id of the assigned user';
+$string['privacy:metadata:edusupport:opened'] = 'Status of issue';
+
