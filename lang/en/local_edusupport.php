@@ -67,7 +67,7 @@ $string['extralinks:description'] = 'If you enter links here, the "help"-Button 
 $string['faqlink'] = 'FAQ-link';
 $string['faqlink:description'] =  'link to FAQ';
 $string['faqread'] = 'faq read toggle';
-$string['faqread:description'] =  'I confirm, that I have read the <a href="{$a}">FAQ</a> prior to posting my question.';
+$string['faqread:description'] =  'I confirm, that I have read the <a href="{$a}" target="_blank">FAQ</a> prior to posting my question.';
 $string['header'] = 'Request for help in <i>{$a}</i>';
 $string['issue'] = 'Issue';
 $string['issue:countcurrent'] = 'Open issues';
