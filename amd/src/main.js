@@ -62,7 +62,7 @@ define(
                     },
                     fail: NOTIFICATION.exception
                 }]);
-           
+
         },
         /**
          * Checks if a particular support form has a screenshot. If not, it hides the modal and creates one.
@@ -184,12 +184,12 @@ define(
         },
         faqtoogle: function() {
             if ($('input#id_faqread').length) {
-                $('#create_issue_input').toggle(); 
+                $('#create_issue_input').toggle();
                 $('#local_edusupport_create_form .fdescription.required').toggle();
-                $('input#id_faqread').click(function() { 
+                $('input#id_faqread').click(function() {
                     $('#create_issue_input').toggle();
-                    $('#local_edusupport_create_form .fdescription.required').toggle(); 
-                }); 
+                    $('#local_edusupport_create_form .fdescription.required').toggle();
+                });
             }
         },
         /**
@@ -222,7 +222,7 @@ define(
                 discussionname.addClass("alert-danger");
             }
 
-       
+
         },
         injectForwardModal: function(discussionid, revoke) {
             STR.get_strings([
@@ -362,7 +362,7 @@ define(
             }
 
             MAIN.modal.setLarge();
-        
+
             MAIN.modal.getRoot().on(ModalEvents.save, function(e) {
                 // Stop the default save button behaviour which is to close the modal.
                 MAIN.postBox(MAIN.modal);

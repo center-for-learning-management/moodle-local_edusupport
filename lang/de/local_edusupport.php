@@ -145,3 +145,16 @@ $string['userlinks:description'] =  'zeige Userlinks in Taskliste';
 $string['your_issues'] = 'Ihre Anfragen';
 $string['webhost'] = 'Host';
 $string['weburl'] = 'URL';
+
+/* Privacy API */
+$string['privacy:metadata:edusupport:subscr'] = 'Alle beobachteten Tickets';
+$string['privacy:metadata:edusupport:issues'] = 'Tickets des Supporters';
+$string['privacy:metadata:edusupport:fieldid'] = 'Id';
+$string['privacy:metadata:edusupport:issueid'] = 'Ticket Id';
+$string['privacy:metadata:edusupport:discussionid'] = 'Forum Diskussions Id ';
+$string['privacy:metadata:edusupport:userid'] = 'User Id';
+$string['privacy:metadata:edusupport:supporters'] = 'Alle Supporter';
+$string['privacy:metadata:edusupport:supportlvl'] = 'Supportlevel';
+$string['privacy:metadata:edusupport:courseid'] = 'Kurs Id mit dem Supportforum';
+$string['privacy:metadata:edusupport:currentsupporter'] = 'User Id des supportenden Users';
+$string['privacy:metadata:edusupport:opened'] = 'Ticketstatus';
