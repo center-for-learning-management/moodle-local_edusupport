@@ -126,6 +126,7 @@ class local_edusupport_external extends external_api {
         if ($forum_group == 'mail' || empty($forumid)) {
             // fallback and send by mail!
             $subject = $params['subject'];
+            $params['includeemail'] = $USER->email;
             $messagehtml = $OUTPUT->render_from_template("local_edusupport/issue_template", $params);
             $messagetext = html_to_text($messagehtml);
 
@@ -394,8 +395,8 @@ class local_edusupport_external extends external_api {
                 if (!empty($tmp[3])) $extralink->target = $tmp[3];
                 $extralinks[] = $extralink;
             }
-        }      
-        
+        }
+
         $nav = $OUTPUT->render_from_template('local_edusupport/injectbutton', array('extralinks' => $extralinks, 'hasextralinks' => count($extralinks) > 0));
         $cache->set('rendered', $nav);
         return $nav;
