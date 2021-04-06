@@ -373,7 +373,7 @@ class lib {
             $expirationtime = 0;
         }
 
-        $sql = "SELECT edu.id, edu.discussionid, edu.opened, f.id, f.timemodified 
+        $sql = "SELECT edu.id, edu.discussionid, edu.opened, f.id, f.timemodified
                 FROM {local_edusupport_issues} edu
                 JOIN {forum_discussions} f
                     ON edu.discussionid = f.id
@@ -678,7 +678,6 @@ class lib {
     **/
     public static function supportforum_enable($forumid) {
         global $DB, $USER;
-        if (!is_siteadmin()) return false;
         $forum = $DB->get_record('forum', array('id' => $forumid));
         if (empty($forum->course)) return false;
 
@@ -727,7 +726,6 @@ class lib {
     **/
     public static function supportforum_managecaps($forumid, $trigger) {
         global $DB, $USER;
-        if (!is_siteadmin()) return false;
         $forum = $DB->get_record('forum', array('id' => $forumid));
         if (empty($forum->course)) return false;
 
