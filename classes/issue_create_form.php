@@ -60,11 +60,12 @@ class issue_create_form extends moodleform {
 
         $mform->addElement('header', 'header', get_string('header', 'local_edusupport', $COURSE->fullname));
 
-
         if ($faqread) {
             $mform->addElement('checkbox', 'faqread','', get_string('faqread:description', 'local_edusupport',$faqlink));
             $mform->setType('faqread', PARAM_BOOL);
             $mform->addRule('faqread', get_string('subject_missing', 'local_edusupport'), 'required', true, 'server');
+        } else {
+            $mform->addElement('html', '<input type="checkbox" id="id_faqread" class="autochecked" style="display: none;" checked="checked" />');
         }
 
 
@@ -139,7 +140,7 @@ class issue_create_form extends moodleform {
         $html = array(
             '<div style="text-align: center;">',
             '<img id="screenshot" src="" alt="Screenshot" style="max-width: 50%; display: none;"/>',
-            '</div>',   
+            '</div>',
             '<div id="screenshot_new" class="text-center m-2" style="display:none;">',
             '<a href="#" onclick="var b = this; require([\'local_edusupport/main\'], function(M) { M.generateScreenshot(b); }); return false;" class="btn btn-primary">',
             get_string('new'),
@@ -149,7 +150,7 @@ class issue_create_form extends moodleform {
         $mform->addElement('html', '<script> setTimeout(function() { ' . $postto2ndlevel_hideshow . ' }, 100);</script>');
 
         $mform->addElement('html','</div>');
-    
+
         /*
         if ($prioritylvl) {
             $mform->addElement('select', 'prioritylvl', get_string('prioritylvl', 'local_edusupport'), $this->return_priority_options());
