@@ -110,7 +110,6 @@ define(
                 },
                 fail: NOTIFICATION.exception
             }]);
-            this.colorize();
         },
         /**
          * Scans the page for all discussion posts and adds a reply-button.
