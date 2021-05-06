@@ -25,7 +25,15 @@ defined('MOODLE_INTERNAL') || die;
 
 function xmldb_local_edusupport_upgrade($oldversion) {
     global $DB;
-    //$dbman = $DB->get_manager();
+    $dbman = $DB->get_manager();
+    if ($oldversion < 2021050600) {
+        $table = new xmldb_table('local_edusupport_supporters');
+        $field = new xmldb_field('holidaymode', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0', 'supportlevel');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        upgrade_plugin_savepoint(true, 2021050600, 'local', 'edusupport');
+    }
 
     return true;
 }
