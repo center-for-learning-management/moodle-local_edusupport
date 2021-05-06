@@ -69,6 +69,8 @@ $string['faqlink:description'] =  'link to FAQ';
 $string['faqread'] = 'faq read toggle';
 $string['faqread:description'] =  'I confirm, that I have read the <a href="{$a}" target="_blank">FAQ</a> prior to posting my question.';
 $string['header'] = 'Request for help in <i>{$a}</i>';
+$string['holidaymode_is_on'] = 'Holidaymode is on';
+$string['holidaymode_end'] = 'End holidaymode';
 $string['issue'] = 'Issue';
 $string['issue:countcurrent'] = 'Open issues';
 $string['issue:countassigned'] = 'Subscribed issues';
@@ -162,4 +164,3 @@ $string['privacy:metadata:edusupport:supportlvl'] = 'Supportlevel';
 $string['privacy:metadata:edusupport:courseid'] = 'Course Id with supportforum';
 $string['privacy:metadata:edusupport:currentsupporter'] = 'User Id of the assigned user';
 $string['privacy:metadata:edusupport:opened'] = 'Status of issue';
-
