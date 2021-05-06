@@ -65,6 +65,7 @@ $string['faqlink:description'] =  'Addresse zum FAQ';
 $string['faqread'] = 'FAQ gelesen Toggler';
 $string['faqread:description'] =  'Ich bestätige hiermit die <a href="{$a}">FAQ</a> gelesen zu haben';
 $string['header'] = 'Hilfe in <i>{$a}</i> anfordern';
+$string['holidaymode'] = 'Urlaubsmodus';
 $string['holidaymode_is_on'] = 'Urlaubsmodus ist an';
 $string['holidaymode_end'] = 'Beende Urlaubsmodus';
 $string['issue'] = 'Ticket';

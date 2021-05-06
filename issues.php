@@ -28,7 +28,7 @@ $context = \context_system::instance();
 $PAGE->set_context($context);
 require_login();
 $PAGE->set_url(new moodle_url('/local/edusupport/issues.php', array()));
-
+$PAGE->requires->css('/local/edusupport/style/edusupport.css');
 $title = get_string('issues', 'local_edusupport');
 $PAGE->set_title($title);
 $PAGE->set_heading($title);
@@ -164,8 +164,13 @@ if (!\local_edusupport\lib::is_supportteam()) {
             $params['closed'][] = $issue;
             $params['count']['closed'] = $params['count']['closed'] + 1;
         }
-
     }
+
+    $supporter = $DB->get_record('local_edusupport_supporters', array('userid' => $USER->id));
+    require_once($CFG->dirroot . '/local/edusupport/classes/holidaymode_form.php');
+    $mform = new \local_edusupport\holidaymode_form();
+    $supporter->holidayform = $mform->render();
+    echo $OUTPUT->render_from_template('local_edusupport/holidaymode', $supporter);
     echo $OUTPUT->render_from_template('local_edusupport/issues', $params);
 }
 

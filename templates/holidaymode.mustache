@@ -32,6 +32,37 @@
         </div>
     {{/holidaymode}}
     {{^holidaymode}}
-        start holiday mode
+        <a href="#" onclick="require(['jquery'], function($) { $('#holidaymode-{{uniqid}}').css('display', 'block'); }); return false;">
+            <i class="fa fa-umbrella-beach"></i>
+            {{#str}} holidaymode, local_edusupport {{/str}}
+        </a>
+
+        <div class="modal moodle-has-zindex" data-region="modal-container" role="dialog"
+            id="holidaymode-{{uniqid}}" style="display: none;">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header " data-region="header">
+                        <h5 class="modal-title" data-region="title">
+                            {{#str}} holidaymode, local_edusupport {{/str}}
+                        </h5>
+                        <a href="#" class="btn close" onclick="require(['jquery'], function($) { $('#holidaymode-{{uniqid}}').css('display', 'none'); }); return false;"
+                             aria-label={{#quote}}{{#str}}closebuttontitle{{/str}}{{/quote}}>
+                            <span aria-hidden="true">×</span>
+                        </a>
+                    </div>
+                    <div class="modal-body" data-region="body">
+                        {{{holidayform}}}
+                    </div>
+                    <div class="modal-footer" data-region="footer">
+                        <button type="button" class="btn btn-primary" data-action="save">
+                            Änderungen speichern
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="require(['jquery'], function($) { $('#holidaymode-{{uniqid}}').css('display', 'none'); }); return false;">
+                            Abbrechen
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     {{/holidaymode}}
 </div>
