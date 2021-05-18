@@ -71,6 +71,7 @@ $string['faqread:description'] =  'I confirm, that I have read the <a href="{$a}
 $string['header'] = 'Request for help in <i>{$a}</i>';
 $string['holidaymode'] = 'Holidaymode';
 $string['holidaymode_is_on'] = 'Holidaymode is on';
+$string['holidaymode_is_on_descr'] = 'As long as you are on holidays, no new issues will be assigned to you.';
 $string['holidaymode_end'] = 'End holidaymode';
 $string['issue'] = 'Issue';
 $string['issue:countcurrent'] = 'Open issues';

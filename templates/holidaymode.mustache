@@ -17,25 +17,29 @@
 <div class="local_edusupport_holidaymode">
     {{#holidaymode}}
         <div class="fitem row">
-            <div class="col-md-3">
-                {{#userdate}} {{holidaymode}}, {{#str}} strftimedate {{/str}} {{/userdate}}
-            </div>
-            <div class="col-md-9">
-                {{#str}} holidaymode_is_on, local_edusupport {{/str}}
+            <div class="col-md-6">
+                {{#str}} holidaymode_is_on, local_edusupport {{/str}}:
+                {{#userdate}} {{holidaymode}}, %d. %B %Y, %H:%M{{/userdate}}
             </div>
         </div>
         <div>
-            <a href="#" class="btn btn-primary btn-block">
+            <i>{{#str}} holidaymode_is_on_descr, local_edusupport {{/str}}</i>
+            <a href="{{wwwroot}}/local/edusupport/issues.php?holidaymode=-1" class="btn btn-primary btn-block">
                 <i class="fa fa-hourglass-end"></i>
                 {{#str}} holidaymode_end, local_edusupport {{/str}}
             </a>
         </div>
+        <div>
+
+        </div>
     {{/holidaymode}}
     {{^holidaymode}}
-        <a href="#" onclick="require(['jquery'], function($) { $('#holidaymode-{{uniqid}}').css('display', 'block'); }); return false;">
-            <i class="fa fa-umbrella-beach"></i>
-            {{#str}} holidaymode, local_edusupport {{/str}}
-        </a>
+        <div style="float: right;">
+            <a href="#" onclick="require(['jquery'], function($) { $('#holidaymode-{{uniqid}}').css('display', 'block'); }); return false;">
+                <i class="fa fa-plane"></i>
+                {{#str}} holidaymode, local_edusupport {{/str}}
+            </a>
+        </div>
 
         <div class="modal moodle-has-zindex" data-region="modal-container" role="dialog"
             id="holidaymode-{{uniqid}}" style="display: none;">
@@ -54,10 +58,12 @@
                         {{{holidayform}}}
                     </div>
                     <div class="modal-footer" data-region="footer">
-                        <button type="button" class="btn btn-primary" data-action="save">
+                        <button type="button" class="btn btn-primary" data-action="save"
+                            onclick="require(['jquery'], function($) { $('#fitem_id_holidaymode').closest('form').submit(); });">
                             Änderungen speichern
                         </button>
-                        <button type="button" class="btn btn-secondary" onclick="require(['jquery'], function($) { $('#holidaymode-{{uniqid}}').css('display', 'none'); }); return false;">
+                        <button type="button" class="btn btn-secondary"
+                            onclick="require(['jquery'], function($) { $('#holidaymode-{{uniqid}}').css('display', 'none'); }); return false;">
                             Abbrechen
                         </button>
                     </div>

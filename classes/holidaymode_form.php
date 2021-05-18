@@ -32,7 +32,7 @@ class holidaymode_form extends \moodleform {
     function definition() {
         $mform = $this->_form;
         $mform->addElement('date_time_selector', 'holidaymode', '');
-
+        $mform->disable_form_change_checker();
     }
 
     //Custom validation should be added here

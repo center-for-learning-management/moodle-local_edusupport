@@ -67,6 +67,7 @@ $string['faqread:description'] =  'Ich bestätige hiermit die <a href="{$a}">FAQ
 $string['header'] = 'Hilfe in <i>{$a}</i> anfordern';
 $string['holidaymode'] = 'Urlaubsmodus';
 $string['holidaymode_is_on'] = 'Urlaubsmodus ist an';
+$string['holidaymode_is_on_descr'] = 'Bei aktiviertem Urlaubsmodus werden Ihnen keine neuen Tickets zugewiesen.';
 $string['holidaymode_end'] = 'Beende Urlaubsmodus';
 $string['issue'] = 'Ticket';
 $string['issue:countcurrent'] = 'offene Tickets';

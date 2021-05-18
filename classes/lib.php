@@ -520,12 +520,27 @@ class lib {
         $sql = "SELECT *
                     FROM {local_edusupport_supporters}
                     WHERE supportlevel = ''
+                        AND holidaymode < ?
                         AND (
                             courseid = ?
                             OR
                             courseid = ?
                         )";
-        $supporters = $DB->get_records_sql($sql, array(\local_edusupport\lib::SYSTEM_COURSE_ID, $discussion->course));
+        $supporters = $DB->get_records_sql($sql, array(time(), \local_edusupport\lib::SYSTEM_COURSE_ID, $discussion->course));
+
+        if (count($supporters) == 0) {
+            // Fall back without holidaymode.
+            $sql = "SELECT *
+                        FROM {local_edusupport_supporters}
+                        WHERE supportlevel = ''
+                            AND (
+                                courseid = ?
+                                OR
+                                courseid = ?
+                            )";
+            $supporters = $DB->get_records_sql($sql, array(\local_edusupport\lib::SYSTEM_COURSE_ID, $discussion->course));
+        }
+
         if (!empty($supportforum->dedicatedsupporter) && !empty($supporters[$supportforum->dedicatedsupporter]->id)) {
             $dedicated = $supporters[$supportforum->dedicatedsupporter];
         } else {
