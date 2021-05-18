@@ -177,6 +177,11 @@ if (!\local_edusupport\lib::is_supportteam()) {
         $supporter->holidaymode = mktime($hm['hour'], $hm['minute'], 0, $hm['month'], $hm['day'], $hm['year']);
         $DB->set_field('local_edusupport_supporters', 'holidaymode', $supporter->holidaymode, array('userid' => $supporter->userid));
     }
+    if ($supporter->holidaymode < time()) {
+        // Expired holidaymode - invalidate.
+        $supporter->holidaymode = 0;
+        $DB->set_field('local_edusupport_supporters', 'holidaymode', 0, array('userid' => $supporter->userid));
+    }
 
     require_once($CFG->dirroot . '/local/edusupport/classes/holidaymode_form.php');
     $mform = new \local_edusupport\holidaymode_form();
