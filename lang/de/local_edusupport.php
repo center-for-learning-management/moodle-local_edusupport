@@ -124,6 +124,7 @@ $string['select_unavailable'] = 'Nicht verfügbar';
 $string['subject'] = 'Betreff';
 $string['subject_missing'] = 'Bitte geben Sie einen stichwortartigen Titel an, der das Problem beschreibt!';
 $string['support_area'] = 'Hilfe & Anleitungen';
+$string['supportcourse'] = 'Supportkurs';
 $string['supporters'] = 'Supportmitarbeiter/innen';
 $string['supporters:choose'] = 'Supportmitarbeiter/innen wählen';
 $string['supportforum:choose'] = 'Foren für eduSupport auswählen';

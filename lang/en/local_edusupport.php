@@ -128,6 +128,7 @@ $string['select_unavailable'] = 'Unavailable';
 $string['subject'] = 'Subject';
 $string['subject_missing'] = 'Missing subject';
 $string['support_area'] = 'Helpdesk & Tutorials';
+$string['supportcourse'] = 'Supportcourse';
 $string['supporters'] = 'Supporters';
 $string['supporters:choose'] = 'Choose supporters';
 $string['supporters:description'] = 'All users of the course, that are enrolled at least as "non-editing teacher" can be configured as supporter. Just enter anything as supportlevel to activate somebody as supporter!';
