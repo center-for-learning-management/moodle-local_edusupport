@@ -38,7 +38,7 @@ $string['contactphone'] = 'Telephone';
 $string['contactphone_missing'] = 'Please enter your telephone number';
 $string['coursecategorydeletion'] = 'You are trying to remove a category, that contains supportforums. Please ensure, that you disable the support forums first!';
 $string['courseconfig'] = 'Course config';
-$string['create_issue'] = 'Create issue';
+$string['create_issue'] = 'Contact support';
 $string['create_issue_error_title'] = 'Error';
 $string['create_issue_error_description'] = 'Your issue could not be stored!';
 $string['create_issue_mail_success_description'] = 'Your issue has been stored. We will help you as soon as possible!';
@@ -81,18 +81,27 @@ $string['issue:countclosed'] = 'Closed issues';
 $string['issue_assign'] = 'Assign issue';
 $string['issue_assign_3rdlevel:post'] = '<a href="{$a->wwwroot}/user/view.php?id={$a->fromuserid}">{$a->fromuserfullname}</a> has assigned this issue to <a href="{$a->wwwroot}/user/view.php?id={$a->touserid}">{$a->touserfullname}</a>.';
 $string['issue_assign_3rdlevel:postself'] = '<a href="{$a->wwwroot}/user/view.php?id={$a->fromuserid}">{$a->fromuserfullname}</a> has taken responsibility for this issue.';
-$string['issue_assign_nextlevel'] = 'Forward to platform support team';
+$string['issue_assign_nextlevel'] = 'Forward to the {$a->sitename}-support team';
 $string['issue_assign_nextlevel:error'] = 'Sorry, this issue could not be forwarded to the platform support team';
 $string['issue_assign_nextlevel:post'] = '<a href="{$a->wwwroot}/user/view.php?id={$a->fromuserid}">{$a->fromuserfullname}</a> forwarded this issue to the platform support team';
 $string['issue_assigned:subject'] = 'Supportissue assigned';
 $string['issue_assigned:text'] = 'The support issue was assigned to <a href="{$a->wwwroot}/user/view.php?id={$a->id}">{$a->firstname} {$a->lastname}</a>!';
+$string['issue_close'] = 'Close issue';
+$string['issue_closed:subject'] = 'Issue closed';
+$string['issue_closed:post'] = 'This issue closed was closed by <a href="{$a->wwwroot}/user/view.php?id={$a->fromuserid}">{$a->fromuserfullname}</a>. If you need further assistance please forward this issue again to the platform support team.';
+$string['issue_responsibles:post'] = '
+    <p>
+        The responsibility for this issue has been assigned to: {$a->responsibles}!
+    </p>
+    <p>
+        The managers of your organization can forward this issue to the {$a->sitename}-Support by clicking the button "Forward this ticket to the {$a->sitename}-Support" (visible only for managers on the right upper side of the page).
+    </p>
+';
+$string['issue_responsibles:subject'] = 'Supportanfrage zugeordnet';
 $string['issue_revoke'] = 'Revoke this issue from higher support level';
 $string['issue_revoke:error'] = 'Sorry, this issue could not be revoked from the higher support levels';
 $string['issue_revoke:post'] = '<a href="{$a->wwwroot}/user/view.php?id={$a->fromuserid}">{$a->fromuserfullname}</a> revoked this issue from the higher support level';
 $string['issue_revoke:subject'] = 'Supportissue revoked';
-$string['issue_close'] = 'Close issue';
-$string['issue_closed:subject'] = 'Issue closed';
-$string['issue_closed:post'] = 'This issue closed was closed by <a href="{$a->wwwroot}/user/view.php?id={$a->fromuserid}">{$a->fromuserfullname}</a>. If you need further assistance please forward this issue again to the platform support team.';
 $string['issues'] = 'Issues';
 $string['issues:assigned'] = 'Subscribed';
 $string['issues:assigned:none'] = 'Currently you do not have any issue subscriptions';
@@ -110,8 +119,10 @@ $string['missing_targetforum'] = 'Missing target forum, must be configured!';
 $string['missing_targetforum_exists'] = 'The configured target forum does not exist. Wrong configuration!';
 $string['no_such_issue'] = 'This is not an open issue! You can navigate to the <a href="{$a->todiscussionurl}"><u>discussion page</u></a> or go <a href="{$a->toissuesurl}"><u>back to the issues overview</u></a>.';
 $string['only_you'] = 'Only you and our team';
+$string['phonefield'] = 'disable phone field';
+$string['phonefield:description'] = 'Deactivate phone field in the form for creating issues';
 $string['postto2ndlevel'] = 'Submit to platform support team';
-$string['postto2ndlevel:description'] = 'It seems you are the first level support of the selected support forum. If you want to, you can directly submit this issue to the platform support team!';
+$string['postto2ndlevel:description'] = 'Directly forward to the {$a->sitename}-Support!';
 $string['privacy:metadata'] = 'This plugin does not store any personal data as it uses a forum as target.';
 $string['priority'] = 'set priority';
 $string['prioritylvl'] = 'enable priorities';
@@ -123,8 +134,11 @@ $string['relativeurlsupportarea'] = 'Relative URL to Supportarea';
 $string['screenshot'] = 'Post screenshot';
 $string['screenshot:description'] = 'A screenshot may help to solve the problem.';
 $string['screenshot:generateinfo'] = 'To generate the screenshot the form will be hidden, and reappears afterwards.';
+$string['screenshot:upload:failed'] = 'Preparation of file failed!';
+$string['screenshot:upload:successful'] = 'File has been successfully prepared for uploading!';
 $string['select_isselected'] = 'Currently selected';
 $string['select_unavailable'] = 'Unavailable';
+$string['send'] = 'Send';
 $string['subject'] = 'Subject';
 $string['subject_missing'] = 'Missing subject';
 $string['support_area'] = 'Helpdesk & Tutorials';
@@ -141,9 +155,7 @@ $string['supportlevel'] = 'Supportlevel';
 $string['targetforum'] = 'Supportforum';
 $string['targetforum:description'] = 'Please select the forum that should be used as target for support issues within this course. This forum will be forced to have some group mode enabled. The Plugin will create an individual group for every single user.';
 $string['targetforum:core:description'] = 'All users will be automatically enrolled to the systemwide supportforum as soon as they create a support issue. Furthermore groups can be created and managed automatically to seperate support issues.';
-$string['phonefield'] = 'disable phone field';
-$string['phonefield:description'] = 'Deactivate phone field in the form for creating issues';
-$string['to_group'] = 'Visible to';
+$string['to_group'] = 'To';
 $string['toggle'] = 'Course Supportforum';
 $string['toggle:central'] = 'Central Supportforum';
 $string['trackhost'] = 'Track host';

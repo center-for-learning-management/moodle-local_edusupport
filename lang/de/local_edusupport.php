@@ -37,7 +37,7 @@ $string['contactphone'] = 'Telefon';
 $string['contactphone_missing'] = 'Bitte geben Sie Ihre Telefonnummer für Rückfragen an!';
 $string['coursecategorydeletion'] = 'Sie versuchen einen Kursbereich zu löschen, der Supportforen enthält. Bitte stellen Sie sicher, dass Sie zuvor die Supportforen deaktivieren!';
 $string['courseconfig'] = 'Kurskonfiguration';
-$string['create_issue'] = 'Problem melden';
+$string['create_issue'] = 'Support kontaktieren';
 $string['create_issue_error_title'] = 'Fehler';
 $string['create_issue_error_description'] = 'Die Anfrage konnte nicht gespeichert werden!';
 $string['create_issue_success_title'] = 'Erfolg';
@@ -77,18 +77,28 @@ $string['issue:countclosed'] = 'geschlossene Tickets';
 $string['issue_assign'] = 'Zuordnen';
 $string['issue_assign_3rdlevel:post'] = '<a href="{$a->wwwroot}/user/view.php?id={$a->fromuserid}">{$a->fromuserfullname}</a> hat dieses Ticket an <a href="{$a->wwwroot}/user/view.php?id={$a->touserid}">{$a->touserfullname}</a> weitergeleitet.';
 $string['issue_assign_3rdlevel:postself'] = '<a href="{$a->wwwroot}/user/view.php?id={$a->fromuserid}">{$a->fromuserfullname}</a> hat die Verantwortung für dieses Ticket übernommen.';
-$string['issue_assign_nextlevel'] = 'Dieses Ticket dem Plattform Support Team zuweisen';
+$string['issue_assign_nextlevel'] = 'Dieses Ticket dem {$a->sitename}-Support zuweisen';
 $string['issue_assign_nextlevel:error'] = 'Entschuldigung, das Ticket konnte nicht dem Plattform Support Team zugewiesen werden.';
 $string['issue_assign_nextlevel:post'] = '<a href="{$a->wwwroot}/user/view.php?id={$a->fromuserid}">{$a->fromuserfullname}</a> hat dieses Ticket dem nächsthöheren Supportlevel zugewiesen!';
 $string['issue_assigned:subject'] = 'Supportanfrage zugeordnet';
 $string['issue_assigned:text'] = 'Die Supportanfrage wurde <a href="{$a->wwwroot}/user/view.php?id={$a->id}">{$a->firstname} {$a->lastname}</a> zugeordnet!';
+$string['issue_close'] = 'Anfrage schließen';
+$string['issue_closed:subject'] = 'Anfrage wurde geschlossen';
+$string['issue_closed:post'] = 'Dieses Ticket wurde von <a href="{$a->wwwroot}/user/view.php?id={$a->fromuserid}">{$a->fromuserfullname}</a> geschlossen. Falls Sie weitere Unterstützung benötigen, fordern Sie bitte wieder das Plattform Support Team an!';
+$string['issue_responsibles:post'] = '
+    <p>
+        Die Verantwortung für dieses Ticket liegt bei: {$a->responsibles}!
+    </p>
+    <p>
+        Die Manager/innen der Schule können das Problem an den {$a->sitename}-Support weiterleiten, indem sie die Schaltfläche "Dieses Ticket dem {$a->sitename}-Support zuweisen" anklicken (für Manager/innen rechts oben sichtbar).
+    </p>
+';
+$string['issue_responsibles:subject'] = 'Supportanfrage zugeordnet';
 $string['issue_revoke'] = 'Ticket vom höheren Supportlevel zurücknehmen';
 $string['issue_revoke:error'] = 'Entschuldigung, dieses Ticket konnte vom höheren Supportlevel nicht zurückgeholt werden!';
 $string['issue_revoke:post'] = '<a href="{$a->wwwroot}/user/view.php?id={$a->fromuserid}">{$a->fromuserfullname}</a> hat dieses Ticket vom höheren Supportlevel zurückgenommen';
 $string['issue_revoke:subject'] = 'Ticket storniert';
-$string['issue_close'] = 'Anfrage schließen';
-$string['issue_closed:subject'] = 'Anfrage wurde geschlossen';
-$string['issue_closed:post'] = 'Dieses Ticket wurde von <a href="{$a->wwwroot}/user/view.php?id={$a->fromuserid}">{$a->fromuserfullname}</a> geschlossen. Falls Sie weitere Unterstützung benötigen, fordern Sie bitte wieder das Plattform Support Team an!';
+
 $string['issues'] = 'Anfragen';
 $string['issues:assigned'] = 'Abonniert';
 $string['issues:assigned:none'] = 'Es sind keine weiteren Anfragen abonniert worden.';
@@ -106,8 +116,10 @@ $string['missing_targetforum'] = 'Das Zielforum fehlt und muss konfiguriert werd
 $string['missing_targetforum_exists'] = 'Das konfigurierte Zielforum existiert nicht. Die fehlerhafte Konfiguration muss behoben werden!';
 $string['no_such_issue'] = 'Dies ist kein offenes Ticket! Sie können die <a href="{$a->todiscussionurl}"><u>Diskussion direkt im Forum</u></a> aufrufen oder zurück zur <a href="{$a->toissuesurl}"><u>Übersicht der offenen Tickets</u></a> wechseln.';
 $string['only_you'] = 'Nur Sie und unser Team';
+$string['phonefield'] = 'Telefonfeld verbergen';
+$string['phonefield:description'] = 'Telefonfeld verbergen';
 $string['postto2ndlevel'] = 'Plattform Support Team';
-$string['postto2ndlevel:description'] = 'Im gewählten Forum gehören Sie zum 1st Level Support. Daher können Sie mit dieser Schaltfläche Ihr Ticket direkt an das Plattform Support Team richten!';
+$string['postto2ndlevel:description'] = 'Direkt an den {$a->sitename}-Support weiterleiten!';
 $string['privacy:metadata'] = 'Dieses Plugin speichert keine personenbezogenen Daten, da die Informationen in einem Forum abgelegt werden.';
 $string['priority'] = 'setze Priorität';
 $string['prioritylvl'] = 'Prioritäten erlauben';
@@ -119,8 +131,11 @@ $string['relativeurlsupportarea'] = 'Relative URL zum Supportbereich';
 $string['screenshot'] = 'Screenshot anhängen';
 $string['screenshot:description'] = 'Ein Screenshot kann bei der Problembehebung helfen!';
 $string['screenshot:generateinfo'] = 'Zur Generierung des Screenshots wird das Formular kurz unsichtbar, wird aber danach gleich wieder angezeigt!';
+$string['screenshot:upload:failed'] = 'Vorbereitung der Datei fehlgeschlagen!';
+$string['screenshot:upload:successful'] = 'Datei erfolgreich für Übertragung vorbereitet!';
 $string['select_isselected'] = 'Derzeit ausgewählt';
 $string['select_unavailable'] = 'Nicht verfügbar';
+$string['send'] = 'Senden';
 $string['subject'] = 'Betreff';
 $string['subject_missing'] = 'Bitte geben Sie einen stichwortartigen Titel an, der das Problem beschreibt!';
 $string['support_area'] = 'Hilfe & Anleitungen';
@@ -137,9 +152,7 @@ $string['supportlevel'] = 'Supportlevel';
 $string['targetforum'] = 'Supportforum';
 $string['targetforum:description'] = 'Bitte wählen Sie jenes Forum, welches im Kurs für Supportanfragen genutzt werden soll. In diesem Forum wird zwangszweise der Gruppenmodus aktiviert bevor die erste Supportanfrage erstellt wird. Das Plugin wird außerdem für jede/n Nutzer/in automatisch eine private Gruppe anlegen.';
 $string['targetforum:core:description'] = 'Alle Nutzer/innen werden automatisch in das systemweite Supportforum eingeschrieben, sobald sie eine Supportanfrage erstellen. Außerdem besteht die Möglichkeit automatische Gruppen anzulegen, um die Supportanfragen voneinander zu trennen.';
-$string['phonefield'] = 'Telefonfeld verbergen';
-$string['phonefield:description'] = 'Telefonfeld verbergen';
-$string['to_group'] = 'Sichtbar für';
+$string['to_group'] = 'An';
 $string['toggle'] = 'Kurssupportforum';
 $string['toggle:central'] = 'Zentrales Supportforum';
 $string['trackhost'] = 'Hostnamen angeben';

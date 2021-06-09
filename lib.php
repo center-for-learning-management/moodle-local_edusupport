@@ -32,7 +32,7 @@ defined('MOODLE_INTERNAL') || die;
  *
  */
 function local_edusupport_before_standard_html_head(){
-    global $CFG, $DB, $OUTPUT, $PAGE, $USER;
+    global $CFG, $DB, $OUTPUT, $PAGE, $SITE, $USER;
     if (isloggedin() && !isguestuser($USER)) {
         $PAGE->requires->js_call_amd('local_edusupport/main', 'injectHelpButton', array());
     }
@@ -48,7 +48,7 @@ function local_edusupport_before_standard_html_head(){
                         WHERE discussionid=? LIMIT 0,1";
             $chk = $DB->get_record_sql($sql, array($discussion->id));
 
-            $PAGE->requires->js_call_amd('local_edusupport/main', 'injectForwardButton', array($d, !empty($chk->id)));
+            $PAGE->requires->js_call_amd('local_edusupport/main', 'injectForwardButton', array($d, !empty($chk->id), $SITE->fullname));
         }
         if (\local_edusupport\lib::is_supportforum($discussion->forum)) {
             $PAGE->requires->js_call_amd('local_edusupport/main', 'injectTest');

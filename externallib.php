@@ -94,6 +94,7 @@ class local_edusupport_external extends external_api {
             'forum_group' => new external_value(PARAM_TEXT, 'Forum-ID and Group-ID to post to in format forumid_groupid.'),
             'postto2ndlevel' => new external_value(PARAM_INT, '1st level supporters can directly call the 2nd level support'),
             'image' => new external_value(PARAM_RAW, 'base64 encoded image as data url or empty string'),
+            'screenshotname' => new external_value(PARAM_TEXT, 'the filename to use'),
             'url' => new external_value(PARAM_TEXT, 'URL where the error happened'), // We use PARAM_TEXT, as any input by the user is valid.
             'contactphone' => new external_value(PARAM_TEXT, 'Contactphone'), // We use PARAM_TEXT, was the user can enter any contact information.
         ));
@@ -103,9 +104,9 @@ class local_edusupport_external extends external_api {
      * Create an issue in the targetforum.
      * @return postid of created issue
      */
-    public static function create_issue($subject, $description, $forum_group, $postto2ndlevel, $image, $url, $contactphone) {
-        global $CFG, $DB, $OUTPUT, $PAGE, $USER;
-        $params = self::validate_parameters(self::create_issue_parameters(), array('subject' => $subject, 'description' => $description, 'forum_group' => $forum_group, 'postto2ndlevel' => $postto2ndlevel, 'image' => $image, 'url' => $url, 'contactphone' => $contactphone));
+    public static function create_issue($subject, $description, $forum_group, $postto2ndlevel, $image, $screenshotname, $url, $contactphone) {
+        global $CFG, $DB, $OUTPUT, $PAGE, $USER, $SITE;
+        $params = self::validate_parameters(self::create_issue_parameters(), array('subject' => $subject, 'description' => $description, 'forum_group' => $forum_group, 'postto2ndlevel' => $postto2ndlevel, 'image' => $image, 'screenshotname' => $screenshotname, 'url' => $url, 'contactphone' => $contactphone));
         $reply = array(
             'discussionid' => 0,
             'responsibles' => array(),
@@ -141,14 +142,12 @@ class local_edusupport_external extends external_api {
             $fromuser = $USER;
 
             if (!empty($params['image'])) {
+                $filename = $params['screenshotname'];
                 // Write image to a temporary file
                 $x = explode(",", $params['image']);
-                // Get mimetype (e.g. png)
-                $type = str_replace('data:image/', '', $x[0]);
-                $type = str_replace(';base64', '', $type);
-                // Write the file to a temp target.
                 $filepath = $CFG->tempdir . '/edusupport-' . md5($USER->id . date("Y-m-d H:i:s"));
                 file_put_contents($filepath, base64_decode($x[1]));
+                \core\antivirus\manager::scan_file($filepath, $filename, true);
 
                 foreach($recipients AS $recipient) {
                     email_to_user($recipient, $fromuser, $subject, $messagetext, $messagehtml, $filepath, 'screenshot.' . $type);
@@ -240,16 +239,12 @@ class local_edusupport_external extends external_api {
                     $discussion->id = $discussionid;
 
                     if (!empty($params['image'])) {
-                        // Write image to a temporary file
-                        $x = explode(",", $params['image']);
-                        $f = tmpfile();
-                        fwrite($f, base64_decode($x[1]));
+                        $filename = $params['screenshotname'];
 
-                        // Get mimetype (e.g. png)
-                        $type = str_replace('data:image/', '', $x[0]);
-                        $type = str_replace(';base64', '', $type);
-                        $filepath = stream_get_meta_data($f)['uri'];
-                        $filename = 'screenshot_' . date('Y-m-d_H_i_s') . '.' . $type;
+                        $x = explode(",", $params['image']);
+                        // Write the file to a temp target.
+                        $filepath = $CFG->tempdir . '/edusupport-' . md5($USER->id . date("Y-m-d H:i:s"));
+                        file_put_contents($filepath, base64_decode($x[1]));
 
                         $fs = get_file_storage();
                         // Scan for viruses.
@@ -296,6 +291,24 @@ class local_edusupport_external extends external_api {
 
                     if ($canpostto2ndlevel && !empty($postto2ndlevel)) {
                         \local_edusupport\lib::set_2nd_level($discussion->id);
+                    } else {
+                        // Post answer containing the reponsibles.
+                        $managers = array_values(\local_edusupport\lib::get_course_supporters($forum));
+                        $resposibles = array();
+                        foreach ($managers as $manager) {
+                            $responsibles[] = "<a href=\"{$CFG->wwwroot}/user/profile.php?id={$manager->id}\" target=\"_blank\">{$manager->firstname} {$manager->lastname}</a>";
+                        }
+                        \local_edusupport\lib::create_post($discussion->id,
+                            get_string(
+                                'issue_responsibles:post',
+                                'local_edusupport',
+                                array(
+                                    'responsibles' => implode(', ', $responsibles),
+                                    'sitename' => $SITE->fullname,
+                                )
+                            ),
+                            get_string('issue_responsibles:subject', 'local_edusupport')
+                        );
                     }
                     $reply['discussionid'] = $discussionid;
                     return $reply;
