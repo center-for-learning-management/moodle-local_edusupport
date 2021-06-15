@@ -268,14 +268,14 @@ class local_edusupport_external extends external_api {
 
                     // Trigger events and completion.
 
-                    $params = array(
+                    $evparams = array(
                         'context' => $context,
                         'objectid' => $discussion->id,
                         'other' => array(
                             'forumid' => $forum->id,
                         )
                     );
-                    $event = \mod_forum\event\discussion_created::create($params);
+                    $event = \mod_forum\event\discussion_created::create($evparams);
                     $event->add_record_snapshot('forum_discussions', $discussion);
                     $event->trigger();
 

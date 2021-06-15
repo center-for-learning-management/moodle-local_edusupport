@@ -4,6 +4,8 @@ define(
     return {
         debug: 1,
         modal: undefined,
+        screenshot: '',
+        screenshotname: '',
         triggerSteps: 0,
         assignSupporter: function(discussionid /*, userid*/){
             var MAIN = this;
@@ -270,7 +272,7 @@ define(
             /*var priority = $('#local_edusupport_create_form #id_prioritylvl').val();
             subject = priority + " " + subject;
             console.log.subject; */
-            var url = top.location.href;
+            var url = window.location.href;
 
             if (faqread  == 0) {
                 var editaPresent = STR.get_string('faqread', 'local_edusupport', {});
@@ -344,7 +346,7 @@ define(
                                 if (responsibles != '') {
                                     desc = s[2] + responsibles;
                                 }
-                                NOTIFICATION.confirm(s[0], desc, s[3], s[4], function(){ top.location.href = URL.fileUrl('/mod/forum', 'discuss.php?d=' + result.discussionid); });
+                                NOTIFICATION.confirm(s[0], desc, s[3], s[4], function(){ location.href = URL.fileUrl('/mod/forum', 'discuss.php?d=' + result.discussionid); });
                             }
                         ).fail(NOTIFICATION.exception);
                     } else {
@@ -415,7 +417,7 @@ define(
                 MAIN.triggerSpinner(1);
                 AJAX.call([{
                     methodname: 'local_edusupport_create_form',
-                    args: { url: top.location.href, image: '', forumid: forumid },
+                    args: { url: window.location.href, image: '', forumid: forumid },
                     done: function(result) {
                         console.log('Got modal');
                         MAIN.triggerSpinner(-1);
