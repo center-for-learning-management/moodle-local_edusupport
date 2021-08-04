@@ -138,6 +138,35 @@ class lib {
         return true;
     }
     /**
+     * Get the helpbutton menu from cache or generate it.
+     */
+    public static function get_supportmenu() {
+        $cache = \cache::make('local_edusupport', 'supportmenu');
+        if (!empty($cache->get('rendered'))) {
+            return $cache->get('rendered');
+        }
+
+        $_extralinks = get_config('local_edusupport', 'extralinks');
+        $extralinks = array();
+        if (!empty($_extralinks)) {
+            $_extralinks = explode("\n", $_extralinks);
+            for ($a = 0; $a < count($_extralinks); $a++) {
+                $tmp = explode('|', $_extralinks[$a]);
+                $extralink = (object) array('id' => $a);
+                if (!empty($tmp[0])) $extralink->name = $tmp[0];
+                if (!empty($tmp[1])) $extralink->url = $tmp[1];
+                if (!empty($tmp[2])) $extralink->faicon = $tmp[2];
+                if (!empty($tmp[3])) $extralink->target = $tmp[3];
+                $extralinks[] = $extralink;
+            }
+        }
+
+        global $OUTPUT;
+        $nav = $OUTPUT->render_from_template('local_edusupport/injectbutton', array('extralinks' => $extralinks, 'hasextralinks' => count($extralinks) > 0));
+        $cache->set('rendered', $nav);
+        return $nav;
+    }
+    /**
      * Close an issue.
      * @param discussionid.
     **/

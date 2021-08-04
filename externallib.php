@@ -40,49 +40,6 @@ class local_edusupport_external extends external_api {
     public static function close_issue_returns() {
         return new external_value(PARAM_RAW, 'Returns 1 if successful, or error message.');
     }
-
-
-    public static function colorize_parameters() {
-        return new external_function_parameters(
-            array(
-                'discussionids' => new external_multiple_structure(
-                    new external_value(PARAM_INT, 'discussionid')
-                )
-            )
-        );
-    }
-    public static function colorize($discussionids) {
-        global $CFG, $DB, $USER;
-        $params = self::validate_parameters(self::colorize_parameters(), array('discussionids' => $discussionids));
-
-        $styles = array();
-        $forum_check = array();
-        foreach($params['discussionids'] AS $discussionid) {
-            $discussion = $DB->get_record('forum_discussions', array('id' => $discussionid));
-            if (empty($forum_check[$discussion->forum])) {
-                $support = $DB->get_record('local_edusupport', array('courseid' => $discussion->course));
-                $forum_check[$discussion->forum] = ($support->forumid == $discussion->forum);
-            }
-            if (!$forum_check[$discussion->forum]) {
-                // Sorry, this discussion is not from a support forum.
-                continue;
-            }
-            $issue = local_edusupport::get_issue($discussionid);
-            if (empty($issue->currentsupporter)) {
-                $styles[$discussionid] = local_edusupport::$STYLE_UNASSIGNED;
-            } elseif ($issue->currentsupporter == $USER->id) {
-                $styles[$discussionid] = local_edusupport::$STYLE_MINE;
-            } elseif ($issue->opened > 0) {
-                $styles[$discussionid] = local_edusupport::$STYLE_OPENED;
-            } elseif ($issue->opened == 0) {
-                $styles[$discussionid] = local_edusupport::$STYLE_CLOSED;
-            }
-        }
-        return json_encode(array('styles' => $styles), JSON_NUMERIC_CHECK);
-    }
-    public static function colorize_returns() {
-        return new external_value(PARAM_RAW, 'Returns a json encoded object containing directives to colorize discussions.');
-    }
     /**
      * Returns description of method parameters
      * @return external_function_parameters
@@ -383,42 +340,6 @@ class local_edusupport_external extends external_api {
     public static function create_form_returns() {
         return new external_value(PARAM_RAW, 'Returns the form as html');
     }
-
-
-    public static function get_extralinks_parameters() {
-        return new external_function_parameters(array());
-    }
-    public static function get_extralinks() {
-        $cache = cache::make('local_edusupport', 'supportmenu');
-        if (!empty($cache->get('rendered'))) {
-            return $cache->get('rendered');
-        }
-
-        global $OUTPUT, $PAGE;
-        $PAGE->set_context(\context_system::instance());
-        $_extralinks = get_config('local_edusupport', 'extralinks');
-        $extralinks = array();
-        if (!empty($_extralinks)) {
-            $_extralinks = explode("\n", $_extralinks);
-            for ($a = 0; $a < count($_extralinks); $a++) {
-                $tmp = explode('|', $_extralinks[$a]);
-                $extralink = (object) array('id' => $a);
-                if (!empty($tmp[0])) $extralink->name = $tmp[0];
-                if (!empty($tmp[1])) $extralink->url = $tmp[1];
-                if (!empty($tmp[2])) $extralink->faicon = $tmp[2];
-                if (!empty($tmp[3])) $extralink->target = $tmp[3];
-                $extralinks[] = $extralink;
-            }
-        }
-
-        $nav = $OUTPUT->render_from_template('local_edusupport/injectbutton', array('extralinks' => $extralinks, 'hasextralinks' => count($extralinks) > 0));
-        $cache->set('rendered', $nav);
-        return $nav;
-    }
-    public static function get_extralinks_returns() {
-        return new external_value(PARAM_RAW, 'Returns the menu as html structure');
-    }
-
 
     public static function get_potentialsupporters_parameters() {
         return new external_function_parameters(

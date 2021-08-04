@@ -2,69 +2,67 @@ define(
     ['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'core/modal_factory', 'core/modal_events', 'core/templates'],
     function($, AJAX, NOTIFICATION, STR, URL, ModalFactory, ModalEvents, Templates) {
     return {
-        debug: 1,
+        debug: 0,
         modal: undefined,
         screenshot: '',
         screenshotname: '',
         triggerSteps: 0,
         assignSupporter: function(discussionid /*, userid*/){
             var MAIN = this;
-            //if (MAIN.debug > 0) //console.log('local_edusupport/main:assignSupporter(discussionid, userid)', discussionid, userid);
-                console.log('ajax call');
-                // Show a selection of possible supporters.
-                AJAX.call([{
-                    methodname: 'local_edusupport_get_potentialsupporters',
-                    args: { discussionid: discussionid },
-                    done: function(result) {
-                        try { result = JSON.parse(result); } catch(e) { }
-                        if (MAIN.debug > 0) console.log('local_edusupport_external:local_edusupport_get_potentialsupporters', result);
-                        var supportlevels = Object.keys(result.supporters);
-                        var body = '<input type="hidden" value="' + discussionid + '" />';
-                        body += '<select>';
-                        for (var a = 0; a < supportlevels.length; a++) {
-                            body += '<optgroup label="' + supportlevels[a] + '">';
-                            for (var b = 0; b < result.supporters[supportlevels[a]].length; b++) {
-                                var supporter = result.supporters[supportlevels[a]][b];
-                                body += '<option value="' + supporter.userid + '"' + ((supporter.selected)?' selected="selected"':'') + '>' + supporter.firstname + ' ' + supporter.lastname + '</option>';
-                            }
-                            body += '</optgroup>';
+            if (MAIN.debug > 0) console.log('local_edusupport/main:assignSupporter(discussionid, userid)', discussionid, userid);
+            // Show a selection of possible supporters.
+            AJAX.call([{
+                methodname: 'local_edusupport_get_potentialsupporters',
+                args: { discussionid: discussionid },
+                done: function(result) {
+                    try { result = JSON.parse(result); } catch(e) { }
+                    if (MAIN.debug > 0) console.log('local_edusupport_external:local_edusupport_get_potentialsupporters', result);
+                    var supportlevels = Object.keys(result.supporters);
+                    var body = '<input type="hidden" value="' + discussionid + '" />';
+                    body += '<select>';
+                    for (var a = 0; a < supportlevels.length; a++) {
+                        body += '<optgroup label="' + supportlevels[a] + '">';
+                        for (var b = 0; b < result.supporters[supportlevels[a]].length; b++) {
+                            var supporter = result.supporters[supportlevels[a]][b];
+                            body += '<option value="' + supporter.userid + '"' + ((supporter.selected)?' selected="selected"':'') + '>' + supporter.firstname + ' ' + supporter.lastname + '</option>';
                         }
-                        body += '</select>';
+                        body += '</optgroup>';
+                    }
+                    body += '</select>';
 
-                        //console.log(result);
-                        ModalFactory.create({
-                            title: STR.get_string('select', 'core'),
-                            type: ModalFactory.types.SAVE_CANCEL,
-                            body: body,
-                            //footer: 'footer',
-                        }).done(function(modal) {
-                            console.log('Created modal');
-                            modal.show();
-                            modal.getRoot().on(ModalEvents.save, function(e) {
-                                e.preventDefault();
-                                var discussionid = $(this).find('.modal-body input').val();
-                                var supporterid = $(this).find('.modal-body select').val();
-                                var data = { 'discussionid': discussionid, 'supporterid': supporterid };
-                                //console.log('Store', this, e, data);
-                                AJAX.call([{
-                                    methodname: 'local_edusupport_set_currentsupporter',
-                                    args: data,
-                                    done: function(result) {
-                                        console.log(result);
-                                        if (result == 1) {
-                                            top.location.reload();
-                                        } else {
-                                            alert('Error: ' + result);
-                                        }
-                                    },
-                                    fail: NOTIFICATION.exception
-                                }]);
-                            });
+                    //console.log(result);
+                    ModalFactory.create({
+                        title: STR.get_string('select', 'core'),
+                        type: ModalFactory.types.SAVE_CANCEL,
+                        body: body,
+                        //footer: 'footer',
+                    }).done(function(modal) {
+                        console.log('Created modal');
+                        modal.show();
+                        modal.getRoot().on(ModalEvents.save, function(e) {
+                            e.preventDefault();
+                            var discussionid = $(this).find('.modal-body input').val();
+                            var supporterid = $(this).find('.modal-body select').val();
+                            var data = { 'discussionid': discussionid, 'supporterid': supporterid };
+                            //console.log('Store', this, e, data);
+                            AJAX.call([{
+                                methodname: 'local_edusupport_set_currentsupporter',
+                                args: data,
+                                done: function(result) {
+                                    console.log(result);
+                                    if (result == 1) {
+                                        top.location.reload();
+                                    } else {
+                                        alert('Error: ' + result);
+                                    }
+                                },
+                                fail: NOTIFICATION.exception
+                            }]);
                         });
-                    },
-                    fail: NOTIFICATION.exception
-                }]);
-
+                    });
+                },
+                fail: NOTIFICATION.exception
+            }]);
         },
         /**
          * Checks if a particular support form has a screenshot. If not, it hides the modal and creates one.
@@ -102,16 +100,10 @@ define(
         /**
          * Inject a help button in the upper right menu.
          */
-        injectHelpButton: function() {
-            console.log('local_edusupport/main:injectHelpButton()');
-            AJAX.call([{
-                methodname: 'local_edusupport_get_extralinks',
-                args: {},
-                done: function(result) {
-                    $(result).insertBefore($('.nav .usermenu'));
-                },
-                fail: NOTIFICATION.exception
-            }]);
+        injectHelpButton: function(supportmenu) {
+            var MAIN = this;
+            if (MAIN.debug > 0) console.log('local_edusupport/main:injectHelpButton(supportmenu)');
+            $(supportmenu).insertBefore($('.nav .usermenu'));
         },
         /**
          * Scans the page for all discussion posts and adds a reply-button.
@@ -152,32 +144,6 @@ define(
                     } else {
                         NOTIFICATION.exception(result);
                         //alert('Error: ' + result);
-                    }
-                },
-                fail: NOTIFICATION.exception
-            }]);
-        },
-        /**
-         * Colorize shown discussions.
-        **/
-        colorize: function() {
-            var discussionids = [];
-            $('table.forumheaderlist tr.discussion td.starter a').each(function(){ var d = $(this).attr('href').split('?d='); discussionids[discussionids.length] = d[1]; });
-            var data = { discussionids: discussionids };
-            console.log('local_edusupport_colorize', data);
-            AJAX.call([{
-                methodname: 'local_edusupport_colorize',
-                args: data,
-                done: function(result) {
-                    try { result = JSON.parse(result); } catch(e) {}
-                    console.log(result);
-                    if (typeof result.styles !== 'undefined') {
-                        var discussionids = Object.keys(result.styles);
-                        for (var a = 0; a < discussionids.length; a++) {
-                            var discussionid = discussionids[a];
-                            var style = result.styles[discussionid];
-                            $('table.forumheaderlist tr.discussion td.starter a[href$="d=' + discussionid + '"]').closest('tr').attr('style', style);
-                        }
                     }
                 },
                 fail: NOTIFICATION.exception

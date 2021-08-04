@@ -57,6 +57,7 @@
         <div class="dropdown-menu dropdown-menu-right" role="menu" id="drop-down-menu-{{uniqid}}" aria-labelledby="drop-down-{{uniqid}}">
             <a href="#"  class="dropdown-item menu-action" role="menuitem" data-title="{{#str}} create_issue, local_edusupport {{/str}}" aria-labelledby="actionmenuaction-{{uniqid}}-x"
                 onclick="require(['local_edusupport/main'], function(MAIN){ MAIN.showBox(); }); return false;">
+                <i class="icon fa fa-medkit fa-fw"></i>
                 <span class="menu-action-text" id="actionmenuaction-{{uniqid}}-x">
                     {{#str}} create_issue, local_edusupport {{/str}}
                 </span>
@@ -64,6 +65,9 @@
             <div class="dropdown-divider" role="presentation"><span class="filler">&nbsp;</span></div>
             {{#extralinks}}
                 <a href="{{url}}" {{#target}} target="{{target}}"{{/target}} class="dropdown-item menu-action" role="menuitem" data-title="{{name}}" aria-labelledby="actionmenuaction-{{uniqid}}-{{id}}">
+                    {{#faicon}}
+                    <i class="icon fa {{faicon}}"></i>
+                    {{/faicon}}
                     <span class="menu-action-text" id="actionmenuaction-{{uniqid}}-{{id}}">
                         {{name}}
                     </span>
