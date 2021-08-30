@@ -156,7 +156,7 @@ class lib {
                 if (!empty($tmp[0])) $extralink->name = $tmp[0];
                 if (!empty($tmp[1])) $extralink->url = $tmp[1];
                 if (!empty($tmp[2])) $extralink->faicon = $tmp[2];
-                if (!empty($tmp[3])) $extralink->target = $tmp[3];
+                if (!empty($tmp[3])) $extralink->target = trim($tmp[3]);
                 $extralinks[] = $extralink;
             }
         }

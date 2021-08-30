@@ -101,6 +101,7 @@ define(
          * Inject a help button in the upper right menu.
          */
         injectHelpButton: function(supportmenu) {
+            // OBSOLETE SINCE 2021083000
             var MAIN = this;
             if (MAIN.debug > 0) console.log('local_edusupport/main:injectHelpButton(supportmenu)');
             $(supportmenu).insertBefore($('.nav .usermenu'));

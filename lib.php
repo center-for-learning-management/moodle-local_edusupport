@@ -34,8 +34,7 @@ defined('MOODLE_INTERNAL') || die;
 function local_edusupport_before_standard_html_head(){
     global $CFG, $DB, $OUTPUT, $PAGE, $SITE, $USER;
     if (isloggedin() && !isguestuser($USER)) {
-        $supportmenu = \local_edusupport\lib::get_supportmenu();
-        $PAGE->requires->js_call_amd('local_edusupport/main', 'injectHelpButton', array('supportmenu' => $supportmenu));
+        echo \local_edusupport\lib::get_supportmenu();
     }
 
     if (strpos($_SERVER["SCRIPT_FILENAME"], '/mod/forum/discuss.php') > 0) {

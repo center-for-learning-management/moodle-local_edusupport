@@ -45,44 +45,52 @@
    }
  }}
 
-{{#hasextralinks}}
-    <li class="dropdown nav-item local-edusupport-menu">
-        <a class="dropdown-toggle nav-link" id="drop-down-{{uniqid}}"
-            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-            href="#" title="{{#str}} pluginname, local_edusupport {{/str}}"
-            aria-controls="drop-down-menu-{{uniqid}}" style="padding-right:0; padding-left:0;">
-            <!-- {{#str}} Browse_org, local_eduvidual {{/str}} -->
-            <i class="icon fa fa-medkit fa-fw"></i>
-        </a>
-        <div class="dropdown-menu dropdown-menu-right" role="menu" id="drop-down-menu-{{uniqid}}" aria-labelledby="drop-down-{{uniqid}}">
-            <a href="#"  class="dropdown-item menu-action" role="menuitem" data-title="{{#str}} create_issue, local_edusupport {{/str}}" aria-labelledby="actionmenuaction-{{uniqid}}-x"
-                onclick="require(['local_edusupport/main'], function(MAIN){ MAIN.showBox(); }); return false;">
-                <i class="icon fa fa-medkit fa-fw"></i>
-                <span class="menu-action-text" id="actionmenuaction-{{uniqid}}-x">
-                    {{#str}} create_issue, local_edusupport {{/str}}
-                </span>
-            </a>
-            <div class="dropdown-divider" role="presentation"><span class="filler">&nbsp;</span></div>
-            {{#extralinks}}
-                <a href="{{url}}" {{#target}} target="{{target}}"{{/target}} class="dropdown-item menu-action" role="menuitem" data-title="{{name}}" aria-labelledby="actionmenuaction-{{uniqid}}-{{id}}">
-                    {{#faicon}}
-                    <i class="icon fa {{faicon}}"></i>
-                    {{/faicon}}
-                    <span class="menu-action-text" id="actionmenuaction-{{uniqid}}-{{id}}">
-                        {{name}}
-                    </span>
-                </a>
-            {{/extralinks}}
-        </div>
-    </li>
-{{/hasextralinks}}
-{{^hasextralinks}}
-    <li class="nav-item">
-        <div class="popover-region collapsed">
-            <a href="#" class="nav-link d-inline-block popover-region-toggle position-relative"
-                onclick="require(['local_edusupport/main'], function(MAIN){ MAIN.showBox(); }); return false;" style="padding-right:0; padding-left:0;">
-                <i class="icon fa fa-medkit fa-fw"></i>
-            </a>
-        </div>
-    </li>
-{{/hasextralinks}}
+{{#js}}
+require(['jquery'], function($) {
+    var html = [
+        {{#hasextralinks}}
+            '<li class="dropdown nav-item local-edusupport-menu">',
+            '    <a class="dropdown-toggle nav-link" id="drop-down-{{uniqid}}"',
+            '        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"',
+            '        href="#" title="{{#str}} pluginname, local_edusupport {{/str}}"',
+            '        aria-controls="drop-down-menu-{{uniqid}}" style="padding-right:0; padding-left:0;">',
+            '        <!-- {{#str}} Browse_org, local_eduvidual {{/str}} -->',
+            '        <i class="icon fa fa-medkit fa-fw"></i>',
+            '    </a>',
+            '    <div class="dropdown-menu dropdown-menu-right" role="menu" id="drop-down-menu-{{uniqid}}" aria-labelledby="drop-down-{{uniqid}}">',
+            '        <a href="#"  class="dropdown-item menu-action" role="menuitem" data-title="{{#str}} create_issue, local_edusupport {{/str}}" aria-labelledby="actionmenuaction-{{uniqid}}-x"',
+            '            onclick="require([\'local_edusupport/main\'], function(MAIN){ MAIN.showBox(); }); return false;">',
+            '            <i class="icon fa fa-medkit fa-fw"></i>',
+            '            <span class="menu-action-text" id="actionmenuaction-{{uniqid}}-x">',
+            '                {{#str}} create_issue, local_edusupport {{/str}}',
+            '            </span>',
+            '        </a>',
+            '        <div class="dropdown-divider" role="presentation"><span class="filler">&nbsp;</span></div>',
+                     {{#extralinks}}
+            '            <a href="{{url}}" {{#target}} target="{{target}}"{{/target}} class="dropdown-item menu-action" role="menuitem" data-title="{{name}}" aria-labelledby="actionmenuaction-{{uniqid}}-{{id}}">',
+            '                {{#faicon}}',
+            '                <i class="icon fa {{faicon}}"></i>',
+            '                {{/faicon}}',
+            '                <span class="menu-action-text" id="actionmenuaction-{{uniqid}}-{{id}}">',
+            '                    {{name}}',
+            '                </span>',
+            '            </a>',
+                    {{/extralinks}}
+            '    </div>',
+            '</li>',
+        {{/hasextralinks}}
+        {{^hasextralinks}}
+            '<li class="nav-item">',
+            '    <div class="popover-region collapsed">',
+            '        <a href="#" class="nav-link d-inline-block popover-region-toggle position-relative"',
+            '            onclick="require([\'local_edusupport/main\'], function(MAIN){ MAIN.showBox(); }); return false;" style="padding-right:0; padding-left:0;">',
+            '            <i class="icon fa fa-medkit fa-fw"></i>',
+            '        </a>',
+            '    </div>',
+            '</li>',
+        {{/hasextralinks}}
+    ].join("\n");
+
+    $(html).insertBefore($('.nav .usermenu'));
+});
+{{/js}}
