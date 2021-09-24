@@ -180,7 +180,7 @@ define(
                 ]).done(function(s) {
                     $('#page-content div[role="main"] .discussionname').parent().prepend(
                         $('<a href="#">')
-                                    .attr('onclick', "require(['local_edusupport/main'], function(MAIN) { MAIN.injectForwardModal(" + discussionid + ", " + isissue + "); }); return false;")
+                                    .attr('onclick', "require(['local_edusupport/main'], function(MAIN) { MAIN.injectForwardModal(" + discussionid + ", " + isissue + ", '" + sitename + "'); }); return false;")
                                     .attr('style', 'float: right')
                                     .addClass("btn btn-primary")
                                     .html(s[0])
@@ -199,10 +199,19 @@ define(
 
 
         },
-        injectForwardModal: function(discussionid, revoke) {
+        injectForwardModal: function(discussionid, revoke, sitename) {
             STR.get_strings([
-                    {'key' : 'confirm', component: 'core' },
-                    {'key' : (typeof revoke !== 'undefined' && revoke) ? 'issue_revoke' : 'issue_assign_nextlevel', component: 'local_edusupport' },
+                    {
+                        key : 'confirm',
+                        component: 'core'
+                    },
+                    {
+                        key : (typeof revoke !== 'undefined' && revoke) ? 'issue_revoke' : 'issue_assign_nextlevel',
+                        component: 'local_edusupport',
+                        param: {
+                            sitename: sitename,
+                        }
+                    },
                 ]).done(function(s) {
                     ModalFactory.create({
                         type: ModalFactory.types.SAVE_CANCEL,
