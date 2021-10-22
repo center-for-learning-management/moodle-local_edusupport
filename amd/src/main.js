@@ -294,6 +294,9 @@ define(
                         responsibles += '</ul>';
                     }
                     */
+                    if (typeof result.discussionid !== 'undefined' && (parseInt(result.discussionid) == -999 || parseInt(result.discussionid) > 0)) {
+                        $('#id_subject, #id_contactphone, #id_description').val('');
+                    }
                     if (typeof result.discussionid !== 'undefined' && parseInt(result.discussionid) == -999) {
                         // confirmation, was sent by mail.
                         STR.get_strings([
