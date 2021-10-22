@@ -295,7 +295,8 @@ define(
                     }
                     */
                     if (typeof result.discussionid !== 'undefined' && (parseInt(result.discussionid) == -999 || parseInt(result.discussionid) > 0)) {
-                        $('#id_subject, #id_contactphone, #id_description').val('');
+                        $('#id_subject, #id_contactphone, #id_description, #edusupport_screenshot>input').val('');
+                        $('#edusupport_screenshot>.alert').css('display', 'none');
                     }
                     if (typeof result.discussionid !== 'undefined' && parseInt(result.discussionid) == -999) {
                         // confirmation, was sent by mail.
