@@ -106,13 +106,14 @@ if (!is_siteadmin()) {
         $forum->state = (!empty($state->id));
         $forum->statecentral = (!empty($centralforum) && $centralforum == $forum->id);
         $forum->dedicatedsupporter = !empty($state->dedicatedsupporter) ? $state->dedicatedsupporter : 0;
-        $forum->supporters = $supporters;
+        $forum->supporters = json_decode(json_encode($supporters));
         if (!empty($forum->dedicatedsupporter)) {
             foreach ($forum->supporters AS &$supporter) {
                 $supporter->selected = $forum->dedicatedsupporter == $supporter->userid;
             }
         }
     }
+
     echo $OUTPUT->render_from_template('local_edusupport/chooseforum', array('forums' => $forums, 'wwwroot' => $CFG->wwwroot));
 }
 
