@@ -97,7 +97,7 @@ $string['issue_responsibles:post'] = '
         The managers of your organization can forward this issue to the {$a->sitename}-Support by clicking the button "Forward this ticket to the {$a->sitename}-Support" (visible only for managers on the right upper side of the page).
     </p>
 ';
-$string['issue_responsibles:subject'] = 'Supportanfrage zugeordnet';
+$string['issue_responsibles:subject'] = 'Issue assigned';
 $string['issue_revoke'] = 'Revoke this issue from higher support level';
 $string['issue_revoke:error'] = 'Sorry, this issue could not be revoked from the higher support levels';
 $string['issue_revoke:post'] = '<a href="{$a->wwwroot}/user/view.php?id={$a->fromuserid}">{$a->fromuserfullname}</a> revoked this issue from the higher support level';
