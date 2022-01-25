@@ -439,7 +439,8 @@ class lib {
             $params[] = self::SYSTEM_COURSE_ID;
         }
 
-        $sql .= " LIMIT 0 OFFSET 1";
+        $sql .= " LIMIT 1 OFFSET 0";
+
         $chk = $DB->get_record_sql($sql, $params);
         return !empty($chk->userid);
     }
