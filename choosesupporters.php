@@ -43,6 +43,20 @@ $title = get_string('supporters', 'local_edusupport');
 $PAGE->set_title($title);
 $PAGE->set_heading($title);
 
+$url = new \moodle_url('/admin/search.php', [ ]);
+$PAGE->navbar->add(get_string('administrationsite'), $url);
+
+$url = new \moodle_url('/admin/category.php', [ 'category' => 'modules']);
+$PAGE->navbar->add(get_string('plugins', 'core_admin'), $url);
+
+$url = new \moodle_url('/admin/category.php', [ 'category' => 'localplugins']);
+$PAGE->navbar->add(get_string('localplugins'), $url);
+
+$url = new \moodle_url('/admin/settings.php', [ 'section' => 'local_edusupport_settings' ]);
+$PAGE->navbar->add(get_string('pluginname', 'local_edusupport'), $url);
+
+$PAGE->navbar->add(get_string('supporters', 'local_edusupport'), $PAGE->url);
+
 echo $OUTPUT->header();
 
 if (!is_siteadmin()) {

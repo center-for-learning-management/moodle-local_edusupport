@@ -118,7 +118,9 @@ if ($hassiteconfig) {
     $links = "<div class=\"grid-eq-3\">";
     foreach($actions AS $action) {
         $links .= '<a class="btn btn-secondary" href="' . $CFG->wwwroot . '/local/edusupport/' . $action->href . '">' .
-            get_string($action->name, 'local_edusupport') . '</a>';
+                        '<i class="fa fa-users"></i> ' .
+                        get_string($action->name, 'local_edusupport') .
+                  '</a>';
     }
     $links .= "</div>";
     $settings->add(new admin_setting_heading('local_edusupport_actions', get_string('settings'), $links));
