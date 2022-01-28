@@ -15,7 +15,7 @@ Now you need to create at least one course with one general forum and mark it as
 
 ![Choose support forums](/doc/chooseforums.png)
 
-All users with the trainer role in this course will be the 1st level support. You can enable separated groups, visible groups or no group mode - doesn't matter. Users will receive notifications as usual if they subscribe the forum.
+All users with the teacher role in this course will be the 1st level support. You can enable separated groups, visible groups or no group mode - doesn't matter. Users will receive notifications as usual if they subscribe the forum.
 
 You can set one team member of the site's support team (2nd and 3d Level) as a dedicated support user. This means, that all issues forwarded to 2nd level will be automatically assigned to the responsibility of this team member.
 
@@ -37,12 +37,12 @@ If a user presses this button a modal dialog appears and the user can describe t
 
 If the user has access to several supportforums he can choose the target, also if the forums use the group feature, the target group can be chosen. If the user has not access to any supportforum the system automatically falls back to an email mode, and the issue is sent to the mailaddress of the supportusers specified in the site administration.
 
-If a user has the capability 'edusupport:canforward2ndlevel', which is set by default for the trainer role (1st Level Support), it is possible to forward the issue directly to the 2nd level on creation. You can also decide to grant this capability to other roles as well.
+If a user has the capability 'edusupport:canforward2ndlevel', which is set by default for the teacher role (1st Level Support), it is possible to forward the issue directly to the 2nd level on creation. You can also decide to grant this capability to other roles as well.
 
 
 ## Who is responsible for a ticket?
 
-1. The 1st level support, which means: all trainers in the support course. These users can forward an issue to the 2nd level. On the discussion page they will find a button "Forward this issue to 2nd level support". If a dedicated supporter was set for this forum, this user will be named to be responsible for this ticket. Otherwise a random user from the 2nd level support team will be selected. For transparency reasons a post on behalf of the 1st level support user is automatically added to the discussion. Anybody from the 1st level support can also revoke the issue from the 2nd level.
+1. The 1st level support, which means: all teachers in the support course. These users can forward an issue to the 2nd level. On the discussion page they will find a button "Forward this issue to 2nd level support". If a dedicated supporter was set for this forum, this user will be named to be responsible for this ticket. Otherwise a random user from the 2nd level support team will be selected. For transparency reasons a post on behalf of the 1st level support user is automatically added to the discussion. Anybody from the 1st level support can also revoke the issue from the 2nd level.
 
 ![Forward issue to 2nd level](/doc/issue-forward.png)
 

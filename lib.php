@@ -45,7 +45,7 @@ function local_edusupport_before_standard_html_head(){
                 && \local_edusupport\lib::is_supportforum($discussion->forum)) {
             $sql = "SELECT id
                         FROM {local_edusupport_subscr}
-                        WHERE discussionid=? LIMIT 0,1";
+                        WHERE discussionid=? LIMIT 1 OFFSET 0";
             $chk = $DB->get_record_sql($sql, array($discussion->id));
 
             $PAGE->requires->js_call_amd('local_edusupport/main', 'injectForwardButton', array($d, !empty($chk->id), $SITE->fullname));

@@ -75,7 +75,7 @@ if (!\local_edusupport\lib::is_supportteam()) {
         $issue->userid = $discussion->userid;
         $postinguser = $DB->get_record('user', array('id' => $discussion->userid));
         $issue->userfullname = \fullname($postinguser);
-        $sql = "SELECT id,modified,userid FROM {forum_posts} WHERE discussion=? ORDER BY modified DESC LIMIT 0,1";
+        $sql = "SELECT id,modified,userid FROM {forum_posts} WHERE discussion=? ORDER BY modified DESC LIMIT 1 OFFSET 0";
         $lastpost = $DB->get_record_sql($sql, array($issue->discussionid));
         $issue->lastmodified = $lastpost->modified;
         $issue->lastpostuserid = $lastpost->userid;
