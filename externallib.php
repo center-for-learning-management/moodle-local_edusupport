@@ -251,7 +251,7 @@ class local_edusupport_external extends external_api {
                     } else {
                         // Post answer containing the reponsibles.
                         $managers = array_values(\local_edusupport\lib::get_course_supporters($forum));
-                        $resposibles = array();
+                        $responsibles = array();
                         foreach ($managers as $manager) {
                             $responsibles[] = "<a href=\"{$CFG->wwwroot}/user/profile.php?id={$manager->id}\" target=\"_blank\">{$manager->firstname} {$manager->lastname}</a>";
                         }
