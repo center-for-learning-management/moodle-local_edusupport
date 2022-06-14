@@ -107,6 +107,31 @@ if ($hassiteconfig) {
             4 * WEEKSECS)
     );
 
+    $options = [
+        0 => get_string('inactive'),
+        60 => "1 " . get_string('minute'),
+        600 => "10 " . get_string('minutes'),
+        3600 => "60 " . get_string('minutes')
+    ];
+
+    $settings->add(
+        new admin_setting_configselect(
+            'local_edusupport/spamprotectionthreshold',
+            get_string('spamprotection:threshold', 'local_edusupport'),
+            get_string('spamprotection:threshold:description', 'local_edusupport'),
+            600,
+            $options)
+    );
+
+    $settings->add(
+        new admin_setting_configselect(
+            'local_edusupport/spamprotectionlimit',
+            get_string('spamprotection:limit', 'local_edusupport'),
+            get_string('spamprotection:limit:description', 'local_edusupport'),
+            5,
+            [ 1 => 1, 2 => 2, 5 => 5, 10 => 10, 20 => 20])
+    );
+
 
 
     // @TODO a feature from the future.

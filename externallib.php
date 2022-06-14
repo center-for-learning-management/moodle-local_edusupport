@@ -63,6 +63,29 @@ class local_edusupport_external extends external_api {
      */
     public static function create_issue($subject, $description, $forum_group, $postto2ndlevel, $image, $screenshotname, $url, $contactphone) {
         global $CFG, $DB, $OUTPUT, $PAGE, $USER, $SITE;
+
+        $protecttime = get_config('local_edusupport','spamprotectionthreshold');
+        $protectamount = get_config('local_edusupport','spamprotectionlimit');
+
+        $cache = \cache::make('local_edusupport', 'spamprotect');
+        $timeoffset = time() - $protecttime;
+        $log = $cache->get('log');
+        if (!empty($log)) {
+            for ($a = 0; $a < count($log); $a++) {
+                if ($log[$a] < $timeoffset) {
+                    $log[$a] = '';
+                }
+            }
+            $log = array_filter($log);
+            $log = array_values($log);
+            $cache->set('log', $log);
+            if ($protectamount <= count($log)) {
+                throw new \moodle_exception('spamprotection:exception', 'local_edusupport');
+            }
+        }
+        $log[] = time();
+        $cache->set('log', $log);
+
         $params = self::validate_parameters(self::create_issue_parameters(), array('subject' => $subject, 'description' => $description, 'forum_group' => $forum_group, 'postto2ndlevel' => $postto2ndlevel, 'image' => $image, 'screenshotname' => $screenshotname, 'url' => $url, 'contactphone' => $contactphone));
         $reply = array(
             'discussionid' => 0,
