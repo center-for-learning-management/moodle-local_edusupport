@@ -114,11 +114,13 @@ class local_edusupport_external extends external_api {
 
             $supportuser = \core_user::get_support_user();
             $recipients = array($supportuser);
+            /*
             $reply['responsibles'][] = array(
                 'userid' => $supportuser->id,
                 'name' => \fullname($supportuser),
                 'email' => $supportuser->email,
             );
+            */
             $fromuser = $USER;
 
             if (!empty($params['image'])) {
@@ -151,7 +153,9 @@ class local_edusupport_external extends external_api {
                 $forum = $DB->get_record('forum', array('id' => $forumid), '*', MUST_EXIST);
                 list($course, $cm) = get_course_and_cm_from_instance($forum, 'forum');
 
+                /*
                 $coursesupporters = \local_edusupport\lib::get_course_supporters($forum);
+                /*
                 foreach ($coursesupporters as $coursesupporter) {
                     $reply['responsibles'][] = array(
                         'userid' => $coursesupporter->id,
@@ -159,6 +163,7 @@ class local_edusupport_external extends external_api {
                         'email' => $coursesupporter->email,
                     );
                 }
+                */
 
                 $context = context_module::instance($cm->id);
                 self::validate_context($context);
