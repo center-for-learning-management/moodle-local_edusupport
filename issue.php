@@ -113,7 +113,7 @@ if (!\local_edusupport\lib::is_supportteam() && !is_siteadmin()) {
     if (!empty($replyto)) {
         //require_once($CFG->dirroot . '/mod/forum/classes/post_form.php');
         require_once($CFG->dirroot . '/local/edusupport/classes/post_form.php');
-        $thresholdwarning = forum_check_throttling($vforum, $cm);
+        $thresholdwarning = forum_check_throttling($forum->id, $cm);
         $mform_post = new \local_edusupport_post_form($CFG->wwwroot . '/local/edusupport/issue.php?d=' . $discussionid . '&replyto=' . $replyto, array(
             'course' => $course,
             'cm' => $cm,
