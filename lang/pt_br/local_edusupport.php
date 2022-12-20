@@ -1,30 +1,30 @@
-<?php;;;
-// This file is part of Moodle - http://moodle.org/;;;
-//;;;
-// Moodle is free software: you can redistribute it and/or modify;;;
-// it under the terms of the GNU General Public License as published by;;;
-// the Free Software Foundation, either version 3 of the License, or;;;
-// (at your option) any later version.;;;
-//;;;
-// Moodle is distributed in the hope that it will be useful,;;;
+<?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY;;mesmo sem a garantia implícita de;
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the;;;
-// GNU General Public License for more details.;;;
-//;;;
-// You should have received a copy of the GNU General Public License;;;
-// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.;;;
-;;;
-/**;;;
- * @package   local_edusupport;;;
- * @copyright 2018 Digital Education Society (http://www.dibig.at);;;
- * @author    Robert Schrenk;;;
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later;;;
- */;;;
-;;;
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * @package   local_edusupport
+ * @copyright 2018 Digital Education Society (http://www.dibig.at)
+ * @author    Robert Schrenk
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 $string["pluginname"] = 'Ajuda';
 $string["edusupport:addinstance"] = 'Adicionar bloco eduSupport';
 $string["edusupport:myaddinstance"] = 'Adicionar bloco eduSupport';
-;;;
+
 $string["archive"] = 'Arquivo';
 $string["assigned"] = 'Atribuído';
 $string["autocreate_orggroup"] = 'Crie grupos automaticamente para organizações educacionais';
@@ -164,8 +164,8 @@ $string["userlinks:description"] = 'mostrar userlinks na lista de problemas';
 $string["your_issues"] = 'seus problemas';
 $string["webhost"] = 'Hospedeiro';
 $string["weburl"] = 'URL';
-;;;
-/* PrivaCY API */;;;
+
+/* PrivaCY API */
 $string["privacy:metadata:edusupport:subscr"] = 'Todos os problemas assinados';
 $string["privacy:metadata:edusupport:issues"] = 'Problemas de apoiadores';
 $string["privacy:metadata:edusupport:fieldid"] = 'Identidade';
