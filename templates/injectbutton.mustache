@@ -49,7 +49,7 @@
 require(['jquery'], function($) {
     var html = [
         {{#hasextralinks}}
-            '<li class="dropdown nav-item local-edusupport-menu">',
+            '<div class="dropdown local-edusupport-menu">',
             '    <a class="dropdown-toggle nav-link" id="drop-down-{{uniqid}}"',
             '        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"',
             '        href="#" title="{{#str}} pluginname, local_edusupport {{/str}}"',
@@ -76,17 +76,17 @@ require(['jquery'], function($) {
             '            </a>',
                     {{/extralinks}}
             '    </div>',
-            '</li>',
+            '</div>',
         {{/hasextralinks}}
         {{^hasextralinks}}
-            '<li class="nav-item">',
+            '<div class="">',
             '    <div class="popover-region collapsed">',
             '        <a href="#" class="nav-link d-inline-block popover-region-toggle position-relative"',
             '            onclick="require([\'local_edusupport/main\'], function(MAIN){ MAIN.showBox(); }); return false;" style="padding-right:0; padding-left:0;">',
             '            <i class="icon fa fa-medkit fa-fw"></i>',
             '        </a>',
             '    </div>',
-            '</li>',
+            '</div>',
         {{/hasextralinks}}
     ].join("\n");
 
