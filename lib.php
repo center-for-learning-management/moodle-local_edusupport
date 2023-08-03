@@ -103,19 +103,19 @@ function local_edusupport_before_standard_html_head(){
 /**
  * Extend Moodle Navigation.
  */
-function local_edusupport_extend_navigation($navigation) {
-    if (\local_edusupport\lib::is_supportteam()) {
-        $nodehome = $navigation->get('home');
-        if (empty($nodehome)){
-            $nodehome = $navigation;
-        }
-        $label = get_string('issues', 'local_edusupport');
-        $link = new moodle_url('/local/edusupport/issues.php', array());
-        $icon = new pix_icon('docs', '', '');
-        $nodecreatecourse = $nodehome->add($label, $link, navigation_node::NODETYPE_LEAF, $label, 'edusupportissues', $icon);
-        $nodecreatecourse->showinflatnavigation = true;
-    }
-}
+// function local_edusupport_extend_navigation($navigation) {
+//     if (\local_edusupport\lib::is_supportteam()) {
+//         $nodehome = $navigation->get('home');
+//         if (empty($nodehome)){
+//             $nodehome = $navigation;
+//         }
+//         $label = get_string('issues', 'local_edusupport');
+//         $link = new moodle_url('/local/edusupport/issues.php', array());
+//         $icon = new pix_icon('docs', '', '');
+//         $nodecreatecourse = $nodehome->add($label, $link, navigation_node::NODETYPE_LEAF, $label, 'edusupportissues', $icon);
+//         $nodecreatecourse->showinflatnavigation = true;
+//     }
+// }
 
 function local_edusupport_extend_navigation_course($parentnode, $course, $context) {
     // If we allow support users on course level, we can remove the next line.
