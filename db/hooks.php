@@ -17,15 +17,16 @@
 /**
  * @package    local_edusupport
  * @copyright  2018 Digital Education Society (http://www.dibig.at)
- *             2020 onwards Center for Learningmanagement (www.lernmanagement.at)
  * @author     Robert Schrenk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die;
 
-$plugin->version  = 2024121100;
-$plugin->requires = 2014051200;
-$plugin->component = 'local_edusupport';
-$plugin->release = '2.3';
-$plugin->maturity = MATURITY_STABLE;
+$callbacks = [
+    [
+        'hook' => \core\hook\output\before_standard_head_html_generation::class,
+        'callback' => [\local_edusupport\hook_callbacks::class, 'before_standard_head_html_generation'],
+        'priority' => 500,
+    ],
+];
