@@ -23,7 +23,7 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-function xmldb_local_edusupport_install(){
+function xmldb_local_edusupport_install() {
     global $DB;
 
     $role = $DB->get_record('role', array('shortname' => 'local_edusupport'));
@@ -31,7 +31,7 @@ function xmldb_local_edusupport_install(){
         $sql = "SELECT MAX(sortorder)+1 AS id FROM {role}";
         $max = $DB->get_record_sql($sql, array());
 
-        $role = (object) array(
+        $role = (object)array(
             'name' => 'eduSupport Team',
             'shortname' => 'local_edusupport',
             'description' => 'This role was automatically created by the local_edusupport Plugin',
@@ -88,7 +88,7 @@ function xmldb_local_edusupport_install(){
         'moodle/site:accessallgroups',
         'moodle/user:readuserposts',
     );
-    foreach ($caps AS $cap) {
+    foreach ($caps as $cap) {
         $chk = $DB->get_record('role_capabilities', array('contextid' => $ctx->id, 'roleid' => $role->id, 'capability' => $cap, 'permission' => 1));
         if (empty($chk->id)) {
             $DB->insert_record('role_capabilities', array('contextid' => $ctx->id, 'roleid' => $role->id, 'capability' => $cap, 'permission' => 1, 'timemodified' => time(), 'modifierid' => 2));

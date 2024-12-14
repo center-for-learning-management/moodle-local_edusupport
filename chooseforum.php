@@ -54,23 +54,31 @@ if (!is_siteadmin()) {
             if (\local_edusupport\lib::supportforum_setdedicatedsupporter($forumid, $dedicatedsupporter)) {
                 echo $OUTPUT->render_from_template('local_edusupport/alert', array(
                     'content' => get_string('dedicatedsupporter:successfully_set', 'local_edusupport'),
-                    'type' => 'success'
+                    'type' => 'success',
                 ));
             } else {
                 echo $OUTPUT->render_from_template('local_edusupport/alert', array(
                     'content' => get_string('dedicatedsupporter:not_successfully_set', 'local_edusupport'),
-                    'type' => 'danger'
+                    'type' => 'danger',
                 ));
             }
 
         } else {
-            switch($state) {
-                case 1: \local_edusupport\lib::supportforum_enable($forumid); break;
-                case -1: \local_edusupport\lib::supportforum_disable($forumid); break;
+            switch ($state) {
+                case 1:
+                    \local_edusupport\lib::supportforum_enable($forumid);
+                    break;
+                case -1:
+                    \local_edusupport\lib::supportforum_disable($forumid);
+                    break;
             }
-            switch($central) {
-                case 1: \local_edusupport\lib::supportforum_enablecentral($forumid); break;
-                case -1: \local_edusupport\lib::supportforum_disablecentral($forumid); break;
+            switch ($central) {
+                case 1:
+                    \local_edusupport\lib::supportforum_enablecentral($forumid);
+                    break;
+                case -1:
+                    \local_edusupport\lib::supportforum_disablecentral($forumid);
+                    break;
             }
         }
     }
@@ -81,7 +89,7 @@ if (!is_siteadmin()) {
                     OR courseid=?
                 ORDER BY supportlevel ASC";
     $supporters = array_values($DB->get_records_sql($sql, array($courseid)));
-    foreach ($supporters AS &$supporter) {
+    foreach ($supporters as &$supporter) {
         $u = $DB->get_record('user', array('id' => $supporter->userid));
         $supporter->userfullname = fullname($u);
         $supporter->firstname = $u->firstname;
@@ -101,14 +109,14 @@ if (!is_siteadmin()) {
 
     $centralforum = get_config('local_edusupport', 'centralforum');
 
-    foreach ($forums AS &$forum) {
+    foreach ($forums as &$forum) {
         $state = $DB->get_record('local_edusupport', array('forumid' => $forum->id));
         $forum->state = (!empty($state->id));
         $forum->statecentral = (!empty($centralforum) && $centralforum == $forum->id);
         $forum->dedicatedsupporter = !empty($state->dedicatedsupporter) ? $state->dedicatedsupporter : 0;
         $forum->supporters = json_decode(json_encode($supporters));
         if (!empty($forum->dedicatedsupporter)) {
-            foreach ($forum->supporters AS &$supporter) {
+            foreach ($forum->supporters as &$supporter) {
                 $supporter->selected = $forum->dedicatedsupporter == $supporter->userid;
             }
         }

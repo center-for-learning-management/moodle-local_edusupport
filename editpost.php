@@ -15,11 +15,11 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
-* @package    local_edusupport
-* @copyright  2020 Center for Learningmanagement (www.lernmanagement.at)
-* @author     Robert Schrenk
-* @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
-*/
+ * @package    local_edusupport
+ * @copyright  2020 Center for Learningmanagement (www.lernmanagement.at)
+ * @author     Robert Schrenk
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 require_once('../../config.php');
 //require_once($CFG->dirroot . '/local/edusupport/classes/lib.php');
@@ -30,9 +30,9 @@ $d = optional_param('d', 0, PARAM_INT); // discussionid.
 $discussion = optional_param('discussion', 0, PARAM_INT); // discussionid.
 $discussionid = $discussion | $d;
 
-$edit   = required_param('edit', PARAM_INT);
+$edit = required_param('edit', PARAM_INT);
 
-$url = new moodle_url('/local/edusupport/editpost.php', array('discussion'=>$discussionid, 'edit' => $edit));
+$url = new moodle_url('/local/edusupport/editpost.php', array('discussion' => $discussionid, 'edit' => $edit));
 $PAGE->set_url($url);
 
 $context = \context_system::instance();
@@ -60,7 +60,7 @@ if (!\local_edusupport\lib::is_supportteam()) {
     $coursecontext = \context_course::instance($forum->course);
     $modcontext = \context_module::instance($cm->id);
 
-    $PAGE->set_title("$course->shortname: ".format_string($discussion->name));
+    $PAGE->set_title("$course->shortname: " . format_string($discussion->name));
     $PAGE->set_heading($course->fullname);
 
     $options = array();
@@ -85,7 +85,7 @@ if (!\local_edusupport\lib::is_supportteam()) {
     //$course = $forum->get_course_record();
     $course = get_course($forum->course);
     //$cm = $forum->get_course_module_record();
-    $cm =  get_coursemodule_from_instance('forum', $forum->id, 0, false, MUST_EXIST);
+    $cm = get_coursemodule_from_instance('forum', $forum->id, 0, false, MUST_EXIST);
 
 
     $postvault = $vaultfactory->get_post_vault();
@@ -107,7 +107,7 @@ if (!\local_edusupport\lib::is_supportteam()) {
         'thresholdwarning' => $thresholdwarning,
         'edit' => $edit,
 
-        ), 'post', '', array('id' => 'mformforum')
+    ), 'post', '', array('id' => 'mformforum')
     );
 
     $formheading = '';
@@ -130,30 +130,30 @@ if (!\local_edusupport\lib::is_supportteam()) {
     $currenttext = file_prepare_draft_area($draftid_editor, $modcontext->id, 'mod_forum', 'post', $post->id, \local_edusupport_post_form::editor_options($modcontext, $post->id), $post->message);
     $mform_post->set_data(
         array(
-            'attachments'=>$draftitemid,
-            'general'=>$heading,
-            'subject'=> 'Re: ' . $post->subject,
-            'message'=>array(
-                'text'  => $currenttext,
-                'format'=> editors_get_preferred_format(),
-                'itemid'=>$draftid_editor
+            'attachments' => $draftitemid,
+            'general' => $heading,
+            'subject' => 'Re: ' . $post->subject,
+            'message' => array(
+                'text' => $currenttext,
+                'format' => editors_get_preferred_format(),
+                'itemid' => $draftid_editor,
             ),
-            'mailnow'=> 1,
-            'userid'=>$post->userid,
-            'parent'=>$post->parent,
-            'discussion'=>$discussionid,
-            'course'=>$course->id,
+            'mailnow' => 1,
+            'userid' => $post->userid,
+            'parent' => $post->parent,
+            'discussion' => $discussionid,
+            'course' => $course->id,
             'forum' => $forum->id,
             'edit' => $edit,
             'itemid' => 0,
         )
         // $page_params
-        +(isset($post->format) ? array('format'=>$post->format) : array())
-        +(isset($discussion->timestart)?array('timestart'=>$discussion->timestart):array())
-        +(isset($discussion->timeend)?array('timeend'=>$discussion->timeend):array())
-        +(isset($discussion->pinned) ? array('pinned' => $discussion->pinned):array())
-        +(isset($post->groupid)?array('groupid'=>$post->groupid):array())
-        +(isset($discussion->id)?array('discussion'=>$discussion->id):array())
+        + (isset($post->format) ? array('format' => $post->format) : array())
+        + (isset($discussion->timestart) ? array('timestart' => $discussion->timestart) : array())
+        + (isset($discussion->timeend) ? array('timeend' => $discussion->timeend) : array())
+        + (isset($discussion->pinned) ? array('pinned' => $discussion->pinned) : array())
+        + (isset($post->groupid) ? array('groupid' => $post->groupid) : array())
+        + (isset($discussion->id) ? array('discussion' => $discussion->id) : array())
     );
     if ($mform_post->is_cancelled()) {
         redirect($CFG->wwwroot . '/local/edusupport/issue.php?d=' . $discussion->id);
@@ -164,13 +164,13 @@ if (!\local_edusupport\lib::is_supportteam()) {
             $errordestination = $SESSION->fromurl;
         }
 
-        $post->timestart     = isset($discussion->timestart) ? $discussion->timestart : 0;
-        $post->timeend       = isset($discussion->timeend) ? $discussion->timeend : 0;
-        $post->itemid        = $fromform->message['itemid'];
+        $post->timestart = isset($discussion->timestart) ? $discussion->timestart : 0;
+        $post->timeend = isset($discussion->timeend) ? $discussion->timeend : 0;
+        $post->itemid = $fromform->message['itemid'];
         $post->messageformat = $fromform->message['format'];
-        $post->message       = $fromform->message['text'];
+        $post->message = $fromform->message['text'];
         // WARNING: the $fromform->message array has been overwritten, do not use it anymore!
-        $post->messagetrust  = trusttext_trusted($modcontext);
+        $post->messagetrust = trusttext_trusted($modcontext);
 
         if (!forum_update_post($post, $mform_post)) {
             print_error("couldnotupdate", "forum", $errordestination);
@@ -178,9 +178,9 @@ if (!\local_edusupport\lib::is_supportteam()) {
         // Move uploaded files manually.
         //$currenttext = file_prepare_draft_area($draftid_editor, $modcontext->id, 'mod_forum', 'post', $postid, \local_edusupport_post_form::editor_options($modcontext, $postid), $post->message);
         file_save_draft_area_files($fromform->attachments, $modcontext->id, 'mod_forum', 'attachment',
-                    $post->id, \local_edusupport_post_form::editor_options($modcontext, $post->id));
+            $post->id, \local_edusupport_post_form::editor_options($modcontext, $post->id));
         file_save_draft_area_files($fromform->attachments, $modcontext->id, 'mod_forum', 'post',
-                    $post->id, \local_edusupport_post_form::editor_options($modcontext, $post->id));
+            $post->id, \local_edusupport_post_form::editor_options($modcontext, $post->id));
 
         forum_trigger_post_updated_event($post, $discussion, $modcontext, $forum);
 

@@ -29,10 +29,10 @@ $events = array(
     "\\mod_forum\\event\\discussion_deleted",
     "\\mod_forum\\event\\post_created",
 );
-foreach ($events AS $event) {
+foreach ($events as $event) {
     $observers[] = array(
-            'eventname' => $event,
-            'callback' => '\local_edusupport\observer::event',
-            'priority' => 9999,
-        );
+        'eventname' => $event,
+        'callback' => '\local_edusupport\observer::event',
+        'priority' => 9999,
+    );
 }

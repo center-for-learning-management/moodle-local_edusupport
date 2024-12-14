@@ -57,7 +57,7 @@ class local_edusupport_post_form extends moodleform {
             'maxbytes' => $maxbytes,
             'maxfiles' => $dbforum->maxattachments,
             'accepted_types' => '*',
-            'return_types' => FILE_INTERNAL | FILE_CONTROLLED_LINK
+            'return_types' => FILE_INTERNAL | FILE_CONTROLLED_LINK,
         );
     }
 
@@ -80,9 +80,9 @@ class local_edusupport_post_form extends moodleform {
         return array(
             'maxfiles' => EDITOR_UNLIMITED_FILES,
             'maxbytes' => $maxbytes,
-            'trusttext'=> true,
-            'return_types'=> FILE_INTERNAL | FILE_EXTERNAL,
-            'subdirs' => file_area_contains_subdirs($context, 'mod_forum', 'post', $postid)
+            'trusttext' => true,
+            'return_types' => FILE_INTERNAL | FILE_EXTERNAL,
+            'subdirs' => file_area_contains_subdirs($context, 'mod_forum', 'post', $postid),
         );
     }
 
@@ -224,7 +224,7 @@ class local_edusupport_post_form extends moodleform {
      */
     function validation($data, $files) {
         $errors = parent::validation($data, $files);
-        if (($data['timeend']!=0) && ($data['timestart']!=0) && $data['timeend'] <= $data['timestart']) {
+        if (($data['timeend'] != 0) && ($data['timestart'] != 0) && $data['timeend'] <= $data['timestart']) {
             $errors['timeend'] = get_string('timestartenderror', 'forum');
         }
         if (empty($data['message']['text'])) {

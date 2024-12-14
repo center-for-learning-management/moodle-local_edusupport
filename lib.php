@@ -18,13 +18,14 @@
  * @package    local_edusupport
  * @copyright  2020 Center for Learningmanagement (www.lernmanagement.at)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
-*/
+ */
 
 defined('MOODLE_INTERNAL') || die;
 
 function local_edusupport_extend_navigation_course($parentnode, $course, $context) {
     // If we allow support users on course level, we can remove the next line.
-    if (!is_siteadmin()) return;
+    if (!is_siteadmin())
+        return;
     //$coursecontext = \context_course::instance($course->id);
     //if (!has_capability('local/edusupport:canforward2ndlevel', $coursecontext)) return;
 
@@ -62,8 +63,6 @@ function local_edusupport_extend_navigation_course($parentnode, $course, $contex
 /**
  * Serves the forum attachments. Implements needed access control ;-)
  *
- * @package  local_edusupport --> we fake downloads for mod_forum.
- * @category files
  * @param stdClass $course course object
  * @param stdClass $cm course module object
  * @param stdClass $context context object
@@ -72,8 +71,10 @@ function local_edusupport_extend_navigation_course($parentnode, $course, $contex
  * @param bool $forcedownload whether or not force download
  * @param array $options additional options affecting the file serving
  * @return bool false if file not found, does not return if found - justsend the file
+ * @package  local_edusupport --> we fake downloads for mod_forum.
+ * @category files
  */
-function local_edusupport_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options=array()) {
+function local_edusupport_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options = array()) {
     global $CFG, $DB, $USER;
     require_once($CFG->dirroot . '/local/edusupport/classes/lib.php');
     require_once($CFG->dirroot . '/mod/forum/lib.php');
@@ -89,7 +90,7 @@ function local_edusupport_pluginfile($course, $cm, $context, $filearea, $args, $
     }
 
     $postid = (int)array_shift($args);
-    if (!$post = $DB->get_record('forum_posts', array('id'=>$postid))) {
+    if (!$post = $DB->get_record('forum_posts', array('id' => $postid))) {
         return false;
     }
 
@@ -100,7 +101,7 @@ function local_edusupport_pluginfile($course, $cm, $context, $filearea, $args, $
         return false;
     }
 
-    if (!$discussion = $DB->get_record('forum_discussions', array('id'=>$post->discussion))) {
+    if (!$discussion = $DB->get_record('forum_discussions', array('id' => $post->discussion))) {
         return false;
     }
 
@@ -146,8 +147,8 @@ function local_edusupport_pluginfile($course, $cm, $context, $filearea, $args, $
  */
 function local_edusupport_pre_course_category_delete($category) {
     global $DB;
-    $courses = $DB->get_records('course', array('category' =>  $category->id));
-    foreach ($courses AS $course) {
+    $courses = $DB->get_records('course', array('category' => $category->id));
+    foreach ($courses as $course) {
         local_edusupport_pre_course_delete($course);
     }
 }
@@ -159,10 +160,11 @@ function local_edusupport_pre_course_category_delete($category) {
 function local_edusupport_pre_course_delete($course) {
     global $DB;
     $supportforums = $DB->get_records('local_edusupport', array('courseid' => $course->id));
-    foreach ($supportforums AS $supportforum) {
+    foreach ($supportforums as $supportforum) {
         \local_edusupport\lib::supportforum_disable($supportforum->id);
     }
 }
+
 /**
  * If a forum was deleted we remove it as support forum.
  * @param cm the course module.

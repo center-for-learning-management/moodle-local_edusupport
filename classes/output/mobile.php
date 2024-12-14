@@ -35,11 +35,11 @@ class mobile {
     /**
      * Get the IDs of courses where the user should see the block.
      */
-    public static function edusupport_init(array $args) : array {
+    public static function edusupport_init(array $args): array {
         global $DB, $USER;
         $courseids = array();
         $allsupportforums = $DB->get_records('local_edusupport', array());
-        foreach ($allsupportforums AS $supportforum) {
+        foreach ($allsupportforums as $supportforum) {
             // If we are part of the support team of this forum, add the course.
             if (!empty(\local_edusupport::get_supporter_level($supportforum->courseid, $USER->id))) {
                 $courseids[] = $supportforum->courseid;
@@ -48,7 +48,7 @@ class mobile {
 
         return [
             'restrict' => [
-                'courses' => $courseids
+                'courses' => $courseids,
             ],
             //'javascript' => file_get_contents($CFG->dirroot . '/blocks/news/appjs/news_init.js')
         ];

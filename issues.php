@@ -49,8 +49,8 @@ if (!\local_edusupport\lib::is_supportteam()) {
     $give = optional_param('give', 0, PARAM_INT);
     $reopen = optional_param('reopen', 0, PARAM_INT);
     $close = optional_param('close', 0, PARAM_INT);
-    $prio= optional_param('prio', 0, PARAM_INT);
-    $lvl= optional_param('lvl', 0, PARAM_INT);
+    $prio = optional_param('prio', 0, PARAM_INT);
+    $lvl = optional_param('lvl', 0, PARAM_INT);
     $sql = "SELECT id,discussionid FROM {local_edusupport_issues}";
     $issues = $DB->get_records('local_edusupport_issues', array(), 'opened,id,discussionid');
 
@@ -59,16 +59,16 @@ if (!\local_edusupport\lib::is_supportteam()) {
         'assigned' => array(), // issues the user receives notifications for
         'other' => array(), // all other issues
         'wwwroot' => $CFG->wwwroot,
-        'count' => array()
+        'count' => array(),
     );
-    $hasprio = get_config('local_edusupport','prioritylvl');
+    $hasprio = get_config('local_edusupport', 'prioritylvl');
     $params['count']['current'] = 0;
     $params['count']['closed'] = 0;
     $params['count']['assigned'] = 0;
     $params['count']['other'] = 0;
-    $params['userlinks'] = get_config('local_edusupport','userlinks');
+    $params['userlinks'] = get_config('local_edusupport', 'userlinks');
     $params['hasprio'] = $hasprio;
-    foreach (array_reverse($issues) AS $issue) {
+    foreach (array_reverse($issues) as $issue) {
         // Collect certain data about this issue.
         $discussion = $DB->get_record('forum_discussions', array('id' => $issue->discussionid));
         $issue->name = $discussion->name;
@@ -110,14 +110,14 @@ if (!\local_edusupport\lib::is_supportteam()) {
             $issue->opened = "1";
             $issue->name = ltrim($issue->name, "[Closed] ");
         }
-       if (!empty($close) && $close == $issue->discussionid) {
+        if (!empty($close) && $close == $issue->discussionid) {
             \local_edusupport\lib::close_issue($issue->discussionid);
             $issue->opened = "0";
             unset($assigned);
             $issue->name = "[Closed] " . ltrim($discussion->name, "[Closed] ");
         }
         if (!empty($prio) && $prio == $issue->discussionid && !empty($lvl)) {
-            \local_edusupport\lib::set_prioritylvl($issue->discussionid,$lvl);
+            \local_edusupport\lib::set_prioritylvl($issue->discussionid, $lvl);
             $issue->opened = $lvl;
             //$issue->name = "[Closed] " . ltrim($discussion->name, "[Closed] ");
         }
@@ -156,11 +156,10 @@ if (!\local_edusupport\lib::is_supportteam()) {
         } elseif (!empty($assigned->id)) {
             $params['assigned'][] = $issue;
             $params['count']['assigned'] = $params['count']['assigned'] + 1;
-        } elseif($issue->opened > 0) {
+        } elseif ($issue->opened > 0) {
             $params['other'][] = $issue;
             $params['count']['other'] = $params['count']['other'] + 1;
-        }
-        elseif($issue->opened == 0) {
+        } elseif ($issue->opened == 0) {
             $params['closed'][] = $issue;
             $params['count']['closed'] = $params['count']['closed'] + 1;
         }

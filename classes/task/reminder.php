@@ -31,8 +31,9 @@ class reminder extends \core\task\scheduled_task {
         return get_string('cron:reminder:title', 'local_edusupport');
     }
 
-    public function execute($debug=false) {
-        if (!get_config('local_edusupport', 'sendreminders')) return;
+    public function execute($debug = false) {
+        if (!get_config('local_edusupport', 'sendreminders'))
+            return;
         echo "Sending";
         global $DB;
         $sql = "SELECT discussionid,currentsupporter
@@ -46,7 +47,7 @@ class reminder extends \core\task\scheduled_task {
         }
         $currentsupporter = new \stdClass();
 
-        foreach ($issues AS $issue) {
+        foreach ($issues as $issue) {
             if (!empty($currentsupporter->id) && $issue->currentsupporter != $currentsupporter->id) {
                 $this->send($currentsupporter, $reminders, $debug);
                 $reminders = array();
@@ -65,11 +66,12 @@ class reminder extends \core\task\scheduled_task {
         }
         $this->send($currentsupporter, $reminders, $debug);
     }
-    private function send($supporter, $reminders = array(), $debug=false) {
+
+    private function send($supporter, $reminders = array(), $debug = false) {
         global $CFG, $OUTPUT;
         if (!empty($supporter->id) && $supporter->id > 0 && count($reminders) > 0) {
             $subject = $this->get_name();
-            $mailhtml =  $OUTPUT->render_from_template('local_edusupport/reminder_discussions', array('discussions' => $reminders, 'wwwroot' => $CFG->wwwroot));
+            $mailhtml = $OUTPUT->render_from_template('local_edusupport/reminder_discussions', array('discussions' => $reminders, 'wwwroot' => $CFG->wwwroot));
             $mailtext = html_to_text($mailhtml);
 
             if ($debug) {

@@ -15,11 +15,11 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
-* @package    local_edusupport
-* @copyright  2019 Digital Education Society (http://www.dibig.at)
-* @author     Robert Schrenk
-* @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
-*/
+ * @package    local_edusupport
+ * @copyright  2019 Digital Education Society (http://www.dibig.at)
+ * @author     Robert Schrenk
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 defined('MOODLE_INTERNAL') || die;
 

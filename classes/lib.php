@@ -31,6 +31,7 @@ require_once($CFG->dirroot . '/mod/forum/lib.php');
 
 class lib {
     const SYSTEM_COURSE_ID = 1;
+
     /**
      * Perform some actions before the popup is rendered.
      */
@@ -50,7 +51,7 @@ class lib {
                 $group = $DB->get_record('groups', array('courseid' => $forum->course, 'name' => $groupname));
                 if (empty($group->id)) {
                     // create a group for this user.
-                    $group = (object) array(
+                    $group = (object)array(
                         'courseid' => $forum->course,
                         'name' => $groupname,
                         'description' => '',
@@ -66,19 +67,23 @@ class lib {
             }
         }
     }
-    public static function can_config_course($courseid){
+
+    public static function can_config_course($courseid) {
         global $USER;
-        if (self::can_config_global()) return true;
+        if (self::can_config_global())
+            return true;
         $context = context_course::instance($courseid);
         return is_enrolled($context, $USER, 'moodle/course:activityvisibility');
     }
-    public static function can_config_global(){
+
+    public static function can_config_global() {
         return self::is_admin();
     }
+
     /**
      * Close an issue.
      * @param discussionid.
-    **/
+     **/
     public static function close_issue($discussionid) {
         global $CFG, $DB, $USER;
 
@@ -121,10 +126,11 @@ class lib {
 
         return true;
     }
+
     /**
      * Delete an issue of which the discussion has been deleted.
      * @param discussionid.
-    **/
+     **/
     public static function delete_issue($discussionid) {
         global $CFG, $DB, $USER;
 
@@ -137,6 +143,7 @@ class lib {
         }
         return true;
     }
+
     /**
      * Get the helpbutton menu from cache or generate it.
      */
@@ -152,11 +159,15 @@ class lib {
             $_extralinks = explode("\n", $_extralinks);
             for ($a = 0; $a < count($_extralinks); $a++) {
                 $tmp = explode('|', $_extralinks[$a]);
-                $extralink = (object) array('id' => $a);
-                if (!empty($tmp[0])) $extralink->name = $tmp[0];
-                if (!empty($tmp[1])) $extralink->url = $tmp[1];
-                if (!empty($tmp[2])) $extralink->faicon = $tmp[2];
-                if (!empty($tmp[3])) $extralink->target = trim($tmp[3]);
+                $extralink = (object)array('id' => $a);
+                if (!empty($tmp[0]))
+                    $extralink->name = $tmp[0];
+                if (!empty($tmp[1]))
+                    $extralink->url = $tmp[1];
+                if (!empty($tmp[2]))
+                    $extralink->faicon = $tmp[2];
+                if (!empty($tmp[3]))
+                    $extralink->target = trim($tmp[3]);
                 $extralinks[] = $extralink;
             }
         }
@@ -166,10 +177,11 @@ class lib {
         $cache->set('rendered', $nav);
         return $nav;
     }
+
     /**
      * Close an issue.
      * @param discussionid.
-    **/
+     **/
     public static function reopen_issue($discussionid) {
         global $CFG, $DB, $USER;
         $discussion = $DB->get_record('forum_discussions', array('id' => $discussionid));
@@ -188,17 +200,20 @@ class lib {
 
         return true;
     }
+
     /**
      * Enrols users to specific courses
      * @param courseids array containing courseid or a single courseid
      * @param userids array containing userids or a single userid
      * @param roleid roleid to assign, or -1 if wants to unenrol
      * @return true or false
-    **/
+     **/
     public static function course_manual_enrolments($courseids, $userids, $roleid) {
         global $CFG, $DB;
-        if (!is_array($courseids)) $courseids = array($courseids);
-        if (!is_array($userids)) $userids = array($userids);
+        if (!is_array($courseids))
+            $courseids = array($courseids);
+        if (!is_array($userids))
+            $userids = array($userids);
 
         // Check manual enrolment plugin instance is enabled/exist.
         $enrol = enrol_get_plugin('manual');
@@ -207,18 +222,20 @@ class lib {
         }
         $failures = 0;
         $instances = array();
-        foreach ($courseids AS $courseid) {
+        foreach ($courseids as $courseid) {
             // Check if course exists.
             $course = $DB->get_record('course', array('id' => $courseid), '*', IGNORE_MISSING);
             //$course = get_course($courseid);
-            if (empty($course->id)) continue;
+            if (empty($course->id))
+                continue;
             if (empty($instances[$courseid])) {
                 $instances[$courseid] = self::get_enrol_instance($courseid);
             }
 
-            foreach($userids AS $userid) {
+            foreach ($userids as $userid) {
                 $user = $DB->get_record('user', array('id' => $userid));
-                if (empty($user->id)) continue;
+                if (empty($user->id))
+                    continue;
                 if ($roleid == -1) {
                     $enrol->unenrol_user($instances[$courseid], $userid);
                 } else {
@@ -229,6 +246,7 @@ class lib {
         }
         return ($failures == 0);
     }
+
     /**
      * Answer to the original discussion post of a discussion.
      * @param discussionid.
@@ -237,7 +255,8 @@ class lib {
      */
     public static function create_post($discussionid, $text, $subject = "") {
         global $DB, $USER;
-        if (empty($subject)) $subject = substr($text, 0, 30);
+        if (empty($subject))
+            $subject = substr($text, 0, 30);
         $discussion = $DB->get_record('forum_discussions', array('id' => $discussionid));
         $post = $DB->get_record('forum_posts', array('discussion' => $discussionid, 'parent' => 0));
         $post->parent = $post->id;
@@ -275,11 +294,11 @@ class lib {
      */
     public static function expose_properties($object = array()) {
         global $CFG;
-        $object = (array) $object;
+        $object = (array)$object;
         $keys = array_keys($object);
-        foreach ($keys AS $key) {
+        foreach ($keys as $key) {
             $xkey = explode("\0", $key);
-            $xkey = $xkey[count($xkey)-1];
+            $xkey = $xkey[count($xkey) - 1];
             $object[$xkey] = $object[$key];
             unset($object[$key]);
             if (is_object($object[$xkey])) {
@@ -293,12 +312,13 @@ class lib {
     /**
      * Checks for groupmode in a forum and lists available groups of this user.
      * @return array of groups.
-    **/
+     **/
     public static function get_groups_for_user($forumid) {
         // Store rating if we are permitted to.
         global $CFG, $DB, $USER;
 
-        if (empty($USER->id) || isguestuser($USER)) return;
+        if (empty($USER->id) || isguestuser($USER))
+            return;
 
         $forum = $DB->get_record('forum', array('id' => $forumid));
         $course = $DB->get_record('course', array('id' => $forum->course));
@@ -307,18 +327,20 @@ class lib {
 
         $groupmode = \groups_get_activity_groupmode($cm);
         // If we do not use groups in this forum, return without groups.
-        if (empty($groupmode)) return;
+        if (empty($groupmode))
+            return;
 
         // We do not use the function groups_get_user_groups, as it does not
         // return groups that don't have members!!
         // $_groups = \groups_get_user_groups($course->id);
         $_groups = $DB->get_records('groups', array('courseid' => $course->id));
-        if (count($_groups) == 0) return;
+        if (count($_groups) == 0)
+            return;
 
         require_once($CFG->dirroot . '/mod/forum/lib.php');
 
         $groups = array();
-        foreach ($_groups AS $k => $group) {
+        foreach ($_groups as $k => $group) {
             $ismember = $DB->get_record('groups_members', array('groupid' => $group->id, 'userid' => $USER->id));
             if (!empty($ismember->id)) {
                 $groups[$k] = $group;
@@ -335,18 +357,20 @@ class lib {
      */
     public static function get_issue($discussionid, $createifnotexist = false) {
         global $DB;
-        if (empty($discussionid)) return;
+        if (empty($discussionid))
+            return;
         $issue = $DB->get_record('local_edusupport_issues', array('discussionid' => $discussionid));
         if (empty($issue->id) && !empty($createifnotexist)) {
-            $issue = (object) array(
+            $issue = (object)array(
                 'discussionid' => $discussionid,
                 'currentsupporter' => 0,
-                'created' => time()
+                'created' => time(),
             );
             $issue->id = $DB->insert_record('local_edusupport_issues', $issue);
         }
         return $issue;
     }
+
     /**
      * Get potential targets of a user.
      * @param userid if empty will use current user.
@@ -354,7 +378,8 @@ class lib {
      */
     public static function get_potentialtargets($userid = 0) {
         global $DB, $USER;
-        if (empty($userid)) $userid = $USER->id;
+        if (empty($userid))
+            $userid = $USER->id;
 
         $forums = array();
         $courseids = implode(',', array_keys(enrol_get_all_users_courses($userid)));
@@ -367,10 +392,11 @@ class lib {
                         ORDER BY c.fullname ASC, f.name ASC";
             $_forums = $DB->get_records_sql($sql, array());
             $delimiter = ' > ';
-            foreach ($_forums AS &$forum) {
+            foreach ($_forums as &$forum) {
                 $course = $DB->get_record('course', array('id' => $forum->course), 'id,fullname');
                 $coursecontext = \context_course::instance($forum->course);
-                if (empty($coursecontext->id)) continue;
+                if (empty($coursecontext->id))
+                    continue;
 
                 $fcm = get_coursemodule_from_instance('forum', $forum->id, 0, false, MUST_EXIST);
                 $fctx = \context_module::instance($fcm->id);
@@ -396,7 +422,7 @@ class lib {
     public static function get_expiredissues() {
 
         global $DB;
-        $time =   get_config('local_edusupport', 'deletethreshhold');
+        $time = get_config('local_edusupport', 'deletethreshhold');
         $expirationtime = time() - $time;
         if (!$time || $time == 0) {
             $expirationtime = 0;
@@ -421,7 +447,8 @@ class lib {
      */
     public static function is_supportteam($userid = 0, $courseid = 0, $includeglobalteam = true) {
         global $DB, $USER;
-        if (empty($userid)) $userid = $USER->id;
+        if (empty($userid))
+            $userid = $USER->id;
         $sql = "SELECT id,userid
                     FROM {local_edusupport_supporters}
                     WHERE userid = ?";
@@ -493,7 +520,7 @@ class lib {
     /**
      * Similar to close_issue, but can be done by a trainer in the supportforum.
      * @param discussionid.
-    **/
+     **/
     public static function revoke_issue($discussionid) {
         global $CFG, $DB, $USER;
 
@@ -582,7 +609,7 @@ class lib {
         self::subscription_add($discussionid, $dedicated->userid);
 
         self::create_post($issue->discussionid,
-            get_string('issue_assign_nextlevel:post', 'local_edusupport', (object) array(
+            get_string('issue_assign_nextlevel:post', 'local_edusupport', (object)array(
                 'fromuserfullname' => \fullname($USER),
                 'fromuserid' => $USER->id,
                 'wwwroot' => $CFG->wwwroot,
@@ -629,7 +656,7 @@ class lib {
             get_string(
                 ($userid == $USER->id) ? 'issue_assign_3rdlevel:postself' : 'issue_assign_3rdlevel:post',
                 'local_edusupport',
-                (object) array(
+                (object)array(
                     'fromuserfullname' => \fullname($USER),
                     'fromuserid' => $USER->id,
                     'touserfullname' => \fullname($touser),
@@ -644,7 +671,7 @@ class lib {
         return true;
     }
 
-    public static function set_prioritylvl($discussionid,$priority) {
+    public static function set_prioritylvl($discussionid, $priority) {
         global $DB;
 
         $issue = self::get_issue($discussionid);
@@ -664,13 +691,15 @@ class lib {
      */
     public static function subscription_add($discussionid, $userid = 0) {
         global $DB, $USER;
-        if (empty($userid)) $userid = $USER->id;
+        if (empty($userid))
+            $userid = $USER->id;
         $discussion = $DB->get_record('forum_discussions', array('id' => $discussionid));
-        if (!self::is_supportteam($userid, $discussion->course)) return;
+        if (!self::is_supportteam($userid, $discussion->course))
+            return;
         $issue = self::get_issue($discussionid);
         $subscription = $DB->get_record('local_edusupport_subscr', array('discussionid' => $discussionid, 'userid' => $userid));
         if (empty($subscription->id)) {
-            $subscription = (object) array(
+            $subscription = (object)array(
                 'issueid' => $issue->id,
                 'discussionid' => $discussionid,
                 'userid' => $userid,
@@ -679,6 +708,7 @@ class lib {
         }
         return $subscription;
     }
+
     /**
      * Remove support user from the list of assigned users.
      * @param int dicussionid
@@ -686,7 +716,8 @@ class lib {
      */
     public static function subscription_remove($discussionid, $userid = 0) {
         global $DB, $USER;
-        if (empty($userid)) $userid = $USER->id;
+        if (empty($userid))
+            $userid = $USER->id;
         $DB->delete_records('local_edusupport_subscr', array('discussionid' => $discussionid, 'userid' => $userid));
     }
 
@@ -709,9 +740,10 @@ class lib {
 
     /**
      * Removes a forum as central support-forum.
-    **/
+     **/
     public static function supportforum_disablecentral() {
-        if (!is_siteadmin()) return;
+        if (!is_siteadmin())
+            return;
         set_config('centralforum', 0, 'local_edusupport');
     }
 
@@ -720,16 +752,17 @@ class lib {
      * Sets a forum as possible support-forum.
      * @param forumid.
      * @return forum as object on success.
-    **/
+     **/
     public static function supportforum_enable($forumid) {
         global $DB, $USER;
         $forum = $DB->get_record('forum', array('id' => $forumid));
-        if (empty($forum->course)) return false;
+        if (empty($forum->course))
+            return false;
 
         $supportforum = $DB->get_record('local_edusupport', array('forumid' => $forumid));
         if (empty($supportforum->id)) {
             $course = $DB->get_record('course', array('id' => $forum->course));
-            $supportforum = (object) array(
+            $supportforum = (object)array(
                 'categoryid' => $course->category,
                 'courseid' => $forum->course,
                 'forumid' => $forum->id,
@@ -741,7 +774,8 @@ class lib {
 
         self::supportforum_managecaps($forumid, true);
         \local_edusupport\lib::supportforum_rolecheck($forumid);
-        if (!empty($supportforum->id)) return $supportforum;
+        if (!empty($supportforum->id))
+            return $supportforum;
         else return false;
     }
 
@@ -749,12 +783,14 @@ class lib {
      * Sets a forum as central support-forum.
      * @param forumid.
      * @return forum as object on success.
-    **/
+     **/
     public static function supportforum_enablecentral($forumid) {
         global $DB, $USER;
-        if (!is_siteadmin()) return false;
+        if (!is_siteadmin())
+            return false;
         $forum = $DB->get_record('forum', array('id' => $forumid));
-        if (empty($forum->course)) return false;
+        if (empty($forum->course))
+            return false;
 
         $supportforum = $DB->get_record('local_edusupport', array('forumid' => $forumid));
         if (!empty($supportforum->id)) {
@@ -768,11 +804,12 @@ class lib {
      * Sets the capabilities for the context to prevent deletion.
      * @param forumid.
      * @param trigger true if we enable the forum, false if we disable it.
-    **/
+     **/
     public static function supportforum_managecaps($forumid, $trigger) {
         global $DB, $USER;
         $forum = $DB->get_record('forum', array('id' => $forumid));
-        if (empty($forum->course)) return false;
+        if (empty($forum->course))
+            return false;
 
         $cm = \get_coursemodule_from_instance('forum', $forumid, 0, false, MUST_EXIST);
         $ctxmod = \context_module::instance($cm->id);
@@ -836,17 +873,18 @@ class lib {
      * Checks for a forum, if all supportteam-members have the required role.
      * @param forumid.
      */
-    public static function supportforum_rolecheck($forumid=0) {
+    public static function supportforum_rolecheck($forumid = 0) {
         global $DB;
         if (empty($forumid)) {
             // We have to re-sync all supportforums.
             $forums = $DB->get_records('local_edusupport', array());
-            foreach ($forums AS $forum) {
+            foreach ($forums as $forum) {
                 self::supportforum_rolecheck($forum->forumid);
             }
         } else {
             $forum = $DB->get_record('forum', array('id' => $forumid), '*', IGNORE_MISSING);
-            if (empty($forum->id)) return;
+            if (empty($forum->id))
+                return;
             $issupportforum = self::is_supportforum($forumid);
 
             $cm = \get_coursemodule_from_instance('forum', $forumid, $forum->course, false, MUST_EXIST);
@@ -857,11 +895,12 @@ class lib {
             // Get all users that currently have the supporter-role.
             $sql = "SELECT userid FROM {role_assignments} WHERE roleid=? AND contextid=?";
             $curmembers = array_keys($DB->get_records_sql($sql, array($roleid, $ctx->id)));
-            foreach ($curmembers AS $curmember) {
+            foreach ($curmembers as $curmember) {
                 $unassign = false;
-                if (!$issupportforum) $unassign = true;
+                if (!$issupportforum)
+                    $unassign = true;
                 else {
-                    $issupporter = self::is_supportteam($curmember,  $forum->course);
+                    $issupporter = self::is_supportteam($curmember, $forum->course);
                     $unassign = empty($issupporter->id);
                 }
                 if ($unassign) {
@@ -876,7 +915,7 @@ class lib {
                             WHERE courseid=? OR courseid=?";
                 $params = array(self::SYSTEM_COURSE_ID, $forum->course);
                 $members = $DB->get_records_sql($sql, $params);
-                foreach ($members AS $member) {
+                foreach ($members as $member) {
                     role_assign($roleid, $member->userid, $ctx->id);
                 }
             }
@@ -888,12 +927,14 @@ class lib {
      * @param userid.
      **/
     public static function supportforum_setdedicatedsupporter($forumid, $userid) {
-        if (!self::is_supportforum($forumid)) return false;
+        if (!self::is_supportforum($forumid))
+            return false;
         global $DB;
         if ($userid == -1) {
             $DB->set_field('local_edusupport', 'dedicatedsupporter', -1, array('forumid' => $forumid));
         } else {
-            if (!self::is_supportteam($userid)) return false;
+            if (!self::is_supportteam($userid))
+                return false;
             $DB->set_field('local_edusupport', 'dedicatedsupporter', $userid, array('forumid' => $forumid));
         }
         return true;

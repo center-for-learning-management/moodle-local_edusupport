@@ -27,7 +27,7 @@ defined('MOODLE_INTERNAL') || die;
 require_once($CFG->libdir . "/formslib.php");
 
 class issue_create_form extends moodleform {
-    var $maxbytes = 1024*1024;
+    var $maxbytes = 1024 * 1024;
     var $areamaxbytes = 10485760;
     var $maxfiles = 1;
     var $subdirs = 0;
@@ -35,15 +35,15 @@ class issue_create_form extends moodleform {
     function definition() {
         global $CFG, $COURSE, $DB, $SITE;
 
-        $faqread = get_config('local_edusupport','faqread');
-        $faqlink = get_config('local_edusupport','faqlink');
-        $prioritylvl = get_config('local_edusupport','prioritylvl');
-        $disablephonefield = get_config('local_edusupport','phonefield');
+        $faqread = get_config('local_edusupport', 'faqread');
+        $faqlink = get_config('local_edusupport', 'faqlink');
+        $prioritylvl = get_config('local_edusupport', 'prioritylvl');
+        $disablephonefield = get_config('local_edusupport', 'phonefield');
 
 
-        $editoroptions = array('subdirs'=>0, 'maxbytes'=>0, 'maxfiles'=>0,
-                               'changeformat'=>0, 'context'=>null, 'noclean'=>0,
-                               'trusttext'=>0, 'enable_filemanagement' => false);
+        $editoroptions = array('subdirs' => 0, 'maxbytes' => 0, 'maxfiles' => 0,
+            'changeformat' => 0, 'context' => null, 'noclean' => 0,
+            'trusttext' => 0, 'enable_filemanagement' => false);
 
         $mform = $this->_form;
 
@@ -61,7 +61,7 @@ class issue_create_form extends moodleform {
         $mform->addElement('header', 'header', get_string('header', 'local_edusupport', $COURSE->fullname));
 
         if ($faqread) {
-            $mform->addElement('checkbox', 'faqread','', get_string('faqread:description', 'local_edusupport',$faqlink));
+            $mform->addElement('checkbox', 'faqread', '', get_string('faqread:description', 'local_edusupport', $faqlink));
             $mform->setType('faqread', PARAM_BOOL);
             $mform->addRule('faqread', get_string('subject_missing', 'local_edusupport'), 'required', true, 'server');
         } else {
@@ -69,7 +69,7 @@ class issue_create_form extends moodleform {
         }
 
 
-        $mform->addElement('html','<div id="create_issue_input">');
+        $mform->addElement('html', '<div id="create_issue_input">');
 
         require_once($CFG->dirroot . '/local/edusupport/classes/lib.php');
         $potentialtargets = \local_edusupport\lib::get_potentialtargets();
@@ -80,7 +80,7 @@ class issue_create_form extends moodleform {
         $options = array();
         $labels = array();
 
-        foreach ($potentialtargets AS $pt) {
+        foreach ($potentialtargets as $pt) {
             $managers = array_values(\local_edusupport\lib::get_course_supporters($pt));
             $label = array();
             for ($a = 0; $a < count($managers) && $a < 3; $a++) {
@@ -98,7 +98,7 @@ class issue_create_form extends moodleform {
                     $hideifs[] = $pt->id . '_0';
                 }
             } else {
-                foreach($pt->potentialgroups AS $group) {
+                foreach ($pt->potentialgroups as $group) {
                     $labels[$pt->id . '_' . $group->id] = $label;
                     $options[$pt->id . '_' . $group->id] = $pt->name . ' > ' . $group->name;
                     if (empty($pt->postto2ndlevel)) {
@@ -109,23 +109,23 @@ class issue_create_form extends moodleform {
         }
         $supportuser = \core_user::get_support_user();
         if (count($potentialtargets) == 0) {
-            $options['mail'] = get_string('email_to_xyz', 'local_edusupport', (object) array('email' => $supportuser->email));
+            $options['mail'] = get_string('email_to_xyz', 'local_edusupport', (object)array('email' => $supportuser->email));
             $labels['mail'] = $supportuser->email;
         }
 
         $hideifs = '["' . implode('","', $hideifs) . '"]';
         $postto2ndlevel_hideshow = [
             'require([\'jquery\'], function($) {',
-                'var val = $(\'#id_forum_group\').val();',
-                '$(\'.edusupport_label\').addClass(\'hidden\');',
-                '$(\'#edusupport_label_\' + val).removeClass(\'hidden\');',
-                'var hide = (' . $hideifs . '.indexOf(val) > -1);',
-                'var pt2 = $(\'#id_postto2ndlevel\');',
-                '$(pt2).prop(\'checked\', false);',
-                '$(pt2).closest(\'div.form-group\').css(\'display\', hide ? \'none\' : \'block\');',
-            '});'
+            'var val = $(\'#id_forum_group\').val();',
+            '$(\'.edusupport_label\').addClass(\'hidden\');',
+            '$(\'#edusupport_label_\' + val).removeClass(\'hidden\');',
+            'var hide = (' . $hideifs . '.indexOf(val) > -1);',
+            'var pt2 = $(\'#id_postto2ndlevel\');',
+            '$(pt2).prop(\'checked\', false);',
+            '$(pt2).closest(\'div.form-group\').css(\'display\', hide ? \'none\' : \'block\');',
+            '});',
         ];
-        $mform->addElement('select', 'forum_group', get_string('to_group', 'local_edusupport'), $options, array('onchange' => implode("",$postto2ndlevel_hideshow)));
+        $mform->addElement('select', 'forum_group', get_string('to_group', 'local_edusupport'), $options, array('onchange' => implode("", $postto2ndlevel_hideshow)));
         $mform->setType('forum_group', PARAM_INT);
 
         $managerslabel = [
@@ -149,11 +149,10 @@ class issue_create_form extends moodleform {
         $mform->setType('subject', PARAM_TEXT);
         $mform->addRule('subject', get_string('subject_missing', 'local_edusupport'), 'required', null, 'server');
 
-        if(!$disablephonefield) {
+        if (!$disablephonefield) {
             $mform->addElement('text', 'contactphone', get_string('contactphone', 'local_edusupport'), array('style' => 'width: 100%;'));
             $mform->setType('contactphone', PARAM_TEXT);
-        }
-        else {
+        } else {
             $mform->addElement('hidden', 'contactphone', '');
             $mform->setType('contactphone', PARAM_TEXT);
         }
@@ -173,7 +172,7 @@ class issue_create_form extends moodleform {
             '       <div class="alert alert-danger hidden">' . get_string('screenshot:upload:failed', 'local_edusupport') . '</div>',
             '       <div class="alert alert-success hidden">' . get_string('screenshot:upload:successful', 'local_edusupport') . '</div>',
             '   </div>',
-            '</div>'
+            '</div>',
         ];
         $mform->addElement('html', implode("\n", $fileupload));
         /*
@@ -204,7 +203,7 @@ class issue_create_form extends moodleform {
         */
         $mform->addElement('html', '<script> setTimeout(function() { ' . implode('', $postto2ndlevel_hideshow) . ' }, 100);</script>');
 
-        $mform->addElement('html','</div>');
+        $mform->addElement('html', '</div>');
 
         /*
         if ($prioritylvl) {

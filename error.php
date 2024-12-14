@@ -15,21 +15,21 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
-* @package    local_edusupport
-* @copyright  2020 Center for Learningmanagement (www.lernmanagement.at)
-* @author     Robert Schrenk
-* @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
-*/
+ * @package    local_edusupport
+ * @copyright  2020 Center for Learningmanagement (www.lernmanagement.at)
+ * @author     Robert Schrenk
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 require_once('../../config.php');
 
 $error = required_param('error', PARAM_ALPHANUM);
 
 $urlparams = array(
-    'error' => $error
+    'error' => $error,
 );
 $errparams = array(
-    'type' => 'danger'
+    'type' => 'danger',
 );
 
 switch ($error) {
@@ -38,7 +38,7 @@ switch ($error) {
         $urlparams['categoryid'] = $categoryid;
         $errparams['content'] = get_string('coursecategorydeletion', 'local_edusupport');
         $errparams['url'] = new \moodle_url('/course/management.php', array('categoryid' => 15));
-    break;
+        break;
 
 }
 

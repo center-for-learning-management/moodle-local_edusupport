@@ -18,12 +18,12 @@
  * @package    local_edusupport
  * @copyright  2018 Digital Education Society (http://www.dibig.at)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
-*/
+ */
 
 defined('MOODLE_INTERNAL') || die;
 
 if ($hassiteconfig) {
-    $settings = new admin_settingpage( 'local_edusupport_settings', get_string('pluginname', 'local_edusupport'));
+    $settings = new admin_settingpage('local_edusupport_settings', get_string('pluginname', 'local_edusupport'));
     $ADMIN->add('localplugins', $settings);
 
     // Possibly we changed the menu, therefore we delete the cache. We should find a better place for this.
@@ -111,7 +111,7 @@ if ($hassiteconfig) {
         0 => get_string('inactive'),
         60 => "1 " . get_string('minute'),
         600 => "10 " . get_string('minutes'),
-        3600 => "60 " . get_string('minutes')
+        3600 => "60 " . get_string('minutes'),
     ];
 
     $settings->add(
@@ -129,23 +129,22 @@ if ($hassiteconfig) {
             get_string('spamprotection:limit', 'local_edusupport'),
             get_string('spamprotection:limit:description', 'local_edusupport'),
             5,
-            [ 1 => 1, 2 => 2, 5 => 5, 10 => 10, 20 => 20])
+            [1 => 1, 2 => 2, 5 => 5, 10 => 10, 20 => 20])
     );
-
 
 
     // @TODO a feature from the future.
     // $settings->add(new admin_setting_configcheckbox('local_edusupport/sendreminders', get_string('cron:reminder:title', 'local_edusupport'), '', '', PARAM_INT));
 
     $actions = array(
-        (object) array('name' => 'supporters', 'href' => 'choosesupporters.php')
+        (object)array('name' => 'supporters', 'href' => 'choosesupporters.php'),
     );
     $links = "<div class=\"grid-eq-3\">";
-    foreach($actions AS $action) {
+    foreach ($actions as $action) {
         $links .= '<a class="btn btn-secondary" href="' . $CFG->wwwroot . '/local/edusupport/' . $action->href . '">' .
-                        '<i class="fa fa-users"></i> ' .
-                        get_string($action->name, 'local_edusupport') .
-                  '</a>';
+            '<i class="fa fa-users"></i> ' .
+            get_string($action->name, 'local_edusupport') .
+            '</a>';
     }
     $links .= "</div>";
     $settings->add(new admin_setting_heading('local_edusupport_actions', get_string('settings'), $links));

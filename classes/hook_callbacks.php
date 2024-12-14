@@ -67,7 +67,7 @@ class hook_callbacks {
                                 OR path LIKE ?
                             )";
                 $subcategories = $DB->get_records_sql($sql, array(CONTEXT_COURSECAT, $coursecatcontext->path, $coursecatcontext->path . '/%'));
-                foreach ($subcategories AS $subcategory) {
+                foreach ($subcategories as $subcategory) {
                     $chkforforum = $DB->get_record('local_edusupport', array('categoryid' => $subcategory->instanceid));
                     if (!empty($chkforforum->id)) {
                         redirect(new \moodle_url('/local/edusupport/error.php', array('error' => 'coursecategorydeletion', 'categoryid' => $categoryid)));
@@ -83,7 +83,7 @@ class hook_callbacks {
 
             // Check for any supportforum-courses that are should be contained by this coursecat.
             $supportforums = $DB->get_records('local_edusupport', array('categoryid' => $categoryid));
-            foreach ($supportforums AS $supportforum) {
+            foreach ($supportforums as $supportforum) {
                 // Check if the course is in place and the category
                 $course = $DB->get_record('course', array('id' => $supportforum->id));
                 if (!empty($course->id) && $course->category != $categoryid) {
