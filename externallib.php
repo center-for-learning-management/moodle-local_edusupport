@@ -55,7 +55,7 @@ class local_edusupport_external extends external_api {
             'postto2ndlevel' => new external_value(PARAM_INT, '1st level supporters can directly call the 2nd level support'),
             'image' => new external_value(PARAM_RAW, 'base64 encoded image as data url or empty string'),
             'screenshotname' => new external_value(PARAM_TEXT, 'the filename to use'),
-            'url' => new external_value(PARAM_TEXT, 'URL where the error happened'), // We use PARAM_TEXT, as any input by the user is valid.
+            'url' => new external_value(PARAM_LOCALURL, 'URL where the error happened'), // Only urls of this instance, as it is shown as a link to the supporters.
             'contactphone' => new external_value(PARAM_TEXT, 'Contactphone'), // We use PARAM_TEXT, was the user can enter any contact information.
         ));
     }
@@ -342,7 +342,7 @@ class local_edusupport_external extends external_api {
      */
     public static function create_form_parameters() {
         return new external_function_parameters(array(
-            'url' => new external_value(PARAM_TEXT, 'subject of this issue'),
+            'url' => new external_value(PARAM_LOCALURL, 'URL the form is opened from'),
             'image' => new external_value(PARAM_RAW, 'base64 encoded image or empty'),
             'forumid' => new external_value(PARAM_INT, 'forumid the form is for'),
         ));

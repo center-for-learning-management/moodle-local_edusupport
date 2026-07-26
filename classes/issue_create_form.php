@@ -54,7 +54,7 @@ class issue_create_form extends moodleform {
         $mform->addElement('hidden', 'forumid', '');
         $mform->setType('forumid', PARAM_INT);
         $mform->addElement('hidden', 'url', '');
-        $mform->setType('url', PARAM_TEXT);
+        $mform->setType('url', PARAM_LOCALURL);
         $mform->addElement('hidden', 'image', ''); // base64 encoded image
         $mform->setType('image', PARAM_RAW);
 
