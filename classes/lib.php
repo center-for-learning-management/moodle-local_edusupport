@@ -32,42 +32,6 @@ require_once($CFG->dirroot . '/mod/forum/lib.php');
 class lib {
     const SYSTEM_COURSE_ID = 1;
 
-    /**
-     * Perform some actions before the popup is rendered.
-     */
-    public static function before_popup() {
-        global $CFG, $DB, $USER;
-        $centralforum = get_config('local_edusupport', 'centralforum');
-        if (!empty($centralforum) && self::is_supportforum($centralforum)) {
-            $forum = $DB->get_record('forum', array('id' => $centralforum));
-            $coursectx = \context_course::instance($forum->course);
-            if (!empty($coursectx->id)) {
-                if (!is_enrolled($coursectx, $USER, '', true)) {
-                    // Enrol as student.
-                    self::course_manual_enrolments(array($forum->course), array($USER->id), 5);
-                }
-                require_once("$CFG->dirroot/group/lib.php");
-                $groupname = fullname($USER) . ' (' . $USER->id . ')';
-                $group = $DB->get_record('groups', array('courseid' => $forum->course, 'name' => $groupname));
-                if (empty($group->id)) {
-                    // create a group for this user.
-                    $group = (object)array(
-                        'courseid' => $forum->course,
-                        'name' => $groupname,
-                        'description' => '',
-                        'descriptionformat' => 1,
-                        'timecreated' => time(),
-                        'timemodified' => time(),
-                    );
-                    $group->id = groups_create_group($group, false);
-                }
-                if (!empty($group->id)) {
-                    groups_add_member($group, $USER);
-                }
-            }
-        }
-    }
-
     public static function can_config_course($courseid) {
         global $USER;
         if (self::can_config_global())
@@ -173,7 +137,11 @@ class lib {
         }
 
         global $OUTPUT;
-        $nav = $OUTPUT->render_from_template('local_edusupport/injectbutton', array('extralinks' => $extralinks, 'hasextralinks' => count($extralinks) > 0));
+        $nav = $OUTPUT->render_from_template('local_edusupport/injectbutton', array(
+            'extralinks' => $extralinks,
+            'hasextralinks' => count($extralinks) > 0,
+            'createurl' => (new \moodle_url('/local/edusupport/create_issue.php'))->out(false),
+        ));
         $cache->set('rendered', $nav);
         return $nav;
     }
@@ -199,52 +167,6 @@ class lib {
 
 
         return true;
-    }
-
-    /**
-     * Enrols users to specific courses
-     * @param courseids array containing courseid or a single courseid
-     * @param userids array containing userids or a single userid
-     * @param roleid roleid to assign, or -1 if wants to unenrol
-     * @return true or false
-     **/
-    public static function course_manual_enrolments($courseids, $userids, $roleid) {
-        global $CFG, $DB;
-        if (!is_array($courseids))
-            $courseids = array($courseids);
-        if (!is_array($userids))
-            $userids = array($userids);
-
-        // Check manual enrolment plugin instance is enabled/exist.
-        $enrol = enrol_get_plugin('manual');
-        if (empty($enrol)) {
-            throw new \moodle_exception('manualpluginnotinstalled', 'enrol_manual');
-        }
-        $failures = 0;
-        $instances = array();
-        foreach ($courseids as $courseid) {
-            // Check if course exists.
-            $course = $DB->get_record('course', array('id' => $courseid), '*', IGNORE_MISSING);
-            //$course = get_course($courseid);
-            if (empty($course->id))
-                continue;
-            if (empty($instances[$courseid])) {
-                $instances[$courseid] = self::get_enrol_instance($courseid);
-            }
-
-            foreach ($userids as $userid) {
-                $user = $DB->get_record('user', array('id' => $userid));
-                if (empty($user->id))
-                    continue;
-                if ($roleid == -1) {
-                    $enrol->unenrol_user($instances[$courseid], $userid);
-                } else {
-                    $enrol->enrol_user($instances[$courseid], $userid, $roleid, time(), 0, ENROL_USER_ACTIVE);
-                }
-
-            }
-        }
-        return ($failures == 0);
     }
 
     /**
@@ -381,34 +303,38 @@ class lib {
         if (empty($userid))
             $userid = $USER->id;
 
+        $courseids = array_keys(enrol_get_all_users_courses($userid));
+
         $forums = array();
-        $courseids = implode(',', array_keys(enrol_get_all_users_courses($userid)));
-        if (strlen($courseids) > 0) {
-            $sql = "SELECT f.id,f.name,f.course
-                        FROM {local_edusupport} be, {forum} f, {course} c
-                        WHERE f.course=c.id
-                            AND be.forumid=f.id
-                            AND c.id IN ($courseids)
-                        ORDER BY c.fullname ASC, f.name ASC";
-            $_forums = $DB->get_records_sql($sql, array());
-            $delimiter = ' > ';
-            foreach ($_forums as &$forum) {
-                $course = $DB->get_record('course', array('id' => $forum->course), 'id,fullname');
-                $coursecontext = \context_course::instance($forum->course);
-                if (empty($coursecontext->id))
-                    continue;
+        if (!$courseids) {
+            return $forums;
+        }
 
-                $fcm = get_coursemodule_from_instance('forum', $forum->id, 0, false, MUST_EXIST);
-                $fctx = \context_module::instance($fcm->id);
-                $modinfo = get_fast_modinfo($course);
-                $cm = $modinfo->get_cm($fcm->id);
+        list($insql, $inparams) = $DB->get_in_or_equal($courseids);
+        $sql = "SELECT f.id,f.name,f.course
+                    FROM {local_edusupport} be, {forum} f, {course} c
+                    WHERE f.course=c.id
+                        AND be.forumid=f.id
+                        AND c.id $insql
+                    ORDER BY c.fullname ASC, f.name ASC";
+        $_forums = $DB->get_records_sql($sql, $inparams);
+        $delimiter = ' > ';
+        foreach ($_forums as &$forum) {
+            $course = $DB->get_record('course', array('id' => $forum->course), 'id,fullname');
+            $coursecontext = \context_course::instance($forum->course);
+            if (empty($coursecontext->id))
+                continue;
 
-                if ($cm->uservisible && has_capability('mod/forum:startdiscussion', $fctx)) {
-                    $forum->name = $course->fullname . $delimiter . $forum->name;
-                    $forum->postto2ndlevel = has_capability('local/edusupport:canforward2ndlevel', $coursecontext);
-                    $forum->potentialgroups = self::get_groups_for_user($forum->id);
-                    $forums[$forum->id] = $forum;
-                }
+            $fcm = get_coursemodule_from_instance('forum', $forum->id, 0, false, MUST_EXIST);
+            $fctx = \context_module::instance($fcm->id);
+            $modinfo = get_fast_modinfo($course);
+            $cm = $modinfo->get_cm($fcm->id);
+
+            if ($cm->uservisible && has_capability('mod/forum:startdiscussion', $fctx)) {
+                $forum->name = $course->fullname . $delimiter . $forum->name;
+                $forum->postto2ndlevel = has_capability('local/edusupport:canforward2ndlevel', $coursecontext);
+                $forum->potentialgroups = self::get_groups_for_user($forum->id);
+                $forums[$forum->id] = $forum;
             }
         }
 
@@ -731,22 +657,8 @@ class lib {
         $DB->delete_records('local_edusupport', array('forumid' => $forumid));
         self::supportforum_managecaps($forumid, false);
         \local_edusupport\lib::supportforum_rolecheck($forumid);
-        $centralforum = get_config('local_edusupport', 'centralforum');
-        if ($forumid == $centralforum) {
-            self::supportforum_disablecentral();
-        }
         // @TODO shall we check for orphaned discussions too?
     }
-
-    /**
-     * Removes a forum as central support-forum.
-     **/
-    public static function supportforum_disablecentral() {
-        if (!is_siteadmin())
-            return;
-        set_config('centralforum', 0, 'local_edusupport');
-    }
-
 
     /**
      * Sets a forum as possible support-forum.
@@ -777,27 +689,6 @@ class lib {
         if (!empty($supportforum->id))
             return $supportforum;
         else return false;
-    }
-
-    /**
-     * Sets a forum as central support-forum.
-     * @param forumid.
-     * @return forum as object on success.
-     **/
-    public static function supportforum_enablecentral($forumid) {
-        global $DB, $USER;
-        if (!is_siteadmin())
-            return false;
-        $forum = $DB->get_record('forum', array('id' => $forumid));
-        if (empty($forum->course))
-            return false;
-
-        $supportforum = $DB->get_record('local_edusupport', array('forumid' => $forumid));
-        if (!empty($supportforum->id)) {
-            set_config('centralforum', $forum->id, 'local_edusupport');
-            return $forum;
-        }
-        return false;
     }
 
     /**
@@ -938,5 +829,207 @@ class lib {
             $DB->set_field('local_edusupport', 'dedicatedsupporter', $userid, array('forumid' => $forumid));
         }
         return true;
+    }
+
+    /**
+     * Reduces a url to an absolute url of this Moodle instance, everything else becomes empty.
+     *
+     * PARAM_LOCALURL alone also lets relative urls pass. Those are shown to the supporters as a
+     * link within a forum post, where they would resolve against the wrong base.
+     */
+    public static function clean_local_url(string $url): string {
+        global $CFG;
+
+        $url = clean_param($url, PARAM_LOCALURL);
+        if (strpos($url, $CFG->wwwroot) !== 0) {
+            return '';
+        }
+
+        // The browser resolves ../ before it sends the request, so a url can leave the Moodle
+        // installation even though it starts with the wwwroot.
+        $path = parse_url($url, PHP_URL_PATH);
+        if ($path !== null && strpos($path, '..') !== false) {
+            return '';
+        }
+
+        return $url;
+    }
+
+    /**
+     * Creates an issue from the data submitted by \create_issue_form.
+     *
+     * @return the discussionid of the created issue, or -999 if it was sent by mail instead.
+     */
+    public static function create_issue(object $data): int {
+        global $CFG, $DB, $OUTPUT, $SITE, $USER;
+
+        $protecttime = get_config('local_edusupport', 'spamprotectionthreshold');
+        $protectamount = get_config('local_edusupport', 'spamprotectionlimit');
+
+        $cache = \cache::make('local_edusupport', 'spamprotect');
+        $timeoffset = time() - $protecttime;
+        // The cache returns false as long as nothing has been stored for this session.
+        $log = $cache->get('log') ?: array();
+        if ($log) {
+            for ($a = 0; $a < count($log); $a++) {
+                if ($log[$a] < $timeoffset) {
+                    $log[$a] = '';
+                }
+            }
+            $log = array_values(array_filter($log));
+            $cache->set('log', $log);
+            if ($protectamount <= count($log)) {
+                throw new \moodle_exception('spamprotection:exception', 'local_edusupport');
+            }
+        }
+        $log[] = time();
+        $cache->set('log', $log);
+
+        $templatedata = [
+            // The template prints the description unescaped, so we escape it here and only
+            // let the line breaks through as html.
+            'description' => nl2br(s($data->description)),
+            'contactphone' => $data->contactphone,
+            'url' => static::clean_local_url($data->url),
+        ];
+        if (get_config('local_edusupport', 'trackhost')) {
+            $templatedata['webhost'] = gethostname();
+        }
+
+        // The file has already been checked by the form, it was scanned for viruses on upload.
+        $screenshot = null;
+        if ($data->screenshot) {
+            $usercontext = \context_user::instance($USER->id);
+            $draftfiles = get_file_storage()->get_area_files($usercontext->id, 'user', 'draft',
+                $data->screenshot, 'id DESC', false);
+            $screenshot = reset($draftfiles);
+        }
+
+        $tmp = explode('_', $data->forum_group);
+        $forumid = 0;
+        $groupid = 0;
+        if (count($tmp) == 2) {
+            $forumid = $tmp[0];
+            $groupid = $tmp[1];
+        }
+
+        if ($data->forum_group == 'mail' || !$forumid) {
+            // Fallback, there is no supportforum available for this user.
+            $templatedata['includeemail'] = $USER->email;
+            $messagehtml = $OUTPUT->render_from_template('local_edusupport/issue_template', $templatedata);
+            $messagetext = html_to_text($messagehtml);
+            $supportuser = \core_user::get_support_user();
+
+            if ($screenshot) {
+                // email_to_user() needs the attachment as a file on disk.
+                $filepath = $CFG->tempdir . '/edusupport-' . md5($USER->id . microtime());
+                $screenshot->copy_content_to($filepath);
+                email_to_user($supportuser, $USER, $data->subject, $messagetext, $messagehtml,
+                    $filepath, $screenshot->get_filename());
+                unlink($filepath);
+            } else {
+                email_to_user($supportuser, $USER, $data->subject, $messagetext, $messagehtml, '', true);
+            }
+            return -999;
+        }
+
+        $potentialtargets = static::get_potentialtargets();
+        if (!static::is_supportforum($forumid) || empty($potentialtargets[$forumid]->id)) {
+            throw new \moodle_exception('couldnotadd', 'forum');
+        }
+
+        // Mainly copied from mod/forum/externallib.php > add_discussion().
+        $forum = $DB->get_record('forum', array('id' => $forumid), '*', MUST_EXIST);
+        list($course, $cm) = get_course_and_cm_from_instance($forum, 'forum');
+        $context = \context_module::instance($cm->id);
+
+        if (!groups_get_activity_groupmode($cm)) {
+            $groupid = -1;
+        } elseif (!$groupid) {
+            $groupid = groups_get_activity_group($cm);
+        }
+
+        if (!forum_user_can_post_discussion($forum, $groupid, -1, $cm, $context)) {
+            throw new \moodle_exception('cannotcreatediscussion', 'forum');
+        }
+
+        forum_check_blocking_threshold(forum_check_throttling($forum, $cm));
+
+        $discussion = new \stdClass();
+        $discussion->course = $course->id;
+        $discussion->forum = $forum->id;
+        $discussion->message = $OUTPUT->render_from_template('local_edusupport/issue_template', $templatedata);
+        $discussion->messageformat = FORMAT_HTML;   // Force formatting for now.
+        $discussion->messagetrust = trusttext_trusted($context);
+        $discussion->itemid = 0;
+        $discussion->groupid = $groupid;
+        $discussion->mailnow = 1;
+        $discussion->subject = $data->subject;
+        $discussion->name = $discussion->subject;
+        $discussion->timestart = 0;
+        $discussion->timeend = 0;
+        $discussion->timelocked = 0;
+        $discussion->attachment = 0;
+        $discussion->pinned = FORUM_DISCUSSION_UNPINNED;
+
+        $discussionid = forum_add_discussion($discussion);
+        if (!$discussionid) {
+            throw new \moodle_exception('couldnotadd', 'forum');
+        }
+        $discussion->id = $discussionid;
+
+        if ($screenshot) {
+            $fr = (object)array(
+                'component' => 'mod_forum',
+                'contextid' => $context->id,
+                'userid' => $USER->id,
+                'filearea' => 'attachment',
+                'filename' => $screenshot->get_filename(),
+                'filepath' => '/',
+                'itemid' => $discussion->firstpost,
+                'license' => $CFG->sitedefaultlicense,
+                'author' => fullname($USER),
+            );
+            $fr->source = serialize((object)array('source' => $fr->filename));
+            get_file_storage()->create_file_from_storedfile($fr, $screenshot);
+            $DB->set_field('forum_posts', 'attachment', 1, array('id' => $discussion->firstpost));
+        }
+
+        $event = \mod_forum\event\discussion_created::create(array(
+            'context' => $context,
+            'objectid' => $discussion->id,
+            'other' => array('forumid' => $forum->id),
+        ));
+        $event->add_record_snapshot('forum_discussions', $discussion);
+        $event->trigger();
+
+        $completion = new \completion_info($course);
+        if ($completion->is_enabled($cm) && ($forum->completiondiscussions || $forum->completionposts)) {
+            $completion->update_state($cm, COMPLETION_COMPLETE);
+        }
+
+        $settings = new \stdClass();
+        $settings->discussionsubscribe = true;
+        forum_post_subscription($settings, $forum, $discussion);
+
+        // An unchecked checkbox is not submitted at all, so the property may be missing.
+        if ($potentialtargets[$forumid]->postto2ndlevel && ($data->postto2ndlevel ?? 0)) {
+            static::set_2nd_level($discussion->id);
+        } else {
+            // Post answer containing the responsibles.
+            $responsibles = array();
+            foreach (array_values(static::get_course_supporters($forum)) as $manager) {
+                $responsibles[] = "<a href=\"{$CFG->wwwroot}/user/profile.php?id={$manager->id}\" target=\"_blank\">{$manager->firstname} {$manager->lastname}</a>";
+            }
+            static::create_post($discussion->id,
+                get_string('issue_responsibles:post', 'local_edusupport', array(
+                    'responsibles' => implode(', ', $responsibles),
+                    'sitename' => $SITE->fullname,
+                )),
+                get_string('issue_responsibles:subject', 'local_edusupport')
+            );
+        }
+
+        return $discussionid;
     }
 }

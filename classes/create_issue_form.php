@@ -26,57 +26,46 @@ defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->libdir . "/formslib.php");
 
-class issue_create_form extends moodleform {
-    var $maxbytes = 1024 * 1024;
-    var $areamaxbytes = 10485760;
-    var $maxfiles = 1;
-    var $subdirs = 0;
+class create_issue_form extends moodleform {
+    /** Screenshots are meant to be small, a full page capture stays well below this. */
+    var $maxbytes = 10485760;
+
+    /** Image types accepted as screenshot, mapped from the extension to the expected mimetype. */
+    const SCREENSHOT_TYPES = [
+        'gif' => 'image/gif',
+        'jpeg' => 'image/jpeg',
+        'jpg' => 'image/jpeg',
+        'png' => 'image/png',
+        'webp' => 'image/webp',
+    ];
 
     function definition() {
-        global $CFG, $COURSE, $DB, $SITE;
+        global $CFG, $COURSE, $SITE;
 
         $faqread = get_config('local_edusupport', 'faqread');
         $faqlink = get_config('local_edusupport', 'faqlink');
-        $prioritylvl = get_config('local_edusupport', 'prioritylvl');
         $disablephonefield = get_config('local_edusupport', 'phonefield');
-
-
-        $editoroptions = array('subdirs' => 0, 'maxbytes' => 0, 'maxfiles' => 0,
-            'changeformat' => 0, 'context' => null, 'noclean' => 0,
-            'trusttext' => 0, 'enable_filemanagement' => false);
 
         $mform = $this->_form;
 
-
-        $mform->addElement('hidden', 'id', 0);
-        $mform->setType('id', PARAM_INT);
-
-        $mform->addElement('hidden', 'forumid', '');
-        $mform->setType('forumid', PARAM_INT);
+        // The page the user came from, it is shown as a link to the supporters.
         $mform->addElement('hidden', 'url', '');
         $mform->setType('url', PARAM_LOCALURL);
-        $mform->addElement('hidden', 'image', ''); // base64 encoded image
-        $mform->setType('image', PARAM_RAW);
 
         $mform->addElement('header', 'header', get_string('header', 'local_edusupport', $COURSE->fullname));
 
         if ($faqread) {
             $mform->addElement('checkbox', 'faqread', '', get_string('faqread:description', 'local_edusupport', $faqlink));
             $mform->setType('faqread', PARAM_BOOL);
-            $mform->addRule('faqread', get_string('subject_missing', 'local_edusupport'), 'required', true, 'server');
-        } else {
-            $mform->addElement('html', '<input type="checkbox" id="id_faqread" class="autochecked" style="display: none;" checked="checked" />');
+            $mform->addRule('faqread', get_string('faqread', 'local_edusupport'), 'required', null, 'server');
         }
-
-
-        $mform->addElement('html', '<div id="create_issue_input">');
 
         require_once($CFG->dirroot . '/local/edusupport/classes/lib.php');
         $potentialtargets = \local_edusupport\lib::get_potentialtargets();
 
         $hideifs = array('mail');
 
-        // If there are not potentialtargets we don't care. We will send a mail to the Moodle default support contact.
+        // If there are no potentialtargets we don't care. We will send a mail to the Moodle default support contact.
         $options = array();
         $labels = array();
 
@@ -126,7 +115,7 @@ class issue_create_form extends moodleform {
             '});',
         ];
         $mform->addElement('select', 'forum_group', get_string('to_group', 'local_edusupport'), $options, array('onchange' => implode("", $postto2ndlevel_hideshow)));
-        $mform->setType('forum_group', PARAM_INT);
+        $mform->setType('forum_group', PARAM_TEXT);
 
         $managerslabel = [
             '<div class="form-group row fitem">',
@@ -145,18 +134,20 @@ class issue_create_form extends moodleform {
 
         $mform->addElement('html', implode("\n", $managerslabel));
 
-        $mform->addElement('text', 'subject', get_string('subject', 'local_edusupport'), array('style' => 'width: 100%;', 'type' => 'tel'));
+        $mform->addElement('text', 'subject', get_string('subject', 'local_edusupport'), array('style' => 'width: 100%;'));
         $mform->setType('subject', PARAM_TEXT);
         $mform->addRule('subject', get_string('subject_missing', 'local_edusupport'), 'required', null, 'server');
 
         if (!$disablephonefield) {
             $mform->addElement('text', 'contactphone', get_string('contactphone', 'local_edusupport'), array('style' => 'width: 100%;'));
-            $mform->setType('contactphone', PARAM_TEXT);
         } else {
             $mform->addElement('hidden', 'contactphone', '');
-            $mform->setType('contactphone', PARAM_TEXT);
         }
+        $mform->setType('contactphone', PARAM_TEXT);
+
         $mform->addElement('textarea', 'description', get_string('description', 'local_edusupport'), array('style' => 'width: 100%;', 'rows' => 10));
+        // Kept raw so the user can paste error messages containing angle brackets, it is
+        // escaped before it goes into the post.
         $mform->setType('description', PARAM_RAW);
         $mform->addRule('description', get_string('description_missing', 'local_edusupport'), 'required', null, 'server');
 
@@ -164,65 +155,104 @@ class issue_create_form extends moodleform {
         $mform->setType('postto2ndlevel', PARAM_BOOL);
         $mform->setDefault('postto2ndlevel', 0);
 
-        $fileupload = [
-            '<div class="form-group row fitem">',
-            '   <div class="col-md-3">' . get_string('screenshot', 'local_edusupport') . '</div>',
-            '   <div class="col-md-9" id="edusupport_screenshot">',
-            '       <input type="file" onchange="require([\'local_edusupport/main\'], function(M) { M.uploadScreenshot(); });" /><br />',
-            '       <div class="alert alert-danger hidden">' . get_string('screenshot:upload:failed', 'local_edusupport') . '</div>',
-            '       <div class="alert alert-success hidden">' . get_string('screenshot:upload:successful', 'local_edusupport') . '</div>',
-            '   </div>',
-            '</div>',
-        ];
-        $mform->addElement('html', implode("\n", $fileupload));
-        /*
-        $html = array(
-            '<div id="screenshot_ok"  style="display: none;"><p>',
-            get_string('screenshot:generateinfo', 'local_edusupport'),
-            '</p><a href="#" onclick="var b = this; require([\'local_edusupport/main\'], function(M) { M.generateScreenshot(b); }); return false;" class="btn btn-primary btn-block">',
-            get_string('ok'),
-            '</a></div>'
-        );
-        $mform->addElement('checkbox', 'postscreenshot', get_string('screenshot', 'local_edusupport'),
-                                get_string('screenshot:description', 'local_edusupport') . implode("\n", $html),
-                                array('onclick' => 'var c = this; require(["local_edusupport/main"], function(M) { M.checkHasScreenshot(c); });')
-                        );
-        $mform->setType('postscreenshot', PARAM_BOOL);
-        $mform->setDefault('postscreenshot', 0);
+        // Derived from the types we can verify, so both lists cannot drift apart.
+        $acceptedtypes = array_map(function ($extension) {
+            return '.' . $extension;
+        }, array_keys(static::SCREENSHOT_TYPES));
 
-        $html = array(
-            '<div style="text-align: center;">',
-            '<img id="screenshot" src="" alt="Screenshot" style="max-width: 50%; display: none;"/>',
-            '</div>',
-            '<div id="screenshot_new" class="text-center m-2" style="display:none;">',
-            '<a href="#" onclick="var b = this; require([\'local_edusupport/main\'], function(M) { M.generateScreenshot(b); }); return false;" class="btn btn-primary">',
-            get_string('new'),
-            '</a></div>'
-        );
-        $mform->addElement('html', implode("\n", $html));
-        */
+        $mform->addElement('filepicker', 'screenshot', get_string('screenshot', 'local_edusupport'), null, array(
+            'maxbytes' => $this->maxbytes,
+            'accepted_types' => $acceptedtypes,
+        ));
+        $mform->addElement('static', 'screenshot_description', '', get_string('screenshot:description', 'local_edusupport'));
+
         $mform->addElement('html', '<script> setTimeout(function() { ' . implode('', $postto2ndlevel_hideshow) . ' }, 100);</script>');
 
-        $mform->addElement('html', '</div>');
-
-        /*
-        if ($prioritylvl) {
-            $mform->addElement('select', 'prioritylvl', get_string('prioritylvl', 'local_edusupport'), $this->return_priority_options());
-        }
-        */
+        // No cancel button, the form is opened in its own window and is closed by the user.
+        $this->add_action_buttons(false, get_string('send', 'local_edusupport'));
     }
 
-    //Custom validation should be added here
+    /**
+     * The filepicker adds each chosen file to the draft area without removing the previous one.
+     * A rejected file would therefore be validated again after the user picked a valid one, so we
+     * drop everything but the file that was selected last. Runs before the validation.
+     */
+    function definition_after_data() {
+        global $USER;
+
+        parent::definition_after_data();
+
+        $draftitemid = $this->_form->getElementValue('screenshot');
+        if (is_array($draftitemid)) {
+            $draftitemid = reset($draftitemid);
+        }
+        if (!$draftitemid) {
+            return;
+        }
+
+        $usercontext = \context_user::instance($USER->id);
+        $files = get_file_storage()->get_area_files($usercontext->id, 'user', 'draft',
+            $draftitemid, 'id DESC', false);
+        array_shift($files);
+        foreach ($files as $file) {
+            $file->delete();
+        }
+    }
+
     function validation($data, $files) {
-        $errors = array();
+        global $USER;
+
+        $errors = parent::validation($data, $files);
+
+        if (strlen(trim($data['subject'])) < 3) {
+            $errors['subject'] = get_string('be_more_accurate', 'local_edusupport');
+        }
+        if (strlen(trim($data['description'])) < 5) {
+            $errors['description'] = get_string('be_more_accurate', 'local_edusupport');
+        }
+
+        // The filepicker already enforced the allowed extensions, additionally we check that the
+        // content really is an image of that type, so a renamed file cannot pass.
+        if (!empty($data['screenshot'])) {
+            $usercontext = \context_user::instance($USER->id);
+            $draftfiles = get_file_storage()->get_area_files($usercontext->id, 'user', 'draft',
+                $data['screenshot'], 'id DESC', false);
+            $file = reset($draftfiles);
+            if ($file && !static::is_valid_screenshot($file->get_content(), $file->get_filename())) {
+                $errors['screenshot'] = get_string('screenshot:invalid', 'local_edusupport');
+            }
+        }
+
         return $errors;
     }
 
-    function return_priority_options() {
-        return [
-            "" => get_string('prioritylvl:low', 'local_edusupport'),
-            "!" => get_string('prioritylvl:mid', 'local_edusupport'),
-            "!!" => get_string('prioritylvl:high', 'local_edusupport'),
-        ];
+    /**
+     * Checks whether an uploaded screenshot really is an image of the type its extension claims.
+     *
+     * The extension itself is already restricted by the filepicker, this verifies that the
+     * content matches it, so a renamed file cannot pass.
+     */
+    public static function is_valid_screenshot(string $content, string $filename): bool {
+        $extension = \core_text::strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+        if (!isset(static::SCREENSHOT_TYPES[$extension])) {
+            return false;
+        }
+
+        // getimagesizefromstring() reads the magic bytes, therefore it tells us what the file
+        // really is instead of what the client claims it to be.
+        $imageinfo = @getimagesizefromstring($content);
+        if (!$imageinfo || $imageinfo['mime'] !== static::SCREENSHOT_TYPES[$extension]) {
+            return false;
+        }
+
+        // A file that only carries a valid header still passes the checks above, it reports
+        // nonsense dimensions though. Decoding it is what really proves it is an image.
+        $image = @imagecreatefromstring($content);
+        if (!$image) {
+            return false;
+        }
+        imagedestroy($image);
+
+        return true;
     }
 }

@@ -33,22 +33,6 @@ $functions = array(
         'type' => 'write',
         'ajax' => 1,
     ),
-    'local_edusupport_create_issue' => array(
-        'classname' => 'local_edusupport_external',
-        'methodname' => 'create_issue',
-        'classpath' => 'local/edusupport/externallib.php',
-        'description' => 'Post an issue',
-        'type' => 'write',
-        'ajax' => 1,
-    ),
-    'local_edusupport_create_form' => array(
-        'classname' => 'local_edusupport_external',
-        'methodname' => 'create_form',
-        'classpath' => 'local/edusupport/externallib.php',
-        'description' => 'Create form to post an issue',
-        'type' => 'read',
-        'ajax' => 1,
-    ),
     'local_edusupport_get_potentialsupporters' => array(
         'classname' => 'local_edusupport_external',
         'methodname' => 'get_potentialsupporters',
