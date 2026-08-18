@@ -1,7 +1,7 @@
 /* eslint-disable max-len, no-console, jsdoc/require-param, jsdoc/require-param-type */
 define(
-  ['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'core/modal_save_cancel', 'core/modal_alert', 'core/modal_events'],
-  function ($, AJAX, NOTIFICATION, STR, URL, ModalSaveCancel, ModalAlert, ModalEvents) {
+  ['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'core/modal_save_cancel', 'core/modal_events'],
+  function ($, AJAX, NOTIFICATION, STR, URL, ModalSaveCancel, ModalEvents) {
     return {
       debug: 0,
       triggerSteps: 0,
@@ -190,13 +190,6 @@ define(
         }
       },
 
-      supportCourseMovedAlert: async function (title, msg) {
-        await ModalAlert.create({
-          title: title,
-          body: msg,
-          show: true,
-        });
-      },
       triggerSpinner: function (steps) {
         var MAIN = this;
         MAIN.triggerSteps += steps;
