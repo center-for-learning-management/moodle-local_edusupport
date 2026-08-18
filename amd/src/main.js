@@ -1,7 +1,7 @@
 /* eslint-disable max-len, no-console, jsdoc/require-param, jsdoc/require-param-type */
 define(
-  ['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'core/modal_factory', 'core/modal_events'],
-  function ($, AJAX, NOTIFICATION, STR, URL, ModalFactory, ModalEvents) {
+  ['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/url', 'core/modal_save_cancel', 'core/modal_alert', 'core/modal_events'],
+  function ($, AJAX, NOTIFICATION, STR, URL, ModalSaveCancel, ModalAlert, ModalEvents) {
     return {
       debug: 0,
       triggerSteps: 0,
@@ -15,7 +15,7 @@ define(
         AJAX.call([{
           methodname: 'local_edusupport_get_potentialsupporters',
           args: {discussionid: discussionid},
-          done: function (result) {
+          done: async function (result) {
             try {
               result = JSON.parse(result);
             } catch (e) {
@@ -36,35 +36,28 @@ define(
             }
             body += '</select>';
 
-            //console.log(result);
-            ModalFactory.create({
+            const modal = await ModalSaveCancel.create({
               title: STR.get_string('select', 'core'),
-              type: ModalFactory.types.SAVE_CANCEL,
               body: body,
-              //footer: 'footer',
-            }).done(function (modal) {
-              console.log('Created modal');
-              modal.show();
-              modal.getRoot().on(ModalEvents.save, function (e) {
-                e.preventDefault();
-                var discussionid = $(this).find('.modal-body input').val();
-                var supporterid = $(this).find('.modal-body select').val();
-                var data = {'discussionid': discussionid, 'supporterid': supporterid};
-                //console.log('Store', this, e, data);
-                AJAX.call([{
-                  methodname: 'local_edusupport_set_currentsupporter',
-                  args: data,
-                  done: function (result) {
-                    console.log(result);
-                    if (result == 1) {
-                      top.location.reload();
-                    } else {
-                      alert('Error: ' + result);
-                    }
-                  },
-                  fail: NOTIFICATION.exception
-                }]);
-              });
+              show: true,
+            });
+            modal.getRoot().on(ModalEvents.save, function (e) {
+              e.preventDefault();
+              var discussionid = $(this).find('.modal-body input').val();
+              var supporterid = $(this).find('.modal-body select').val();
+              var data = {'discussionid': discussionid, 'supporterid': supporterid};
+              AJAX.call([{
+                methodname: 'local_edusupport_set_currentsupporter',
+                args: data,
+                done: function (result) {
+                  if (result == 1) {
+                    top.location.reload();
+                  } else {
+                    alert('Error: ' + result);
+                  }
+                },
+                fail: NOTIFICATION.exception
+              }]);
             });
           },
           fail: NOTIFICATION.exception
@@ -147,6 +140,7 @@ define(
             }
           },
         ]).done(function (s) {
+          // TODO: remove the onclick below, that is bad design!
             $('#page-content div[role="main"] .discussionname').parent().prepend(
               $('<a href="#">')
                 .attr('onclick', "require(['local_edusupport/main'], function(MAIN) { MAIN.injectForwardModal(" + discussionid + ", " + isissue + ", '" + sitename + "'); }); return false;")
@@ -168,44 +162,39 @@ define(
 
 
       },
-      injectForwardModal: function (discussionid, revoke, sitename) {
-        STR.get_strings([
-          {
-            key: 'confirm',
-            component: 'core'
-          },
-          {
-            key: (typeof revoke !== 'undefined' && revoke) ? 'issue_revoke' : 'issue_assign_nextlevel',
-            component: 'local_edusupport',
-            param: {
-              sitename: sitename,
-            }
-          },
-        ]).done(function (s) {
-            ModalFactory.create({
-              type: ModalFactory.types.SAVE_CANCEL,
-              title: s[0],
-              body: s[1],
-            })
-              .done(function (modal) {
-                var root = modal.getRoot();
-                root.on(ModalEvents.save, function () {
-                  top.location.href = URL.relativeUrl('/local/edusupport/forward_2nd_level.php', {d: discussionid, revoke: revoke});
-                });
-                modal.show();
-              });
-          }
-        ).fail(NOTIFICATION.exception);
+      injectForwardModal: async function (discussionid, revoke, sitename) {
+        try {
+          const s = await STR.get_strings([
+            {
+              key: 'confirm',
+              component: 'core'
+            },
+            {
+              key: (typeof revoke !== 'undefined' && revoke) ? 'issue_revoke' : 'issue_assign_nextlevel',
+              component: 'local_edusupport',
+              param: {
+                sitename: sitename,
+              }
+            },
+          ]);
+          const modal = await ModalSaveCancel.create({
+            title: s[0],
+            body: s[1],
+            show: true,
+          });
+          modal.getRoot().on(ModalEvents.save, function () {
+            top.location.href = URL.relativeUrl('/local/edusupport/forward_2nd_level.php', {d: discussionid, revoke: revoke});
+          });
+        } catch (e) {
+          NOTIFICATION.exception(e);
+        }
       },
 
-      supportCourseMovedAlert: function (title, msg) {
-        ModalFactory.create({
+      supportCourseMovedAlert: async function (title, msg) {
+        await ModalAlert.create({
           title: title,
-          type: ModalFactory.types.OK,
           body: msg,
-          //footer: 'footer',
-        }).done(function (modal) {
-          modal.show();
+          show: true,
         });
       },
       triggerSpinner: function (steps) {
