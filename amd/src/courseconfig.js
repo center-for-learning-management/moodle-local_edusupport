@@ -1,10 +1,9 @@
+/* eslint-disable max-len, no-console */
 define(
   ['jquery', 'core/ajax', 'core/notification'],
-  function ($, AJAX, NOTIFICATION, STR, URL, ModalFactory, ModalEvents) {
+  function ($, AJAX, NOTIFICATION) {
     return {
       setArchive: function (uniqid, forumid) {
-        var SELF = this;
-
         console.log('setArchive(uniqid, forumid)', uniqid, forumid);
         AJAX.call([{
           methodname: 'local_edusupport_set_archive',
@@ -25,8 +24,9 @@ define(
         }]);
       },
       setDefault: function (uniqid, forumid, asglobal) {
-        if (typeof asglobal === 'undefined') asglobal = 0;
-        var SELF = this;
+        if (!asglobal) {
+          asglobal = 0;
+        }
 
         console.log('setDefault(uniqid, forumid, asglobal)', uniqid, forumid, asglobal);
         AJAX.call([{
@@ -48,8 +48,6 @@ define(
         }]);
       },
       setSupporter: function (uniqid, courseid, userid, supportlevel) {
-        var SELF = this;
-
         console.log('setSupporter(uniqid, courseid,userid,supportlevel)', uniqid, courseid, userid, supportlevel);
         AJAX.call([{
           methodname: 'local_edusupport_set_supporter',
