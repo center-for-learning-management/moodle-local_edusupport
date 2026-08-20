@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -38,7 +37,6 @@ require_once($CFG->dirroot . '/repository/lib.php');
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class local_edusupport_post_form extends moodleform {
-
     /**
      * Returns the options array to use in filemanager for forum attachments
      *
@@ -50,15 +48,15 @@ class local_edusupport_post_form extends moodleform {
         // We use the global variable discussion to load the forum from database.
         // All the fields of the forum variable are protected!
         global $DB, $discussion;
-        $dbforum = $DB->get_record('forum', array('id' => $discussion->forum));
+        $dbforum = $DB->get_record('forum', ['id' => $discussion->forum]);
         $maxbytes = get_user_max_upload_file_size($PAGE->context, $CFG->maxbytes, $COURSE->maxbytes, $dbforum->maxbytes);
-        return array(
+        return [
             'subdirs' => 0,
             'maxbytes' => $maxbytes,
             'maxfiles' => $dbforum->maxattachments,
             'accepted_types' => '*',
             'return_types' => FILE_INTERNAL | FILE_CONTROLLED_LINK,
-        );
+        ];
     }
 
     /**
@@ -73,17 +71,17 @@ class local_edusupport_post_form extends moodleform {
         // We use the global variable discussion to load the forum from database.
         // All the fields of the forum variable are protected!
         global $DB, $discussion;
-        $dbforum = $DB->get_record('forum', array('id' => $discussion->forum));
+        $dbforum = $DB->get_record('forum', ['id' => $discussion->forum]);
 
         // TODO: add max files and max size support
         $maxbytes = get_user_max_upload_file_size($PAGE->context, $CFG->maxbytes, $COURSE->maxbytes, $dbforum->maxbytes);
-        return array(
+        return [
             'maxfiles' => EDITOR_UNLIMITED_FILES,
             'maxbytes' => $maxbytes,
             'trusttext' => true,
             'return_types' => FILE_INTERNAL | FILE_EXTERNAL,
             'subdirs' => file_area_contains_subdirs($context, 'mod_forum', 'post', $postid),
-        );
+        ];
     }
 
     /**
@@ -139,8 +137,10 @@ class local_edusupport_post_form extends moodleform {
             $mform->setType('discussionsubscribe', PARAM_INT);
             $mform->setDefaults('discussionsubscribe', 0);
 
-            $mform->addElement('filemanager', 'attachments', get_string('attachment', 'forum'), null,
-                self::attachment_options($forum));
+            $mform->addElement(
+                'filemanager', 'attachments', get_string('attachment', 'forum'), null,
+                self::attachment_options($forum)
+            );
             $mform->addHelpButton('attachments', 'attachment', 'forum');
 
             $mform->addElement('hidden', 'mailnow');
@@ -151,18 +151,20 @@ class local_edusupport_post_form extends moodleform {
             $mform->setType('timestart', PARAM_INT);
             $mform->addElement('hidden', 'timeend');
             $mform->setType('timeend', PARAM_INT);
-            $mform->setConstants(array('timestart' => 0, 'timeend' => 0));
+            $mform->setConstants(['timestart' => 0, 'timeend' => 0]);
 
 
             if (core_tag_tag::is_enabled('mod_forum', 'forum_posts')) {
                 $mform->addElement('header', 'tagshdr', get_string('tags', 'tag'));
 
-                $mform->addElement('tags', 'tags', get_string('tags'),
-                    array('itemtype' => 'forum_posts', 'component' => 'mod_forum'));
+                $mform->addElement(
+                    'tags', 'tags', get_string('tags'),
+                    ['itemtype' => 'forum_posts', 'component' => 'mod_forum']
+                );
             }
         }
 
-        //-------------------------------------------------------------------------------
+        // -------------------------------------------------------------------------------
         // buttons
         if (isset($post->edit)) { // hack alert
             $submitstring = get_string('savechanges');
@@ -178,16 +180,20 @@ class local_edusupport_post_form extends moodleform {
             $mform->addElement('hidden', 'discussionsubscribe');
             $mform->setType('discussionsubscribe', PARAM_INT);
             $mform->disable_form_change_checker();
-            $buttonarray = array();
+            $buttonarray = [];
             $buttonarray[] = &$mform->createElement('submit', 'submitbutton', $submitstring);
-            $buttonarray[] = &$mform->createElement('button', 'cancelbtn',
+            $buttonarray[] = &$mform->createElement(
+                'button', 'cancelbtn',
                 get_string('cancel', 'core'),
                 // Additional attribs to handle collapsible div.
-                ['data-toggle' => 'collapse', 'data-target' => "#collapseAddForm"]);
-            $buttonarray[] = &$mform->createElement('submit', 'advancedadddiscussion',
-                get_string('advanced'), null, null, ['customclassoverride' => 'btn-link']);
+                ['data-toggle' => 'collapse', 'data-target' => "#collapseAddForm"]
+            );
+            $buttonarray[] = &$mform->createElement(
+                'submit', 'advancedadddiscussion',
+                get_string('advanced'), null, null, ['customclassoverride' => 'btn-link']
+            );
 
-            $mform->addGroup($buttonarray, 'buttonar', '', array(' '), false);
+            $mform->addGroup($buttonarray, 'buttonar', '', [' '], false);
             $mform->closeHeaderBefore('buttonar');
         } else {
             $this->add_action_buttons(true, $submitstring);

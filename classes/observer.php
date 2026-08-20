@@ -29,7 +29,7 @@ class observer {
     public static function event($event) {
         global $CFG, $DB, $OUTPUT;
 
-        //error_log("OBSERVER EVENT: " . print_r($event, 1));
+        // error_log("OBSERVER EVENT: " . print_r($event, 1));
         $entry = (object)$event->get_data();
 
         if ($entry->eventname == '\mod_forum\event\discussion_deleted') {
@@ -37,23 +37,24 @@ class observer {
             return \local_edusupport\lib::delete_issue($discussionid);
         } else {
             if (substr($entry->eventname, 0, strlen("\\mod_forum\\event\\post_")) == "\\mod_forum\\event\\post_") {
-                $post = $DB->get_record("forum_posts", array("id" => $entry->objectid));
-                $discussion = $DB->get_record("forum_discussions", array("id" => $post->discussion));
+                $post = $DB->get_record("forum_posts", ["id" => $entry->objectid]);
+                $discussion = $DB->get_record("forum_discussions", ["id" => $post->discussion]);
             } else {
-                $discussion = $DB->get_record("forum_discussions", array("id" => $entry->objectid));
-                $post = $DB->get_record("forum_posts", array("discussion" => $discussion->id, "parent" => 0));
+                $discussion = $DB->get_record("forum_discussions", ["id" => $entry->objectid]);
+                $post = $DB->get_record("forum_posts", ["discussion" => $discussion->id, "parent" => 0]);
             }
-            $forum = $DB->get_record("forum", array("id" => $discussion->forum));
-            $course = $DB->get_record("course", array("id" => $forum->course));
-            $issue = $DB->get_record('local_edusupport_issues', array('discussionid' => $discussion->id));
-            if (empty($issue->id))
+            $forum = $DB->get_record("forum", ["id" => $discussion->forum]);
+            $course = $DB->get_record("course", ["id" => $forum->course]);
+            $issue = $DB->get_record('local_edusupport_issues', ['discussionid' => $discussion->id]);
+            if (empty($issue->id)) {
                 return;
-            $author = $DB->get_record('user', array('id' => $post->userid));
+            }
+            $author = $DB->get_record('user', ['id' => $post->userid]);
             // enhance post data.
             $post->wwwroot = $CFG->wwwroot;
             $post->authorfullname = \fullname($author);
             $post->authorlink = $CFG->wwwroot . '/user/view.php?id=' . $author->id;
-            $post->authorpicture = $OUTPUT->user_picture($author, array('size' => 40));
+            $post->authorpicture = $OUTPUT->user_picture($author, ['size' => 40]);
             $post->postdate = strftime('%d. %B %Y, %H:%m', $post->created);
 
             $post->coursename = $course->fullname;
@@ -65,14 +66,15 @@ class observer {
 
             // Get all subscribers
             $fromuser = \core_user::get_support_user();
-            $subscribers = $DB->get_records('local_edusupport_subscr', array('discussionid' => $discussion->id));
+            $subscribers = $DB->get_records('local_edusupport_subscr', ['discussionid' => $discussion->id]);
 
             foreach ($subscribers as $subscriber) {
                 // We do not want to send to ourselves...
-                if ($subscriber->userid == $author->id)
+                if ($subscriber->userid == $author->id) {
                     continue;
+                }
 
-                $touser = $DB->get_record('user', array('id' => $subscriber->userid));
+                $touser = $DB->get_record('user', ['id' => $subscriber->userid]);
 
                 // Send notification
                 $subject = $discussion->name;

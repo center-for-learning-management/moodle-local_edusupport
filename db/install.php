@@ -26,32 +26,32 @@ defined('MOODLE_INTERNAL') || die;
 function xmldb_local_edusupport_install() {
     global $DB;
 
-    $role = $DB->get_record('role', array('shortname' => 'local_edusupport'));
+    $role = $DB->get_record('role', ['shortname' => 'local_edusupport']);
     if (empty($role->id)) {
         $sql = "SELECT MAX(sortorder)+1 AS id FROM {role}";
-        $max = $DB->get_record_sql($sql, array());
+        $max = $DB->get_record_sql($sql, []);
 
-        $role = (object)array(
+        $role = (object)[
             'name' => 'eduSupport Team',
             'shortname' => 'local_edusupport',
             'description' => 'This role was automatically created by the local_edusupport Plugin',
             'sortorder' => $max->id,
             'archetype' => '',
-        );
+        ];
         $role->id = $DB->insert_record('role', $role);
     }
 
     set_config('supportteamrole', $role->id, 'local_edusupport');
 
     // Ensure, that this role is assigned in the required context levels.
-    $chk = $DB->get_record('role_context_levels', array('roleid' => $role->id, 'contextlevel' => CONTEXT_MODULE));
+    $chk = $DB->get_record('role_context_levels', ['roleid' => $role->id, 'contextlevel' => CONTEXT_MODULE]);
     if (empty($chk->id)) {
-        $DB->insert_record('role_context_levels', array('roleid' => $role->id, 'contextlevel' => CONTEXT_MODULE));
+        $DB->insert_record('role_context_levels', ['roleid' => $role->id, 'contextlevel' => CONTEXT_MODULE]);
     }
 
     // Ensure, that this role has the required capabilities.
     $ctx = \context_system::instance();
-    $caps = array(
+    $caps = [
         'forumreport/summary:view',
         'mod/forum:addnews',
         'mod/forum:addquestion',
@@ -87,12 +87,11 @@ function xmldb_local_edusupport_install() {
         'moodle/course:viewparticipants',
         'moodle/site:accessallgroups',
         'moodle/user:readuserposts',
-    );
+    ];
     foreach ($caps as $cap) {
-        $chk = $DB->get_record('role_capabilities', array('contextid' => $ctx->id, 'roleid' => $role->id, 'capability' => $cap, 'permission' => 1));
+        $chk = $DB->get_record('role_capabilities', ['contextid' => $ctx->id, 'roleid' => $role->id, 'capability' => $cap, 'permission' => 1]);
         if (empty($chk->id)) {
-            $DB->insert_record('role_capabilities', array('contextid' => $ctx->id, 'roleid' => $role->id, 'capability' => $cap, 'permission' => 1, 'timemodified' => time(), 'modifierid' => 2));
+            $DB->insert_record('role_capabilities', ['contextid' => $ctx->id, 'roleid' => $role->id, 'capability' => $cap, 'permission' => 1, 'timemodified' => time(), 'modifierid' => 2]);
         }
     }
-
 }

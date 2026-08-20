@@ -36,17 +36,18 @@ $PAGE->set_pagelayout('incourse');
 
 echo $OUTPUT->header();
 
-$cms = $DB->get_records_sql('SELECT cm.id,cm.instance,cm.course FROM {course_modules} cm, {modules} m WHERE cm.course=? AND cm.module=m.id AND cm.deletioninprogress=0 AND m.name="forum"', array($COURSE->id));
-$forums = array();
+$cms = $DB->get_records_sql('SELECT cm.id,cm.instance,cm.course FROM {course_modules} cm, {modules} m WHERE cm.course=? AND cm.module=m.id AND cm.deletioninprogress=0 AND m.name="forum"', [$COURSE->id]);
+$forums = [];
 $targetforum = get_config('local_edusupport', 'targetforum');
 foreach ($cms as &$cm) {
-    $forum = $DB->get_record('forum', array('id' => $cm->instance));
-    if (empty($forum->type) || $forum->type != 'general')
+    $forum = $DB->get_record('forum', ['id' => $cm->instance]);
+    if (empty($forum->type) || $forum->type != 'general') {
         continue;
+    }
     if ($forum->id == $targetforum) {
         $forum->selectedforglobal = 1;
     } else {
-        $chk = $DB->get_record('local_edusupport', array('courseid' => $COURSE->id));
+        $chk = $DB->get_record('local_edusupport', ['courseid' => $COURSE->id]);
         if (!empty($chk->forumid) && $chk->forumid == $forum->id) {
             $forum->selectedforcourse = 1;
         }
@@ -60,7 +61,7 @@ foreach ($cms as &$cm) {
 if (local_edusupport::can_config_course($course->id)) {
     // capability moodle/course:viewhiddenactivities applies to editing and non editing teachers, but not to students.
     $enrolled = get_enrolled_users($context, 'moodle/course:viewhiddenactivities');
-    $potentialsupporters = array();
+    $potentialsupporters = [];
     foreach ($enrolled as &$potentialsupporter) {
         $potentialsupporter->supportlevel = local_edusupport::get_supporter_level($course->id, $potentialsupporter->id);
         $potentialsupporter->courseid = $COURSE->id;
@@ -69,11 +70,11 @@ if (local_edusupport::can_config_course($course->id)) {
 
     echo $OUTPUT->render_from_template(
         'local_edusupport/courseconfig',
-        (object)array(
+        (object)[
             'canconfigglobal' => local_edusupport::can_config_global(),
             'forums' => $forums,
             'supporters' => $potentialsupporters,
-        )
+        ]
     );
 }
 

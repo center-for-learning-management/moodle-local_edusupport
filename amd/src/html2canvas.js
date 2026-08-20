@@ -1,84 +1,121 @@
-/*!
+/* !
  * html2canvas 1.0.0-alpha.12 <https://html2canvas.hertzen.com>
  * Copyright (c) 2018 Niklas von Hertzen <https://hertzen.com>
  * Released under MIT License
  */
 (function webpackUniversalModuleDefinition(root, factory) {
-	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory();
-	else if(typeof define === 'function' && define.amd)
-		define([], factory);
-	else if(typeof exports === 'object')
-		exports["html2canvas"] = factory();
-	else
-		root["html2canvas"] = factory();
+	if (typeof exports === 'object' && typeof module === 'object') {
+ module.exports = factory();
+} else if (typeof define === 'function' && define.amd) {
+ define([], factory);
+} else if (typeof exports === 'object') {
+ exports.html2canvas = factory();
+} else {
+ root.html2canvas = factory();
+}
 })(this, function() {
-return /******/ (function(modules) { // webpackBootstrap
-/******/ 	// The module cache
-/******/ 	var installedModules = {};
-/******/
-/******/ 	// The require function
-/******/ 	function __webpack_require__(moduleId) {
-/******/
-/******/ 		// Check if module is in cache
-/******/ 		if(installedModules[moduleId]) {
-/******/ 			return installedModules[moduleId].exports;
-/******/ 		}
-/******/ 		// Create a new module (and put it into the cache)
-/******/ 		var module = installedModules[moduleId] = {
-/******/ 			i: moduleId,
-/******/ 			l: false,
-/******/ 			exports: {}
-/******/ 		};
-/******/
-/******/ 		// Execute the module function
-/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
-/******/
-/******/ 		// Flag the module as loaded
-/******/ 		module.l = true;
-/******/
-/******/ 		// Return the exports of the module
-/******/ 		return module.exports;
-/******/ 	}
-/******/
-/******/
-/******/ 	// expose the modules object (__webpack_modules__)
-/******/ 	__webpack_require__.m = modules;
-/******/
-/******/ 	// expose the module cache
-/******/ 	__webpack_require__.c = installedModules;
-/******/
-/******/ 	// define getter function for harmony exports
-/******/ 	__webpack_require__.d = function(exports, name, getter) {
-/******/ 		if(!__webpack_require__.o(exports, name)) {
-/******/ 			Object.defineProperty(exports, name, {
-/******/ 				configurable: false,
-/******/ 				enumerable: true,
-/******/ 				get: getter
-/******/ 			});
-/******/ 		}
-/******/ 	};
-/******/
-/******/ 	// getDefaultExport function for compatibility with non-harmony modules
-/******/ 	__webpack_require__.n = function(module) {
-/******/ 		var getter = module && module.__esModule ?
-/******/ 			function getDefault() { return module['default']; } :
-/******/ 			function getModuleExports() { return module; };
-/******/ 		__webpack_require__.d(getter, 'a', getter);
-/******/ 		return getter;
-/******/ 	};
-/******/
-/******/ 	// Object.prototype.hasOwnProperty.call
-/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
-/******/
-/******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "";
-/******/
-/******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 27);
-/******/ })
-/************************************************************************/
-/******/ ([
+return; /**
+rrrrrrr * ***
+rrrrrrr * @param modules
+rrrrrrr
+rrrrrrrr * @param modules
+rrrrrrrr
+rrrrrrrr * @param modules
+rrrrrrrr
+* @param modules
+*/ (function(modules) { // WebpackBootstrap
+/** ****/ 	// The module cache
+/** ****/ 	var installedModules = {};
+/** ****/
+/** ****/ 	// The require function
+/** ****/ 	/**
+/////////// *
+/////////// * @param moduleId
+///////////
+/////////// * @param moduleId
+///////////
+/////////// * @param moduleId
+///////////
+*/
+function __webpack_require__(moduleId) {
+/** ****/
+/** ****/ 		// Check if module is in cache
+/** ****/ 		if (installedModules[moduleId]) {
+/** ****/ 			return installedModules[moduleId].exports;
+/** ****/ 		}
+/** ****/ 		// Create a new module (and put it into the cache)
+/** ****/ 		var module = installedModules[moduleId] = {
+/** ****/ 			i: moduleId,
+/** ****/ 			l: false,
+/** ****/ 			exports: {}
+/** ****/};
+/** ****/
+/** ****/ 		// Execute the module function
+/** ****/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/** ****/
+/** ****/ 		// Flag the module as loaded
+/** ****/ 		module.l = true;
+/** ****/
+/** ****/ 		// Return the exports of the module
+/** ****/ 		return module.exports;
+/** ****/ 	}
+/** ****/
+/** ****/
+/** ****/ 	// expose the modules object (__webpack_modules__)
+/** ****/ 	__webpack_require__.m = modules;
+/** ****/
+/** ****/ 	// expose the module cache
+/** ****/ 	__webpack_require__.c = installedModules;
+/** ****/
+/** ****/ 	// define getter function for harmony exports
+/**
+ * ***
+ * @param exports
+ * @param name
+ * @param getter
+ */ 	__webpack_require__.d = function(exports, name, getter) {
+/** ****/ 		if (!__webpack_require__.o(exports, name)) {
+/** ****/ 			Object.defineProperty(exports, name, {
+/** ****/ 				configurable: false,
+/** ****/ 				enumerable: true,
+/** ****/ 				get: getter
+/** ****/});
+/** ****/ 		}
+/** ****/ 	};
+/** ****/
+/** ****/ 	// getDefaultExport function for compatibility with non-harmony modules
+/**
+ * ***
+ * @param module
+ */ 	__webpack_require__.n = function(module) {
+/** ****/ 		var getter = module && module.__esModule ?
+/** ****/ 			function getDefault() {
+ return module.default;
+} :
+/** ****/ 			function getModuleExports() {
+ return module;
+};
+/** ****/ 		__webpack_require__.d(getter, 'a', getter);
+/** ****/ 		return getter;
+/** ****/ 	};
+/** ****/
+/** ****/ 	// Object.prototype.hasOwnProperty.call
+/**
+ * ***
+ * @param object
+ * @param property
+ */ 	__webpack_require__.o = function(object, property) {
+ return Object.prototype.hasOwnProperty.call(object, property);
+};
+/** ****/
+/** ****/ 	// __webpack_public_path__
+/** ****/ 	__webpack_require__.p = "";
+/** ****/
+/** ****/ 	// Load entry module and return exports
+/** ****/ 	return __webpack_require__(__webpack_require__.s = 27);
+/** ****/ })
+/** **********************************************************************/
+/** ****/ ([
 /* 0 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -91,11 +128,74 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+var _slicedToArray = (function() {
+ /**
+  *
+  * @param arr
+  * @param i
+  */
+function sliceIterator(arr, i) {
+ var _arr = []; var _n = true; var _d = false; var _e = undefined; try {
+ for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+ _arr.push(_s.value); if (i && _arr.length === i) {
+ break;
+}
+}
+} catch (err) {
+ _d = true; _e = err;
+} finally {
+ try {
+ if (!_n && _i.return) {
+ _i.return();
+}
+} finally {
+ if (_d) {
+ throw _e;
+}
+}
+} return _arr;
+} return function(arr, i) {
+ if (Array.isArray(arr)) {
+ return arr;
+} else if (Symbol.iterator in Object(arr)) {
+ return sliceIterator(arr, i);
+} else {
+ throw new TypeError("Invalid attempt to destructure non-iterable instance");
+}
+};
+}());
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+var _createClass = (function() {
+ /**
+  *
+  * @param target
+  * @param props
+  */
+function defineProperties(target, props) {
+ for (var i = 0; i < props.length; i++) {
+ var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) {
+ descriptor.writable = true;
+} Object.defineProperty(target, descriptor.key, descriptor);
+}
+} return function(Constructor, protoProps, staticProps) {
+ if (protoProps) {
+ defineProperties(Constructor.prototype, protoProps);
+} if (staticProps) {
+ defineProperties(Constructor, staticProps);
+} return Constructor;
+};
+}());
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+/**
+ *
+ * @param instance
+ * @param Constructor
+ */
+function _classCallCheck(instance, Constructor) {
+ if (!(instance instanceof Constructor)) {
+ throw new TypeError("Cannot call a class as a function");
+}
+}
 
 var HEX3 = /^#([a-f0-9]{3})$/i;
 var hex3 = function hex3(value) {
@@ -142,7 +242,11 @@ var namedColor = function namedColor(name) {
     return color ? color : false;
 };
 
-var Color = function () {
+var Color = (function() {
+    /**
+     *
+     * @param value
+     */
     function Color(value) {
         _classCallCheck(this, Color);
 
@@ -172,7 +276,7 @@ var Color = function () {
     }]);
 
     return Color;
-}();
+}());
 
 exports.default = Color;
 
@@ -342,9 +446,37 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+var _createClass = (function() {
+ /**
+  *
+  * @param target
+  * @param props
+  */
+function defineProperties(target, props) {
+ for (var i = 0; i < props.length; i++) {
+ var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) {
+ descriptor.writable = true;
+} Object.defineProperty(target, descriptor.key, descriptor);
+}
+} return function(Constructor, protoProps, staticProps) {
+ if (protoProps) {
+ defineProperties(Constructor.prototype, protoProps);
+} if (staticProps) {
+ defineProperties(Constructor, staticProps);
+} return Constructor;
+};
+}());
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+/**
+ *
+ * @param instance
+ * @param Constructor
+ */
+function _classCallCheck(instance, Constructor) {
+ if (!(instance instanceof Constructor)) {
+ throw new TypeError("Cannot call a class as a function");
+}
+}
 
 var LENGTH_WITH_UNIT = /([\d.]+)(px|r?em|%)/i;
 
@@ -353,7 +485,11 @@ var LENGTH_TYPE = exports.LENGTH_TYPE = {
     PERCENTAGE: 1
 };
 
-var Length = function () {
+var Length = (function() {
+    /**
+     *
+     * @param value
+     */
     function Length(value) {
         _classCallCheck(this, Length);
 
@@ -383,7 +519,7 @@ var Length = function () {
     }]);
 
     return Length;
-}();
+}());
 
 exports.default = Length;
 
@@ -421,7 +557,26 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.parseBoundCurves = exports.calculatePaddingBoxPath = exports.calculateBorderBoxPath = exports.parsePathForBorder = exports.parseDocumentSize = exports.calculateContentBox = exports.calculatePaddingBox = exports.parseBounds = exports.Bounds = undefined;
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+var _createClass = (function() {
+ /**
+  *
+  * @param target
+  * @param props
+  */
+function defineProperties(target, props) {
+ for (var i = 0; i < props.length; i++) {
+ var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) {
+ descriptor.writable = true;
+} Object.defineProperty(target, descriptor.key, descriptor);
+}
+} return function(Constructor, protoProps, staticProps) {
+ if (protoProps) {
+ defineProperties(Constructor.prototype, protoProps);
+} if (staticProps) {
+ defineProperties(Constructor, staticProps);
+} return Constructor;
+};
+}());
 
 var _Vector = __webpack_require__(7);
 
@@ -431,9 +586,24 @@ var _BezierCurve = __webpack_require__(32);
 
 var _BezierCurve2 = _interopRequireDefault(_BezierCurve);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+/**
+ *
+ * @param obj
+ */
+function _interopRequireDefault(obj) {
+ return obj && obj.__esModule ? obj : {"default": obj};
+}
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+/**
+ *
+ * @param instance
+ * @param Constructor
+ */
+function _classCallCheck(instance, Constructor) {
+ if (!(instance instanceof Constructor)) {
+ throw new TypeError("Cannot call a class as a function");
+}
+}
 
 var TOP = 0;
 var RIGHT = 1;
@@ -443,7 +613,14 @@ var LEFT = 3;
 var H = 0;
 var V = 1;
 
-var Bounds = exports.Bounds = function () {
+var Bounds = exports.Bounds = (function() {
+    /**
+     *
+     * @param x
+     * @param y
+     * @param w
+     * @param h
+     */
     function Bounds(x, y, w, h) {
         _classCallCheck(this, Bounds);
 
@@ -461,7 +638,7 @@ var Bounds = exports.Bounds = function () {
     }]);
 
     return Bounds;
-}();
+}());
 
 var parseBounds = exports.parseBounds = function parseBounds(node, scrollX, scrollY) {
     return Bounds.fromClientRect(node.getBoundingClientRect(), scrollX, scrollY);
@@ -486,7 +663,7 @@ var parseDocumentSize = exports.parseDocumentSize = function parseDocumentSize(d
     var documentElement = document.documentElement;
 
     if (!body || !documentElement) {
-        throw new Error( true ? 'Unable to get document size' : '');
+        throw new Error(true ? 'Unable to get document size' : '');
     }
     var width = Math.max(Math.max(body.scrollWidth, documentElement.scrollWidth), Math.max(body.offsetWidth, documentElement.offsetWidth), Math.max(body.clientWidth, documentElement.clientWidth));
 
@@ -600,10 +777,10 @@ var CORNER = {
 
 var getCurvePoints = function getCurvePoints(x, y, r1, r2, position) {
     var kappa = 4 * ((Math.sqrt(2) - 1) / 3);
-    var ox = r1 * kappa; // control point offset horizontal
-    var oy = r2 * kappa; // control point offset vertical
-    var xm = x + r1; // x-middle
-    var ym = y + r2; // y-middle
+    var ox = r1 * kappa; // Control point offset horizontal
+    var oy = r2 * kappa; // Control point offset vertical
+    var xm = x + r1; // X-middle
+    var ym = y + r2; // Y-middle
 
     switch (position) {
         case CORNER.TOP_LEFT:
@@ -682,9 +859,24 @@ var _Bounds = __webpack_require__(2);
 
 var _padding = __webpack_require__(17);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+/**
+ *
+ * @param obj
+ */
+function _interopRequireDefault(obj) {
+ return obj && obj.__esModule ? obj : {"default": obj};
+}
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+/**
+ *
+ * @param instance
+ * @param Constructor
+ */
+function _classCallCheck(instance, Constructor) {
+ if (!(instance instanceof Constructor)) {
+ throw new TypeError("Cannot call a class as a function");
+}
+}
 
 var BACKGROUND_REPEAT = exports.BACKGROUND_REPEAT = {
     REPEAT: 0,
@@ -864,7 +1056,7 @@ var parseBackgroundRepeat = function parseBackgroundRepeat(backgroundRepeat) {
 };
 
 var parseBackgroundImages = function parseBackgroundImages(style, resourceLoader) {
-    var sources = parseBackgroundImage(style.backgroundImage).map(function (backgroundImage) {
+    var sources = parseBackgroundImage(style.backgroundImage).map(function(backgroundImage) {
         if (backgroundImage.method === 'url') {
             var key = resourceLoader.loadImage(backgroundImage.args[0]);
             backgroundImage.args = key ? [key] : [];
@@ -875,7 +1067,7 @@ var parseBackgroundImages = function parseBackgroundImages(style, resourceLoader
     var repeats = style.backgroundRepeat.split(',');
     var sizes = style.backgroundSize.split(',');
 
-    return sources.map(function (source, index) {
+    return sources.map(function(source, index) {
         var size = (sizes[index] || AUTO).trim().split(' ').map(parseBackgroundSize);
         var position = (positions[index] || AUTO).trim().split(' ').map(parseBackgoundPosition);
 
@@ -946,7 +1138,7 @@ var parseBackgroundImage = exports.parseBackgroundImage = function parseBackgrou
         method = definition = '';
     };
 
-    image.split('').forEach(function (c) {
+    image.split('').forEach(function(c) {
         if (mode === 0 && whitespace.test(c)) {
             return;
         }
@@ -1036,7 +1228,26 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+var _createClass = (function() {
+ /**
+  *
+  * @param target
+  * @param props
+  */
+function defineProperties(target, props) {
+ for (var i = 0; i < props.length; i++) {
+ var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) {
+ descriptor.writable = true;
+} Object.defineProperty(target, descriptor.key, descriptor);
+}
+} return function(Constructor, protoProps, staticProps) {
+ if (protoProps) {
+ defineProperties(Constructor.prototype, protoProps);
+} if (staticProps) {
+ defineProperties(Constructor, staticProps);
+} return Constructor;
+};
+}());
 
 var _Color = __webpack_require__(0);
 
@@ -1092,13 +1303,35 @@ var _Input = __webpack_require__(21);
 
 var _ListItem = __webpack_require__(14);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+/**
+ *
+ * @param obj
+ */
+function _interopRequireDefault(obj) {
+ return obj && obj.__esModule ? obj : {"default": obj};
+}
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+/**
+ *
+ * @param instance
+ * @param Constructor
+ */
+function _classCallCheck(instance, Constructor) {
+ if (!(instance instanceof Constructor)) {
+ throw new TypeError("Cannot call a class as a function");
+}
+}
 
 var INPUT_TAGS = ['INPUT', 'TEXTAREA', 'SELECT'];
 
-var NodeContainer = function () {
+var NodeContainer = (function() {
+    /**
+     *
+     * @param node
+     * @param parent
+     * @param resourceLoader
+     * @param index
+     */
     function NodeContainer(node, parent, resourceLoader, index) {
         var _this = this;
 
@@ -1128,7 +1361,7 @@ var NodeContainer = function () {
             borderRadius: (node instanceof defaultView.HTMLInputElement || node instanceof HTMLInputElement) && IS_INPUT ? (0, _Input.getInputBorderRadius)(node) : (0, _borderRadius.parseBorderRadius)(style),
             color: IS_INPUT ? _Input.INPUT_COLOR : new _Color2.default(style.color),
             display: display,
-            float: (0, _float.parseCSSFloat)(style.float),
+            "float": (0, _float.parseCSSFloat)(style.float),
             font: (0, _font.parseFont)(style),
             letterSpacing: (0, _letterSpacing.parseLetterSpacing)(style.letterSpacing),
             listStyle: display === _display.DISPLAY.LIST_ITEM ? (0, _listStyle.parseListStyle)(style) : null,
@@ -1149,7 +1382,7 @@ var NodeContainer = function () {
         };
 
         if (this.isTransformed()) {
-            // getBoundingClientRect provides values post-transform, we want them without the transformation
+            // GetBoundingClientRect provides values post-transform, we want them without the transformation
             node.style.transform = 'matrix(1,0,0,1,0,0)';
         }
 
@@ -1164,7 +1397,7 @@ var NodeContainer = function () {
 
         // TODO move bound retrieval for all nodes to a later stage?
         if (node.tagName === 'IMG') {
-            node.addEventListener('load', function () {
+            node.addEventListener('load', function() {
                 _this.bounds = (0, _Bounds.parseBounds)(node, scrollX, scrollY);
                 _this.curvedBounds = (0, _Bounds.parseBoundCurves)(_this.bounds, _this.style.border, _this.style.borderRadius);
             });
@@ -1174,7 +1407,7 @@ var NodeContainer = function () {
         this.curvedBounds = (0, _Bounds.parseBoundCurves)(this.bounds, this.style.border, this.style.borderRadius);
 
         if (true) {
-            this.name = '' + node.tagName.toLowerCase() + (node.id ? '#' + node.id : '') + node.className.toString().split(' ').map(function (s) {
+            this.name = '' + node.tagName.toLowerCase() + (node.id ? '#' + node.id : '') + node.className.toString().split(' ').map(function(s) {
                 return s.length ? '.' + s : '';
             }).join('');
         }
@@ -1241,7 +1474,7 @@ var NodeContainer = function () {
     }]);
 
     return NodeContainer;
-}();
+}());
 
 exports.default = NodeContainer;
 
@@ -1284,7 +1517,16 @@ Object.defineProperty(exports, "__esModule", {
 
 var _Path = __webpack_require__(5);
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+/**
+ *
+ * @param instance
+ * @param Constructor
+ */
+function _classCallCheck(instance, Constructor) {
+ if (!(instance instanceof Constructor)) {
+ throw new TypeError("Cannot call a class as a function");
+}
+}
 
 var Vector = function Vector(x, y) {
     _classCallCheck(this, Vector);
@@ -1524,15 +1766,49 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+var _createClass = (function() {
+ /**
+  *
+  * @param target
+  * @param props
+  */
+function defineProperties(target, props) {
+ for (var i = 0; i < props.length; i++) {
+ var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) {
+ descriptor.writable = true;
+} Object.defineProperty(target, descriptor.key, descriptor);
+}
+} return function(Constructor, protoProps, staticProps) {
+ if (protoProps) {
+ defineProperties(Constructor.prototype, protoProps);
+} if (staticProps) {
+ defineProperties(Constructor, staticProps);
+} return Constructor;
+};
+}());
 
 var _textTransform = __webpack_require__(20);
 
 var _TextBounds = __webpack_require__(22);
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+/**
+ *
+ * @param instance
+ * @param Constructor
+ */
+function _classCallCheck(instance, Constructor) {
+ if (!(instance instanceof Constructor)) {
+ throw new TypeError("Cannot call a class as a function");
+}
+}
 
-var TextContainer = function () {
+var TextContainer = (function() {
+    /**
+     *
+     * @param text
+     * @param parent
+     * @param bounds
+     */
     function TextContainer(text, parent, bounds) {
         _classCallCheck(this, TextContainer);
 
@@ -1550,7 +1826,7 @@ var TextContainer = function () {
     }]);
 
     return TextContainer;
-}();
+}());
 
 exports.default = TextContainer;
 
@@ -1570,6 +1846,12 @@ var transform = function transform(text, _transform) {
     }
 };
 
+/**
+ *
+ * @param m
+ * @param p1
+ * @param p2
+ */
 function capitalize(m, p1, p2) {
     if (m.length > 0) {
         return p1 + p2.toUpperCase();
@@ -1615,13 +1897,13 @@ var testRangeBounds = function testRangeBounds(document) {
     return false;
 };
 
-// iOS 10.3 taints canvas with base64 images unless crossOrigin = 'anonymous'
+// IOS 10.3 taints canvas with base64 images unless crossOrigin = 'anonymous'
 var testBase64 = function testBase64(document, src) {
     var img = new Image();
     var canvas = document.createElement('canvas');
     var ctx = canvas.getContext('2d');
 
-    return new Promise(function (resolve) {
+    return new Promise(function(resolve) {
         // Single pixel base64 image renders fine on iOS 10.3???
         img.src = src;
 
@@ -1637,12 +1919,12 @@ var testBase64 = function testBase64(document, src) {
         };
 
         img.onload = onload;
-        img.onerror = function () {
+        img.onerror = function() {
             return resolve(false);
         };
 
         if (img.complete === true) {
-            setTimeout(function () {
+            setTimeout(function() {
                 onload();
             }, 500);
         }
@@ -1692,7 +1974,7 @@ var testForeignObject = function testForeignObject(document) {
     ctx.fillStyle = 'red';
     ctx.fillRect(0, 0, size, size);
 
-    return (0, _ForeignObjectRenderer.loadSerializedSVG)(svg).then(function (img) {
+    return (0, _ForeignObjectRenderer.loadSerializedSVG)(svg).then(function(img) {
         ctx.drawImage(img, 0, 0);
         var data = ctx.getImageData(0, 0, size, size).data;
         ctx.fillStyle = 'red';
@@ -1703,11 +1985,11 @@ var testForeignObject = function testForeignObject(document) {
         node.style.height = size + 'px';
         // Firefox 55 does not render inline <img /> tags
         return isGreenPixel(data) ? (0, _ForeignObjectRenderer.loadSerializedSVG)((0, _ForeignObjectRenderer.createForeignObjectSVG)(size, size, 0, 0, node)) : Promise.reject(false);
-    }).then(function (img) {
+    }).then(function(img) {
         ctx.drawImage(img, 0, 0);
         // Edge does not render background-images
         return isGreenPixel(ctx.getImageData(0, 0, size, size).data);
-    }).catch(function (e) {
+    }).catch(function(e) {
         return false;
     });
 };
@@ -1718,7 +2000,7 @@ var FEATURES = {
         'use strict';
 
         var value = testRangeBounds(document);
-        Object.defineProperty(FEATURES, 'SUPPORT_RANGE_BOUNDS', { value: value });
+        Object.defineProperty(FEATURES, 'SUPPORT_RANGE_BOUNDS', {value: value});
         return value;
     },
     // $FlowFixMe - get/set properties not yet supported
@@ -1726,18 +2008,18 @@ var FEATURES = {
         'use strict';
 
         var value = testSVG(document);
-        Object.defineProperty(FEATURES, 'SUPPORT_SVG_DRAWING', { value: value });
+        Object.defineProperty(FEATURES, 'SUPPORT_SVG_DRAWING', {value: value});
         return value;
     },
     // $FlowFixMe - get/set properties not yet supported
     get SUPPORT_BASE64_DRAWING() {
         'use strict';
 
-        return function (src) {
+        return function(src) {
             var _value = testBase64(document, src);
-            Object.defineProperty(FEATURES, 'SUPPORT_BASE64_DRAWING', { value: function value() {
+            Object.defineProperty(FEATURES, 'SUPPORT_BASE64_DRAWING', {value: function value() {
                     return _value;
-                } });
+                }});
             return _value;
         };
     },
@@ -1746,7 +2028,7 @@ var FEATURES = {
         'use strict';
 
         var value = typeof Array.from === 'function' && typeof window.fetch === 'function' ? testForeignObject(document) : Promise.resolve(false);
-        Object.defineProperty(FEATURES, 'SUPPORT_FOREIGNOBJECT_DRAWING', { value: value });
+        Object.defineProperty(FEATURES, 'SUPPORT_FOREIGNOBJECT_DRAWING', {value: value});
         return value;
     },
     // $FlowFixMe - get/set properties not yet supported
@@ -1754,7 +2036,7 @@ var FEATURES = {
         'use strict';
 
         var value = testCORS();
-        Object.defineProperty(FEATURES, 'SUPPORT_CORS_IMAGES', { value: value });
+        Object.defineProperty(FEATURES, 'SUPPORT_CORS_IMAGES', {value: value});
         return value;
     },
     // $FlowFixMe - get/set properties not yet supported
@@ -1762,7 +2044,7 @@ var FEATURES = {
         'use strict';
 
         var value = testResponseType();
-        Object.defineProperty(FEATURES, 'SUPPORT_RESPONSE_TYPE', { value: value });
+        Object.defineProperty(FEATURES, 'SUPPORT_RESPONSE_TYPE', {value: value});
         return value;
     },
     // $FlowFixMe - get/set properties not yet supported
@@ -1770,7 +2052,7 @@ var FEATURES = {
         'use strict';
 
         var value = 'withCredentials' in new XMLHttpRequest();
-        Object.defineProperty(FEATURES, 'SUPPORT_CORS_XHR', { value: value });
+        Object.defineProperty(FEATURES, 'SUPPORT_CORS_XHR', {value: value});
         return value;
     }
 };
@@ -1793,7 +2075,13 @@ var _Color = __webpack_require__(0);
 
 var _Color2 = _interopRequireDefault(_Color);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+/**
+ *
+ * @param obj
+ */
+function _interopRequireDefault(obj) {
+ return obj && obj.__esModule ? obj : {"default": obj};
+}
 
 var TEXT_DECORATION_STYLE = exports.TEXT_DECORATION_STYLE = {
     SOLID: 0,
@@ -1880,7 +2168,13 @@ var _Color = __webpack_require__(0);
 
 var _Color2 = _interopRequireDefault(_Color);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+/**
+ *
+ * @param obj
+ */
+function _interopRequireDefault(obj) {
+ return obj && obj.__esModule ? obj : {"default": obj};
+}
 
 var BORDER_STYLE = exports.BORDER_STYLE = {
     NONE: 0,
@@ -1894,7 +2188,7 @@ var BORDER_SIDES = exports.BORDER_SIDES = {
     LEFT: 3
 };
 
-var SIDES = Object.keys(BORDER_SIDES).map(function (s) {
+var SIDES = Object.keys(BORDER_SIDES).map(function(s) {
     return s.toLowerCase();
 });
 
@@ -1907,7 +2201,7 @@ var parseBorderStyle = function parseBorderStyle(style) {
 };
 
 var parseBorder = exports.parseBorder = function parseBorder(style) {
-    return SIDES.map(function (side) {
+    return SIDES.map(function(side) {
         var borderColor = new _Color2.default(style.getPropertyValue('border-' + side + '-color'));
         var borderStyle = parseBorderStyle(style.getPropertyValue('border-' + side + '-style'));
         var borderWidth = parseFloat(style.getPropertyValue('border-' + side + '-width'));
@@ -2066,7 +2360,13 @@ var _listStyle = __webpack_require__(8);
 
 var _Unicode = __webpack_require__(24);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+/**
+ *
+ * @param obj
+ */
+function _interopRequireDefault(obj) {
+ return obj && obj.__esModule ? obj : {"default": obj};
+}
 
 // Margin between the enumeration and the list item content
 var MARGIN_RIGHT = 7;
@@ -2181,7 +2481,7 @@ var createAdditiveCounter = function createAdditiveCounter(value, min, max, symb
         return createCounterText(value, fallback, suffix.length > 0);
     }
 
-    return symbols.integers.reduce(function (string, integer, index) {
+    return symbols.integers.reduce(function(string, integer, index) {
         while (value >= integer) {
             value -= integer;
             string += symbols.values[index];
@@ -2207,7 +2507,7 @@ var createCounterStyleWithSymbolResolver = function createCounterStyleWithSymbol
 var createCounterStyleFromRange = function createCounterStyleFromRange(value, codePointRangeStart, codePointRangeEnd, isNumeric, suffix) {
     var codePointRangeLength = codePointRangeEnd - codePointRangeStart + 1;
 
-    return (value < 0 ? '-' : '') + (createCounterStyleWithSymbolResolver(Math.abs(value), codePointRangeLength, isNumeric, function (codePoint) {
+    return (value < 0 ? '-' : '') + (createCounterStyleWithSymbolResolver(Math.abs(value), codePointRangeLength, isNumeric, function(codePoint) {
         return (0, _Unicode.fromCodePoint)(Math.floor(codePoint % codePointRangeLength) + codePointRangeStart);
     }) + suffix);
 };
@@ -2216,7 +2516,7 @@ var createCounterStyleFromSymbols = function createCounterStyleFromSymbols(value
     var suffix = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '. ';
 
     var codePointRangeLength = symbols.length;
-    return createCounterStyleWithSymbolResolver(Math.abs(value), codePointRangeLength, false, function (codePoint) {
+    return createCounterStyleWithSymbolResolver(Math.abs(value), codePointRangeLength, false, function(codePoint) {
         return symbols[Math.floor(codePoint % codePointRangeLength)];
     }) + suffix;
 };
@@ -2374,25 +2674,57 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+var _createClass = (function() {
+ /**
+  *
+  * @param target
+  * @param props
+  */
+function defineProperties(target, props) {
+ for (var i = 0; i < props.length; i++) {
+ var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) {
+ descriptor.writable = true;
+} Object.defineProperty(target, descriptor.key, descriptor);
+}
+} return function(Constructor, protoProps, staticProps) {
+ if (protoProps) {
+ defineProperties(Constructor.prototype, protoProps);
+} if (staticProps) {
+ defineProperties(Constructor, staticProps);
+} return Constructor;
+};
+}());
 
 var _Path = __webpack_require__(5);
 
 var _textDecoration = __webpack_require__(11);
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+/**
+ *
+ * @param instance
+ * @param Constructor
+ */
+function _classCallCheck(instance, Constructor) {
+ if (!(instance instanceof Constructor)) {
+ throw new TypeError("Cannot call a class as a function");
+}
+}
 
 var addColorStops = function addColorStops(gradient, canvasGradient) {
-    var maxStop = Math.max.apply(null, gradient.colorStops.map(function (colorStop) {
+    var maxStop = Math.max.apply(null, gradient.colorStops.map(function(colorStop) {
         return colorStop.stop;
     }));
     var f = 1 / Math.max(1, maxStop);
-    gradient.colorStops.forEach(function (colorStop) {
+    gradient.colorStops.forEach(function(colorStop) {
         canvasGradient.addColorStop(f * colorStop.stop, colorStop.color.toString());
     });
 };
 
-var CanvasRenderer = function () {
+var CanvasRenderer = (function() {
+    /**
+     *
+     * @param canvas
+     */
     function CanvasRenderer(canvas) {
         _classCallCheck(this, CanvasRenderer);
 
@@ -2421,7 +2753,7 @@ var CanvasRenderer = function () {
 
             if (clipPaths.length) {
                 this.ctx.save();
-                clipPaths.forEach(function (path) {
+                clipPaths.forEach(function(path) {
                     _this.path(path);
                     _this.ctx.clip();
                 });
@@ -2464,7 +2796,7 @@ var CanvasRenderer = function () {
 
             this.ctx.beginPath();
             if (Array.isArray(_path)) {
-                _path.forEach(function (point, index) {
+                _path.forEach(function(point, index) {
                     var start = point.type === _Path.PATH.VECTOR ? point : point.start;
                     if (index === 0) {
                         _this2.ctx.moveTo(start.x, start.y);
@@ -2514,13 +2846,13 @@ var CanvasRenderer = function () {
             this.ctx.fillStyle = radialGradient;
 
             if (gradient.radius.x !== gradient.radius.y) {
-                // transforms for elliptical radial gradient
+                // Transforms for elliptical radial gradient
                 var midX = bounds.left + 0.5 * bounds.width;
                 var midY = bounds.top + 0.5 * bounds.height;
                 var f = gradient.radius.y / gradient.radius.x;
                 var invF = 1 / f;
 
-                this.transform(midX, midY, [1, 0, 0, f, 0, 0], function () {
+                this.transform(midX, midY, [1, 0, 0, f, 0, 0], function() {
                     return _this3.ctx.fillRect(bounds.left, invF * (bounds.top - midY) + midY, bounds.width, bounds.height * invF);
                 });
             } else {
@@ -2543,10 +2875,10 @@ var CanvasRenderer = function () {
 
             this.ctx.font = [font.fontStyle, font.fontVariant, font.fontWeight, font.fontSize, font.fontFamily].join(' ');
 
-            textBounds.forEach(function (text) {
+            textBounds.forEach(function(text) {
                 _this4.ctx.fillStyle = color.toString();
                 if (textShadows && text.text.trim().length) {
-                    textShadows.slice(0).reverse().forEach(function (textShadow) {
+                    textShadows.slice(0).reverse().forEach(function(textShadow) {
                         _this4.ctx.shadowColor = textShadow.color.toString();
                         _this4.ctx.shadowOffsetX = textShadow.offsetX * _this4.options.scale;
                         _this4.ctx.shadowOffsetY = textShadow.offsetY * _this4.options.scale;
@@ -2560,7 +2892,7 @@ var CanvasRenderer = function () {
 
                 if (textDecoration !== null) {
                     var textDecorationColor = textDecoration.textDecorationColor || color;
-                    textDecoration.textDecorationLine.forEach(function (textDecorationLine) {
+                    textDecoration.textDecorationLine.forEach(function(textDecorationLine) {
                         switch (textDecorationLine) {
                             case _textDecoration.TEXT_DECORATION_LINE.UNDERLINE:
                                 // Draws a line at the baseline of the font
@@ -2620,7 +2952,7 @@ var CanvasRenderer = function () {
     }]);
 
     return CanvasRenderer;
-}();
+}());
 
 exports.default = CanvasRenderer;
 
@@ -2635,11 +2967,45 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+var _createClass = (function() {
+ /**
+  *
+  * @param target
+  * @param props
+  */
+function defineProperties(target, props) {
+ for (var i = 0; i < props.length; i++) {
+ var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) {
+ descriptor.writable = true;
+} Object.defineProperty(target, descriptor.key, descriptor);
+}
+} return function(Constructor, protoProps, staticProps) {
+ if (protoProps) {
+ defineProperties(Constructor.prototype, protoProps);
+} if (staticProps) {
+ defineProperties(Constructor, staticProps);
+} return Constructor;
+};
+}());
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+/**
+ *
+ * @param instance
+ * @param Constructor
+ */
+function _classCallCheck(instance, Constructor) {
+ if (!(instance instanceof Constructor)) {
+ throw new TypeError("Cannot call a class as a function");
+}
+}
 
-var Logger = function () {
+var Logger = (function() {
+    /**
+     *
+     * @param enabled
+     * @param id
+     * @param start
+     */
     function Logger(enabled, id, start) {
         _classCallCheck(this, Logger);
 
@@ -2684,7 +3050,7 @@ var Logger = function () {
     }]);
 
     return Logger;
-}();
+}());
 
 exports.default = Logger;
 
@@ -2704,7 +3070,13 @@ var _Length = __webpack_require__(1);
 
 var _Length2 = _interopRequireDefault(_Length);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+/**
+ *
+ * @param obj
+ */
+function _interopRequireDefault(obj) {
+ return obj && obj.__esModule ? obj : {"default": obj};
+}
 
 var PADDING_SIDES = exports.PADDING_SIDES = {
     TOP: 0,
@@ -2716,7 +3088,7 @@ var PADDING_SIDES = exports.PADDING_SIDES = {
 var SIDES = ['top', 'right', 'bottom', 'left'];
 
 var parsePadding = exports.parsePadding = function parsePadding(style) {
-    return SIDES.map(function (side) {
+    return SIDES.map(function(side) {
         return new _Length2.default(style.getPropertyValue('padding-' + side));
     });
 };
@@ -2851,7 +3223,13 @@ var _TextBounds = __webpack_require__(22);
 
 var _Util = __webpack_require__(3);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+/**
+ *
+ * @param obj
+ */
+function _interopRequireDefault(obj) {
+ return obj && obj.__esModule ? obj : {"default": obj};
+}
 
 var INPUT_COLOR = exports.INPUT_COLOR = new _Color2.default([42, 42, 42]);
 var INPUT_BORDER_COLOR = new _Color2.default([165, 165, 165]);
@@ -2959,9 +3337,24 @@ var _Feature2 = _interopRequireDefault(_Feature);
 
 var _Unicode = __webpack_require__(24);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+/**
+ *
+ * @param obj
+ */
+function _interopRequireDefault(obj) {
+ return obj && obj.__esModule ? obj : {"default": obj};
+}
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+/**
+ *
+ * @param instance
+ * @param Constructor
+ */
+function _classCallCheck(instance, Constructor) {
+ if (!(instance instanceof Constructor)) {
+ throw new TypeError("Cannot call a class as a function");
+}
+}
 
 var TextBounds = exports.TextBounds = function TextBounds(text, bounds) {
     _classCallCheck(this, TextBounds);
@@ -2972,7 +3365,7 @@ var TextBounds = exports.TextBounds = function TextBounds(text, bounds) {
 
 var parseTextBounds = exports.parseTextBounds = function parseTextBounds(value, parent, node) {
     var letterRendering = parent.style.letterSpacing !== 0;
-    var textList = letterRendering ? (0, _Unicode.toCodePoints)(value).map(function (i) {
+    var textList = letterRendering ? (0, _Unicode.toCodePoints)(value).map(function(i) {
         return (0, _Unicode.fromCodePoint)(i);
     }) : (0, _Unicode.breakWords)(value, parent);
     var length = textList.length;
@@ -3032,11 +3425,43 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+var _createClass = (function() {
+ /**
+  *
+  * @param target
+  * @param props
+  */
+function defineProperties(target, props) {
+ for (var i = 0; i < props.length; i++) {
+ var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) {
+ descriptor.writable = true;
+} Object.defineProperty(target, descriptor.key, descriptor);
+}
+} return function(Constructor, protoProps, staticProps) {
+ if (protoProps) {
+ defineProperties(Constructor.prototype, protoProps);
+} if (staticProps) {
+ defineProperties(Constructor, staticProps);
+} return Constructor;
+};
+}());
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+/**
+ *
+ * @param instance
+ * @param Constructor
+ */
+function _classCallCheck(instance, Constructor) {
+ if (!(instance instanceof Constructor)) {
+ throw new TypeError("Cannot call a class as a function");
+}
+}
 
-var ForeignObjectRenderer = function () {
+var ForeignObjectRenderer = (function() {
+    /**
+     *
+     * @param element
+     */
     function ForeignObjectRenderer(element) {
         _classCallCheck(this, ForeignObjectRenderer);
 
@@ -3059,7 +3484,7 @@ var ForeignObjectRenderer = function () {
             options.logger.log('ForeignObject renderer initialized (' + options.width + 'x' + options.height + ' at ' + options.x + ',' + options.y + ') with scale ' + options.scale);
             var svg = createForeignObjectSVG(Math.max(options.windowWidth, options.width) * options.scale, Math.max(options.windowHeight, options.height) * options.scale, options.scrollX * options.scale, options.scrollY * options.scale, this.element);
 
-            return loadSerializedSVG(svg).then(function (img) {
+            return loadSerializedSVG(svg).then(function(img) {
                 if (options.backgroundColor) {
                     _this.ctx.fillStyle = options.backgroundColor.toString();
                     _this.ctx.fillRect(0, 0, options.width * options.scale, options.height * options.scale);
@@ -3072,7 +3497,7 @@ var ForeignObjectRenderer = function () {
     }]);
 
     return ForeignObjectRenderer;
-}();
+}());
 
 exports.default = ForeignObjectRenderer;
 var createForeignObjectSVG = exports.createForeignObjectSVG = function createForeignObjectSVG(width, height, x, y, node) {
@@ -3095,9 +3520,9 @@ var createForeignObjectSVG = exports.createForeignObjectSVG = function createFor
 };
 
 var loadSerializedSVG = exports.loadSerializedSVG = function loadSerializedSVG(svg) {
-    return new Promise(function (resolve, reject) {
+    return new Promise(function(resolve, reject) {
         var img = new Image();
-        img.onload = function () {
+        img.onload = function() {
             return resolve(img);
         };
         img.onerror = reject;
@@ -3163,15 +3588,47 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.FontMetrics = undefined;
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+var _createClass = (function() {
+ /**
+  *
+  * @param target
+  * @param props
+  */
+function defineProperties(target, props) {
+ for (var i = 0; i < props.length; i++) {
+ var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) {
+ descriptor.writable = true;
+} Object.defineProperty(target, descriptor.key, descriptor);
+}
+} return function(Constructor, protoProps, staticProps) {
+ if (protoProps) {
+ defineProperties(Constructor.prototype, protoProps);
+} if (staticProps) {
+ defineProperties(Constructor, staticProps);
+} return Constructor;
+};
+}());
 
 var _Util = __webpack_require__(3);
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+/**
+ *
+ * @param instance
+ * @param Constructor
+ */
+function _classCallCheck(instance, Constructor) {
+ if (!(instance instanceof Constructor)) {
+ throw new TypeError("Cannot call a class as a function");
+}
+}
 
 var SAMPLE_TEXT = 'Hidden Text';
 
-var FontMetrics = exports.FontMetrics = function () {
+var FontMetrics = exports.FontMetrics = (function() {
+    /**
+     *
+     * @param document
+     */
     function FontMetrics(document) {
         _classCallCheck(this, FontMetrics);
 
@@ -3188,7 +3645,7 @@ var FontMetrics = exports.FontMetrics = function () {
 
             var body = this._document.body;
             if (!body) {
-                throw new Error( true ? 'No document found for font metrics' : '');
+                throw new Error(true ? 'No document found for font metrics' : '');
             }
 
             container.style.visibility = 'hidden';
@@ -3227,7 +3684,7 @@ var FontMetrics = exports.FontMetrics = function () {
 
             body.removeChild(container);
 
-            return { baseline: baseline, middle: middle };
+            return {baseline: baseline, middle: middle};
         }
     }, {
         key: 'getMetrics',
@@ -3242,7 +3699,7 @@ var FontMetrics = exports.FontMetrics = function () {
     }]);
 
     return FontMetrics;
-}();
+}());
 
 /***/ }),
 /* 26 */
@@ -3260,18 +3717,24 @@ var _Feature = __webpack_require__(10);
 
 var _Feature2 = _interopRequireDefault(_Feature);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+/**
+ *
+ * @param obj
+ */
+function _interopRequireDefault(obj) {
+ return obj && obj.__esModule ? obj : {"default": obj};
+}
 
 var Proxy = exports.Proxy = function Proxy(src, options) {
     if (!options.proxy) {
-        return Promise.reject( true ? 'No proxy defined' : null);
+        return Promise.reject(true ? 'No proxy defined' : null);
     }
     var proxy = options.proxy;
 
-    return new Promise(function (resolve, reject) {
+    return new Promise(function(resolve, reject) {
         var responseType = _Feature2.default.SUPPORT_CORS_XHR && _Feature2.default.SUPPORT_RESPONSE_TYPE ? 'blob' : 'text';
         var xhr = _Feature2.default.SUPPORT_CORS_XHR ? new XMLHttpRequest() : new XDomainRequest();
-        xhr.onload = function () {
+        xhr.onload = function() {
             if (xhr instanceof XMLHttpRequest) {
                 if (xhr.status === 200) {
                     if (responseType === 'text') {
@@ -3279,17 +3742,17 @@ var Proxy = exports.Proxy = function Proxy(src, options) {
                     } else {
                         var reader = new FileReader();
                         // $FlowFixMe
-                        reader.addEventListener('load', function () {
+                        reader.addEventListener('load', function() {
                             return resolve(reader.result);
                         }, false);
                         // $FlowFixMe
-                        reader.addEventListener('error', function (e) {
+                        reader.addEventListener('error', function(e) {
                             return reject(e);
                         }, false);
                         reader.readAsDataURL(xhr.response);
                     }
                 } else {
-                    reject( true ? 'Failed to proxy resource ' + src.substring(0, 256) + ' with status code ' + xhr.status : '');
+                    reject(true ? 'Failed to proxy resource ' + src.substring(0, 256) + ' with status code ' + xhr.status : '');
                 }
             } else {
                 resolve(xhr.responseText);
@@ -3306,8 +3769,8 @@ var Proxy = exports.Proxy = function Proxy(src, options) {
         if (options.imageTimeout) {
             var timeout = options.imageTimeout;
             xhr.timeout = timeout;
-            xhr.ontimeout = function () {
-                return reject( true ? 'Timed out (' + timeout + 'ms) proxying ' + src.substring(0, 256) : '');
+            xhr.ontimeout = function() {
+                return reject(true ? 'Timed out (' + timeout + 'ms) proxying ' + src.substring(0, 256) : '');
             };
         }
 
@@ -3322,7 +3785,15 @@ var Proxy = exports.Proxy = function Proxy(src, options) {
 "use strict";
 
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+var _extends = Object.assign || function(target) {
+ for (var i = 1; i < arguments.length; i++) {
+ var source = arguments[i]; for (var key in source) {
+ if (Object.prototype.hasOwnProperty.call(source, key)) {
+ target[key] = source[key];
+}
+}
+} return target;
+};
 
 var _CanvasRenderer = __webpack_require__(15);
 
@@ -3334,7 +3805,13 @@ var _Logger2 = _interopRequireDefault(_Logger);
 
 var _Window = __webpack_require__(28);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+/**
+ *
+ * @param obj
+ */
+function _interopRequireDefault(obj) {
+ return obj && obj.__esModule ? obj : {"default": obj};
+}
 
 var html2canvas = function html2canvas(element, conf) {
     var config = conf || {};
@@ -3372,7 +3849,7 @@ var html2canvas = function html2canvas(element, conf) {
     var result = (0, _Window.renderElement)(element, _extends({}, defaultOptions, config), logger);
 
     if (true) {
-        return result.catch(function (e) {
+        return result.catch(function(e) {
             logger.error(e);
             throw e;
         });
@@ -3396,7 +3873,42 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.renderElement = undefined;
 
-var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+var _slicedToArray = (function() {
+ /**
+  *
+  * @param arr
+  * @param i
+  */
+function sliceIterator(arr, i) {
+ var _arr = []; var _n = true; var _d = false; var _e = undefined; try {
+ for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+ _arr.push(_s.value); if (i && _arr.length === i) {
+ break;
+}
+}
+} catch (err) {
+ _d = true; _e = err;
+} finally {
+ try {
+ if (!_n && _i.return) {
+ _i.return();
+}
+} finally {
+ if (_d) {
+ throw _e;
+}
+}
+} return _arr;
+} return function(arr, i) {
+ if (Array.isArray(arr)) {
+ return arr;
+} else if (Symbol.iterator in Object(arr)) {
+ return sliceIterator(arr, i);
+} else {
+ throw new TypeError("Invalid attempt to destructure non-iterable instance");
+}
+};
+}());
 
 var _Logger = __webpack_require__(16);
 
@@ -3426,7 +3938,13 @@ var _Color = __webpack_require__(0);
 
 var _Color2 = _interopRequireDefault(_Color);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+/**
+ *
+ * @param obj
+ */
+function _interopRequireDefault(obj) {
+ return obj && obj.__esModule ? obj : {"default": obj};
+}
 
 var renderElement = exports.renderElement = function renderElement(element, options, logger) {
     var ownerDocument = element.ownerDocument;
@@ -3440,15 +3958,15 @@ var renderElement = exports.renderElement = function renderElement(element, opti
     var backgroundColor = element === ownerDocument.documentElement ? documentBackgroundColor.isTransparent() ? bodyBackgroundColor.isTransparent() ? options.backgroundColor ? new _Color2.default(options.backgroundColor) : null : bodyBackgroundColor : documentBackgroundColor : options.backgroundColor ? new _Color2.default(options.backgroundColor) : null;
 
     return (options.foreignObjectRendering ? // $FlowFixMe
-    _Feature2.default.SUPPORT_FOREIGNOBJECT_DRAWING : Promise.resolve(false)).then(function (supportForeignObject) {
-        return supportForeignObject ? function (cloner) {
+    _Feature2.default.SUPPORT_FOREIGNOBJECT_DRAWING : Promise.resolve(false)).then(function(supportForeignObject) {
+        return supportForeignObject ? (function(cloner) {
             if (true) {
                 logger.log('Document cloned, using foreignObject rendering');
             }
 
-            return cloner.inlineFonts(ownerDocument).then(function () {
+            return cloner.inlineFonts(ownerDocument).then(function() {
                 return cloner.resourceLoader.ready();
-            }).then(function () {
+            }).then(function() {
                 var renderer = new _ForeignObjectRenderer2.default(cloner.documentElement);
 
                 var defaultView = ownerDocument.defaultView;
@@ -3477,7 +3995,7 @@ var renderElement = exports.renderElement = function renderElement(element, opti
                     scrollY: options.scrollY
                 });
             });
-        }(new _Clone.DocumentCloner(element, options, logger, true, renderElement)) : (0, _Clone.cloneWindow)(ownerDocument, windowBounds, element, options, logger, renderElement).then(function (_ref2) {
+        }(new _Clone.DocumentCloner(element, options, logger, true, renderElement))) : (0, _Clone.cloneWindow)(ownerDocument, windowBounds, element, options, logger, renderElement).then(function(_ref2) {
             var _ref3 = _slicedToArray(_ref2, 3),
                 container = _ref3[0],
                 clonedElement = _ref3[1],
@@ -3494,7 +4012,7 @@ var renderElement = exports.renderElement = function renderElement(element, opti
                 stack.container.style.background.backgroundColor = _Color.TRANSPARENT;
             }
 
-            return resourceLoader.ready().then(function (imageStore) {
+            return resourceLoader.ready().then(function(imageStore) {
                 var fontMetrics = new _Font.FontMetrics(clonedDocument);
                 if (true) {
                     logger.log('Starting renderer');
@@ -3525,7 +4043,7 @@ var renderElement = exports.renderElement = function renderElement(element, opti
                 };
 
                 if (Array.isArray(options.target)) {
-                    return Promise.all(options.target.map(function (target) {
+                    return Promise.all(options.target.map(function(target) {
                         var renderer = new _Renderer2.default(target, renderOptions);
                         return renderer.render(stack);
                     }));
@@ -3577,7 +4095,13 @@ var _ListItem = __webpack_require__(14);
 
 var _listStyle = __webpack_require__(8);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+/**
+ *
+ * @param obj
+ */
+function _interopRequireDefault(obj) {
+ return obj && obj.__esModule ? obj : {"default": obj};
+}
 
 var NodeParser = exports.NodeParser = function NodeParser(node, resourceLoader, logger) {
     if (true) {
@@ -3632,7 +4156,7 @@ var parseNodeTree = function parseNodeTree(node, parent, stack, resourceLoader, 
                     var SHOULD_TRAVERSE_CHILDREN = childNode.tagName !== 'TEXTAREA';
                     var treatAsRealStackingContext = createsRealStackingContext(container, childNode);
                     if (treatAsRealStackingContext || createsStackingContext(container)) {
-                        // for treatAsRealStackingContext:false, any positioned descendants and descendants
+                        // For treatAsRealStackingContext:false, any positioned descendants and descendants
                         // which actually create a new stacking context should be considered part of the parent stacking context
                         var parentStack = treatAsRealStackingContext || container.isPositioned() ? stack.getRealParentStackingContext() : stack;
                         var childStack = new _StackingContext2.default(container, parentStack, treatAsRealStackingContext);
@@ -3652,7 +4176,7 @@ var parseNodeTree = function parseNodeTree(node, parent, stack, resourceLoader, 
             var _container = new _NodeContainer2.default(childNode, parent, resourceLoader, index++);
             var _treatAsRealStackingContext = createsRealStackingContext(_container, childNode);
             if (_treatAsRealStackingContext || createsStackingContext(_container)) {
-                // for treatAsRealStackingContext:false, any positioned descendants and descendants
+                // For treatAsRealStackingContext:false, any positioned descendants and descendants
                 // which actually create a new stacking context should be considered part of the parent stacking context
                 var _parentStack = _treatAsRealStackingContext || _container.isPositioned() ? stack.getRealParentStackingContext() : stack;
                 var _childStack = new _StackingContext2.default(_container, _parentStack, _treatAsRealStackingContext);
@@ -3687,7 +4211,26 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+var _createClass = (function() {
+ /**
+  *
+  * @param target
+  * @param props
+  */
+function defineProperties(target, props) {
+ for (var i = 0; i < props.length; i++) {
+ var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) {
+ descriptor.writable = true;
+} Object.defineProperty(target, descriptor.key, descriptor);
+}
+} return function(Constructor, protoProps, staticProps) {
+ if (protoProps) {
+ defineProperties(Constructor.prototype, protoProps);
+} if (staticProps) {
+ defineProperties(Constructor, staticProps);
+} return Constructor;
+};
+}());
 
 var _NodeContainer = __webpack_require__(6);
 
@@ -3695,11 +4238,32 @@ var _NodeContainer2 = _interopRequireDefault(_NodeContainer);
 
 var _position = __webpack_require__(19);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+/**
+ *
+ * @param obj
+ */
+function _interopRequireDefault(obj) {
+ return obj && obj.__esModule ? obj : {"default": obj};
+}
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+/**
+ *
+ * @param instance
+ * @param Constructor
+ */
+function _classCallCheck(instance, Constructor) {
+ if (!(instance instanceof Constructor)) {
+ throw new TypeError("Cannot call a class as a function");
+}
+}
 
-var StackingContext = function () {
+var StackingContext = (function() {
+    /**
+     *
+     * @param container
+     * @param parent
+     * @param treatAsRealStackingContext
+     */
     function StackingContext(container, parent, treatAsRealStackingContext) {
         _classCallCheck(this, StackingContext);
 
@@ -3723,7 +4287,7 @@ var StackingContext = function () {
     }]);
 
     return StackingContext;
-}();
+}());
 
 exports.default = StackingContext;
 
@@ -3738,7 +4302,16 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+/**
+ *
+ * @param instance
+ * @param Constructor
+ */
+function _classCallCheck(instance, Constructor) {
+ if (!(instance instanceof Constructor)) {
+ throw new TypeError("Cannot call a class as a function");
+}
+}
 
 var Size = function Size(width, height) {
     _classCallCheck(this, Size);
@@ -3760,7 +4333,26 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+var _createClass = (function() {
+ /**
+  *
+  * @param target
+  * @param props
+  */
+function defineProperties(target, props) {
+ for (var i = 0; i < props.length; i++) {
+ var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) {
+ descriptor.writable = true;
+} Object.defineProperty(target, descriptor.key, descriptor);
+}
+} return function(Constructor, protoProps, staticProps) {
+ if (protoProps) {
+ defineProperties(Constructor.prototype, protoProps);
+} if (staticProps) {
+ defineProperties(Constructor, staticProps);
+} return Constructor;
+};
+}());
 
 var _Path = __webpack_require__(5);
 
@@ -3768,15 +4360,37 @@ var _Vector = __webpack_require__(7);
 
 var _Vector2 = _interopRequireDefault(_Vector);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+/**
+ *
+ * @param obj
+ */
+function _interopRequireDefault(obj) {
+ return obj && obj.__esModule ? obj : {"default": obj};
+}
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+/**
+ *
+ * @param instance
+ * @param Constructor
+ */
+function _classCallCheck(instance, Constructor) {
+ if (!(instance instanceof Constructor)) {
+ throw new TypeError("Cannot call a class as a function");
+}
+}
 
 var lerp = function lerp(a, b, t) {
     return new _Vector2.default(a.x + (b.x - a.x) * t, a.y + (b.y - a.y) * t);
 };
 
-var BezierCurve = function () {
+var BezierCurve = (function() {
+    /**
+     *
+     * @param start
+     * @param startControl
+     * @param endControl
+     * @param end
+     */
     function BezierCurve(start, startControl, endControl, end) {
         _classCallCheck(this, BezierCurve);
 
@@ -3806,7 +4420,7 @@ var BezierCurve = function () {
     }]);
 
     return BezierCurve;
-}();
+}());
 
 exports.default = BezierCurve;
 
@@ -3822,18 +4436,59 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.parseBorderRadius = undefined;
 
-var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+var _slicedToArray = (function() {
+ /**
+  *
+  * @param arr
+  * @param i
+  */
+function sliceIterator(arr, i) {
+ var _arr = []; var _n = true; var _d = false; var _e = undefined; try {
+ for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+ _arr.push(_s.value); if (i && _arr.length === i) {
+ break;
+}
+}
+} catch (err) {
+ _d = true; _e = err;
+} finally {
+ try {
+ if (!_n && _i.return) {
+ _i.return();
+}
+} finally {
+ if (_d) {
+ throw _e;
+}
+}
+} return _arr;
+} return function(arr, i) {
+ if (Array.isArray(arr)) {
+ return arr;
+} else if (Symbol.iterator in Object(arr)) {
+ return sliceIterator(arr, i);
+} else {
+ throw new TypeError("Invalid attempt to destructure non-iterable instance");
+}
+};
+}());
 
 var _Length = __webpack_require__(1);
 
 var _Length2 = _interopRequireDefault(_Length);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+/**
+ *
+ * @param obj
+ */
+function _interopRequireDefault(obj) {
+ return obj && obj.__esModule ? obj : {"default": obj};
+}
 
 var SIDES = ['top-left', 'top-right', 'bottom-right', 'bottom-left'];
 
 var parseBorderRadius = exports.parseBorderRadius = function parseBorderRadius(style) {
-    return SIDES.map(function (side) {
+    return SIDES.map(function(side) {
         var value = style.getPropertyValue('border-' + side + '-radius');
 
         var _value$split$map = value.split(' ').map(_Length2.default.create),
@@ -4092,12 +4747,18 @@ var _Length = __webpack_require__(1);
 
 var _Length2 = _interopRequireDefault(_Length);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+/**
+ *
+ * @param obj
+ */
+function _interopRequireDefault(obj) {
+ return obj && obj.__esModule ? obj : {"default": obj};
+}
 
 var SIDES = ['top', 'right', 'bottom', 'left'];
 
 var parseMargin = exports.parseMargin = function parseMargin(style) {
-    return SIDES.map(function (side) {
+    return SIDES.map(function(side) {
         return new _Length2.default(style.getPropertyValue('margin-' + side));
     });
 };
@@ -4149,7 +4810,13 @@ var _Color = __webpack_require__(0);
 
 var _Color2 = _interopRequireDefault(_Color);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+/**
+ *
+ * @param obj
+ */
+function _interopRequireDefault(obj) {
+ return obj && obj.__esModule ? obj : {"default": obj};
+}
 
 var NUMBER = /^([+-]|\d|\.)$/i;
 
@@ -4250,7 +4917,13 @@ var _Length = __webpack_require__(1);
 
 var _Length2 = _interopRequireDefault(_Length);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+/**
+ *
+ * @param obj
+ */
+function _interopRequireDefault(obj) {
+ return obj && obj.__esModule ? obj : {"default": obj};
+}
 
 var toFloat = function toFloat(s) {
     return parseFloat(s.trim());
@@ -4428,9 +5101,63 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.LineBreaker = exports.inlineBreakOpportunities = exports.lineBreakAtIndex = exports.codePointsToCharacterClasses = exports.UnicodeTrie = exports.BREAK_ALLOWED = exports.BREAK_NOT_ALLOWED = exports.BREAK_MANDATORY = exports.classes = exports.LETTER_NUMBER_MODIFIER = undefined;
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+var _createClass = (function() {
+ /**
+  *
+  * @param target
+  * @param props
+  */
+function defineProperties(target, props) {
+ for (var i = 0; i < props.length; i++) {
+ var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) {
+ descriptor.writable = true;
+} Object.defineProperty(target, descriptor.key, descriptor);
+}
+} return function(Constructor, protoProps, staticProps) {
+ if (protoProps) {
+ defineProperties(Constructor.prototype, protoProps);
+} if (staticProps) {
+ defineProperties(Constructor, staticProps);
+} return Constructor;
+};
+}());
 
-var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+var _slicedToArray = (function() {
+ /**
+  *
+  * @param arr
+  * @param i
+  */
+function sliceIterator(arr, i) {
+ var _arr = []; var _n = true; var _d = false; var _e = undefined; try {
+ for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+ _arr.push(_s.value); if (i && _arr.length === i) {
+ break;
+}
+}
+} catch (err) {
+ _d = true; _e = err;
+} finally {
+ try {
+ if (!_n && _i.return) {
+ _i.return();
+}
+} finally {
+ if (_d) {
+ throw _e;
+}
+}
+} return _arr;
+} return function(arr, i) {
+ if (Array.isArray(arr)) {
+ return arr;
+} else if (Symbol.iterator in Object(arr)) {
+ return sliceIterator(arr, i);
+} else {
+ throw new TypeError("Invalid attempt to destructure non-iterable instance");
+}
+};
+}());
 
 var _Trie = __webpack_require__(48);
 
@@ -4440,11 +5167,38 @@ var _linebreakTrie2 = _interopRequireDefault(_linebreakTrie);
 
 var _Util = __webpack_require__(13);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+/**
+ *
+ * @param obj
+ */
+function _interopRequireDefault(obj) {
+ return obj && obj.__esModule ? obj : {"default": obj};
+}
 
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+/**
+ *
+ * @param arr
+ */
+function _toConsumableArray(arr) {
+ if (Array.isArray(arr)) {
+ for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) {
+ arr2[i] = arr[i];
+} return arr2;
+} else {
+ return Array.from(arr);
+}
+}
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+/**
+ *
+ * @param instance
+ * @param Constructor
+ */
+function _classCallCheck(instance, Constructor) {
+ if (!(instance instanceof Constructor)) {
+ throw new TypeError("Cannot call a class as a function");
+}
+}
 
 var LETTER_NUMBER_MODIFIER = exports.LETTER_NUMBER_MODIFIER = 50;
 
@@ -4562,7 +5316,7 @@ var codePointsToCharacterClasses = exports.codePointsToCharacterClasses = functi
     var types = [];
     var indicies = [];
     var categories = [];
-    codePoints.forEach(function (codePoint, index) {
+    codePoints.forEach(function(codePoint, index) {
         var classType = UnicodeTrie.get(codePoint);
         if (classType > LETTER_NUMBER_MODIFIER) {
             categories.push(true);
@@ -4940,7 +5694,7 @@ var lineBreakAtIndex = exports.lineBreakAtIndex = function lineBreakAtIndex(code
 
 var cssFormattedClasses = function cssFormattedClasses(codePoints, options) {
     if (!options) {
-        options = { lineBreak: 'normal', wordBreak: 'normal' };
+        options = {lineBreak: 'normal', wordBreak: 'normal'};
     }
 
     var _codePointsToCharacte3 = codePointsToCharacterClasses(codePoints, options.lineBreak),
@@ -4950,12 +5704,12 @@ var cssFormattedClasses = function cssFormattedClasses(codePoints, options) {
         isLetterNumber = _codePointsToCharacte4[2];
 
     if (options.wordBreak === 'break-all' || options.wordBreak === 'break-word') {
-        classTypes = classTypes.map(function (type) {
+        classTypes = classTypes.map(function(type) {
             return [NU, AL, SA].indexOf(type) !== -1 ? ID : type;
         });
     }
 
-    var forbiddenBreakpoints = options.wordBreak === 'keep-all' ? isLetterNumber.map(function (isLetterNumber, i) {
+    var forbiddenBreakpoints = options.wordBreak === 'keep-all' ? isLetterNumber.map(function(isLetterNumber, i) {
         return isLetterNumber && codePoints[i] >= 0x4e00 && codePoints[i] <= 0x9fff;
     }) : null;
 
@@ -4972,14 +5726,21 @@ var inlineBreakOpportunities = exports.inlineBreakOpportunities = function inlin
         classTypes = _cssFormattedClasses2[1],
         forbiddenBreakpoints = _cssFormattedClasses2[2];
 
-    codePoints.forEach(function (codePoint, i) {
+    codePoints.forEach(function(codePoint, i) {
         output += (0, _Util.fromCodePoint)(codePoint) + (i >= codePoints.length - 1 ? BREAK_MANDATORY : _lineBreakAtIndex(codePoints, classTypes, indicies, i + 1, forbiddenBreakpoints));
     });
 
     return output;
 };
 
-var Break = function () {
+var Break = (function() {
+    /**
+     *
+     * @param codePoints
+     * @param lineBreak
+     * @param start
+     * @param end
+     */
     function Break(codePoints, lineBreak, start, end) {
         _classCallCheck(this, Break);
 
@@ -4997,7 +5758,7 @@ var Break = function () {
     }]);
 
     return Break;
-}();
+}());
 
 var LineBreaker = exports.LineBreaker = function LineBreaker(str, options) {
     var codePoints = (0, _Util.toCodePoints)(str);
@@ -5015,7 +5776,7 @@ var LineBreaker = exports.LineBreaker = function LineBreaker(str, options) {
     return {
         next: function next() {
             if (nextIndex >= length) {
-                return { done: true };
+                return {done: true};
             }
             var lineBreak = BREAK_NOT_ALLOWED;
             while (nextIndex < length && (lineBreak = _lineBreakAtIndex(codePoints, classTypes, indicies, ++nextIndex, forbiddenBreakpoints)) === BREAK_NOT_ALLOWED) {}
@@ -5023,10 +5784,10 @@ var LineBreaker = exports.LineBreaker = function LineBreaker(str, options) {
             if (lineBreak !== BREAK_NOT_ALLOWED || nextIndex === length) {
                 var value = new Break(codePoints, lineBreak, lastEnd, nextIndex);
                 lastEnd = nextIndex;
-                return { value: value, done: false };
+                return {value: value, done: false};
             }
 
-            return { done: true };
+            return {done: true};
         }
     };
 };
@@ -5043,11 +5804,39 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Trie = exports.createTrieFromBase64 = exports.UTRIE2_INDEX_2_MASK = exports.UTRIE2_INDEX_2_BLOCK_LENGTH = exports.UTRIE2_OMITTED_BMP_INDEX_1_LENGTH = exports.UTRIE2_INDEX_1_OFFSET = exports.UTRIE2_UTF8_2B_INDEX_2_LENGTH = exports.UTRIE2_UTF8_2B_INDEX_2_OFFSET = exports.UTRIE2_INDEX_2_BMP_LENGTH = exports.UTRIE2_LSCP_INDEX_2_LENGTH = exports.UTRIE2_DATA_MASK = exports.UTRIE2_DATA_BLOCK_LENGTH = exports.UTRIE2_LSCP_INDEX_2_OFFSET = exports.UTRIE2_SHIFT_1_2 = exports.UTRIE2_INDEX_SHIFT = exports.UTRIE2_SHIFT_1 = exports.UTRIE2_SHIFT_2 = undefined;
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+var _createClass = (function() {
+ /**
+  *
+  * @param target
+  * @param props
+  */
+function defineProperties(target, props) {
+ for (var i = 0; i < props.length; i++) {
+ var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) {
+ descriptor.writable = true;
+} Object.defineProperty(target, descriptor.key, descriptor);
+}
+} return function(Constructor, protoProps, staticProps) {
+ if (protoProps) {
+ defineProperties(Constructor.prototype, protoProps);
+} if (staticProps) {
+ defineProperties(Constructor, staticProps);
+} return Constructor;
+};
+}());
 
 var _Util = __webpack_require__(13);
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+/**
+ *
+ * @param instance
+ * @param Constructor
+ */
+function _classCallCheck(instance, Constructor) {
+ if (!(instance instanceof Constructor)) {
+ throw new TypeError("Cannot call a class as a function");
+}
+}
 
 /** Shift size for getting the index-2 table offset. */
 var UTRIE2_SHIFT_2 = exports.UTRIE2_SHIFT_2 = 5;
@@ -5128,7 +5917,16 @@ var createTrieFromBase64 = exports.createTrieFromBase64 = function createTrieFro
     return new Trie(view32[0], view32[1], view32[2], view32[3], index, data);
 };
 
-var Trie = exports.Trie = function () {
+var Trie = exports.Trie = (function() {
+    /**
+     *
+     * @param initialValue
+     * @param errorValue
+     * @param highStart
+     * @param highValueIndex
+     * @param index
+     * @param data
+     */
     function Trie(initialValue, errorValue, highStart, highValueIndex, index, data) {
         _classCallCheck(this, Trie);
 
@@ -5194,7 +5992,7 @@ var Trie = exports.Trie = function () {
     }]);
 
     return Trie;
-}();
+}());
 
 /***/ }),
 /* 49 */
@@ -5218,7 +6016,16 @@ Object.defineProperty(exports, "__esModule", {
 
 var _Path = __webpack_require__(5);
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+/**
+ *
+ * @param instance
+ * @param Constructor
+ */
+function _classCallCheck(instance, Constructor) {
+ if (!(instance instanceof Constructor)) {
+ throw new TypeError("Cannot call a class as a function");
+}
+}
 
 var Circle = function Circle(x, y, radius) {
     _classCallCheck(this, Circle);
@@ -5253,9 +6060,63 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+var _slicedToArray = (function() {
+ /**
+  *
+  * @param arr
+  * @param i
+  */
+function sliceIterator(arr, i) {
+ var _arr = []; var _n = true; var _d = false; var _e = undefined; try {
+ for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+ _arr.push(_s.value); if (i && _arr.length === i) {
+ break;
+}
+}
+} catch (err) {
+ _d = true; _e = err;
+} finally {
+ try {
+ if (!_n && _i.return) {
+ _i.return();
+}
+} finally {
+ if (_d) {
+ throw _e;
+}
+}
+} return _arr;
+} return function(arr, i) {
+ if (Array.isArray(arr)) {
+ return arr;
+} else if (Symbol.iterator in Object(arr)) {
+ return sliceIterator(arr, i);
+} else {
+ throw new TypeError("Invalid attempt to destructure non-iterable instance");
+}
+};
+}());
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+var _createClass = (function() {
+ /**
+  *
+  * @param target
+  * @param props
+  */
+function defineProperties(target, props) {
+ for (var i = 0; i < props.length; i++) {
+ var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) {
+ descriptor.writable = true;
+} Object.defineProperty(target, descriptor.key, descriptor);
+}
+} return function(Constructor, protoProps, staticProps) {
+ if (protoProps) {
+ defineProperties(Constructor.prototype, protoProps);
+} if (staticProps) {
+ defineProperties(Constructor, staticProps);
+} return Constructor;
+};
+}());
 
 var _Bounds = __webpack_require__(2);
 
@@ -5271,11 +6132,31 @@ var _background = __webpack_require__(4);
 
 var _border = __webpack_require__(12);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+/**
+ *
+ * @param obj
+ */
+function _interopRequireDefault(obj) {
+ return obj && obj.__esModule ? obj : {"default": obj};
+}
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+/**
+ *
+ * @param instance
+ * @param Constructor
+ */
+function _classCallCheck(instance, Constructor) {
+ if (!(instance instanceof Constructor)) {
+ throw new TypeError("Cannot call a class as a function");
+}
+}
 
-var Renderer = function () {
+var Renderer = (function() {
+    /**
+     *
+     * @param target
+     * @param options
+     */
     function Renderer(target, options) {
         _classCallCheck(this, Renderer);
 
@@ -5299,7 +6180,7 @@ var Renderer = function () {
 
             var callback = function callback() {
                 if (container.childNodes.length) {
-                    container.childNodes.forEach(function (child) {
+                    container.childNodes.forEach(function(child) {
                         if (child instanceof _TextContainer2.default) {
                             var style = child.parent.style;
                             _this.target.renderTextNode(child.bounds, style.color, style.font, style.textDecoration, style.textShadow);
@@ -5316,7 +6197,7 @@ var Renderer = function () {
                         var _width = typeof _image.width === 'number' && _image.width > 0 ? _image.width : contentBox.width;
                         var _height = typeof _image.height === 'number' && _image.height > 0 ? _image.height : contentBox.height;
                         if (_width > 0 && _height > 0) {
-                            _this.target.clip([(0, _Bounds.calculatePaddingBoxPath)(container.curvedBounds)], function () {
+                            _this.target.clip([(0, _Bounds.calculatePaddingBoxPath)(container.curvedBounds)], function() {
                                 _this.target.drawImage(_image, new _Bounds.Bounds(0, 0, _width, _height), contentBox);
                             });
                         }
@@ -5337,7 +6218,7 @@ var Renderer = function () {
 
             var HAS_BACKGROUND = !container.style.background.backgroundColor.isTransparent() || container.style.background.backgroundImage.length;
 
-            var hasRenderableBorders = container.style.border.some(function (border) {
+            var hasRenderableBorders = container.style.border.some(function(border) {
                 return border.borderStyle !== _border.BORDER_STYLE.NONE && !border.borderColor.isTransparent();
             });
 
@@ -5345,7 +6226,7 @@ var Renderer = function () {
                 var backgroundPaintingArea = (0, _background.calculateBackgroungPaintingArea)(container.curvedBounds, container.style.background.backgroundClip);
 
                 if (HAS_BACKGROUND) {
-                    _this2.target.clip([backgroundPaintingArea], function () {
+                    _this2.target.clip([backgroundPaintingArea], function() {
                         if (!container.style.background.backgroundColor.isTransparent()) {
                             _this2.target.fill(container.style.background.backgroundColor);
                         }
@@ -5354,7 +6235,7 @@ var Renderer = function () {
                     });
                 }
 
-                container.style.border.forEach(function (border, side) {
+                container.style.border.forEach(function(border, side) {
                     if (border.borderStyle !== _border.BORDER_STYLE.NONE && !border.borderColor.isTransparent()) {
                         _this2.renderBorder(border, side, container.curvedBounds);
                     }
@@ -5375,7 +6256,7 @@ var Renderer = function () {
         value: function renderBackgroundImage(container) {
             var _this3 = this;
 
-            container.style.background.backgroundImage.slice(0).reverse().forEach(function (backgroundImage) {
+            container.style.background.backgroundImage.slice(0).reverse().forEach(function(backgroundImage) {
                 if (backgroundImage.source.method === 'url' && backgroundImage.source.args.length) {
                     _this3.renderBackgroundRepeat(container, backgroundImage);
                 } else if (/gradient/i.test(backgroundImage.source.method)) {
@@ -5439,7 +6320,7 @@ var Renderer = function () {
 
                 var _transform = stack.container.style.transform;
                 if (_transform !== null) {
-                    this.target.transform(stack.container.bounds.left + _transform.transformOrigin[0].value, stack.container.bounds.top + _transform.transformOrigin[1].value, _transform.transform, function () {
+                    this.target.transform(stack.container.bounds.left + _transform.transformOrigin[0].value, stack.container.bounds.top + _transform.transformOrigin[1].value, _transform.transform, function() {
                         return _this4.renderStackContent(stack);
                     });
                 } else {
@@ -5507,7 +6388,7 @@ var Renderer = function () {
             this.renderStack(stack);
             var target = this.target.getTarget();
             if (true) {
-                return target.then(function (output) {
+                return target.then(function(output) {
                     _this5.options.logger.log('Render completed');
                     return output;
                 });
@@ -5517,7 +6398,7 @@ var Renderer = function () {
     }]);
 
     return Renderer;
-}();
+}());
 
 exports.default = Renderer;
 
@@ -5588,7 +6469,42 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.transformWebkitRadialGradientArgs = exports.parseGradient = exports.RadialGradient = exports.LinearGradient = exports.RADIAL_GRADIENT_SHAPE = exports.GRADIENT_TYPE = undefined;
 
-var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+var _slicedToArray = (function() {
+ /**
+  *
+  * @param arr
+  * @param i
+  */
+function sliceIterator(arr, i) {
+ var _arr = []; var _n = true; var _d = false; var _e = undefined; try {
+ for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+ _arr.push(_s.value); if (i && _arr.length === i) {
+ break;
+}
+}
+} catch (err) {
+ _d = true; _e = err;
+} finally {
+ try {
+ if (!_n && _i.return) {
+ _i.return();
+}
+} finally {
+ if (_d) {
+ throw _e;
+}
+}
+} return _arr;
+} return function(arr, i) {
+ if (Array.isArray(arr)) {
+ return arr;
+} else if (Symbol.iterator in Object(arr)) {
+ return sliceIterator(arr, i);
+} else {
+ throw new TypeError("Invalid attempt to destructure non-iterable instance");
+}
+};
+}());
 
 var _NodeContainer = __webpack_require__(6);
 
@@ -5606,9 +6522,24 @@ var _Length2 = _interopRequireDefault(_Length);
 
 var _Util = __webpack_require__(3);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+/**
+ *
+ * @param obj
+ */
+function _interopRequireDefault(obj) {
+ return obj && obj.__esModule ? obj : {"default": obj};
+}
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+/**
+ *
+ * @param instance
+ * @param Constructor
+ */
+function _classCallCheck(instance, Constructor) {
+ if (!(instance instanceof Constructor)) {
+ throw new TypeError("Cannot call a class as a function");
+}
+}
 
 var SIDE_OR_CORNER = /^(to )?(left|top|right|bottom)( (left|top|right|bottom))?$/i;
 var PERCENTAGE_ANGLES = /^([+-]?\d*\.?\d+)% ([+-]?\d*\.?\d+)%$/i;
@@ -5678,10 +6609,10 @@ var parseColorStops = function parseColorStops(args, firstColorStopIndex, lineLe
         var lastSpaceIndex = value.lastIndexOf(' ');
         var _color = new _Color2.default(HAS_LENGTH ? value.substring(0, lastSpaceIndex) : value);
         var _stop = HAS_LENGTH ? new _Length2.default(value.substring(lastSpaceIndex + 1)) : i === firstColorStopIndex ? new _Length2.default('0%') : i === args.length - 1 ? new _Length2.default('100%') : null;
-        colorStops.push({ color: _color, stop: _stop });
+        colorStops.push({color: _color, stop: _stop});
     }
 
-    var absoluteValuedColorStops = colorStops.map(function (_ref2) {
+    var absoluteValuedColorStops = colorStops.map(function(_ref2) {
         var color = _ref2.color,
             stop = _ref2.stop;
 
@@ -5723,7 +6654,7 @@ var parseLinearGradient = function parseLinearGradient(args, bounds, hasPrefix) 
     var HAS_SIDE_OR_CORNER = SIDE_OR_CORNER.test(args[0]);
     var HAS_DIRECTION = HAS_SIDE_OR_CORNER || angle !== null || PERCENTAGE_ANGLES.test(args[0]);
     var direction = HAS_DIRECTION ? angle !== null ? calculateGradientDirection(
-    // if there is a prefix, the 0° angle points due East (instead of North per W3C)
+    // If there is a prefix, the 0° angle points due East (instead of North per W3C)
     hasPrefix ? angle - Math.PI * 0.5 : angle, bounds) : HAS_SIDE_OR_CORNER ? parseSideOrCorner(args[0], bounds) : parsePercentageAngle(args[0], bounds) : calculateGradientDirection(Math.PI, bounds);
     var firstColorStopIndex = HAS_DIRECTION ? 1 : 0;
 
@@ -5735,8 +6666,8 @@ var parseLinearGradient = function parseLinearGradient(args, bounds, hasPrefix) 
 
 var parseRadialGradient = function parseRadialGradient(container, args, bounds) {
     var m = args[0].match(RADIAL_SHAPE_DEFINITION);
-    var shape = m && (m[1] === 'circle' || // explicit shape specification
-    m[3] !== undefined && m[5] === undefined) // only one radius coordinate
+    var shape = m && (m[1] === 'circle' || // Explicit shape specification
+    m[3] !== undefined && m[5] === undefined) // Only one radius coordinate
     ? RADIAL_GRADIENT_SHAPE.CIRCLE : RADIAL_GRADIENT_SHAPE.ELLIPSE;
     var radius = {};
     var center = {};
@@ -5787,7 +6718,7 @@ var calculateGradientDirection = function calculateGradientDirection(radian, bou
     var x1 = width - x0;
     var y1 = height - y0;
 
-    return { x0: x0, x1: x1, y0: y0, y1: y1 };
+    return {x0: x0, x1: x1, y0: y0, y1: y1};
 };
 
 var parseTopRight = function parseTopRight(bounds) {
@@ -5844,10 +6775,10 @@ var parsePercentageAngle = function parsePercentageAngle(angle, bounds) {
 };
 
 var findCorner = function findCorner(bounds, x, y, closest) {
-    var corners = [{ x: 0, y: 0 }, { x: 0, y: bounds.height }, { x: bounds.width, y: 0 }, { x: bounds.width, y: bounds.height }];
+    var corners = [{x: 0, y: 0}, {x: 0, y: bounds.height}, {x: bounds.width, y: 0}, {x: bounds.width, y: bounds.height}];
 
     // $FlowFixMe
-    return corners.reduce(function (stat, corner) {
+    return corners.reduce(function(stat, corner) {
         var d = (0, _Util.distance)(x - corner.x, y - corner.y);
         if (closest ? d < stat.optimumDistance : d > stat.optimumDistance) {
             return {
@@ -5920,7 +6851,7 @@ var calculateRadius = function calculateRadius(extent, shape, center, radius, bo
             break;
 
         default:
-            // pixel or percentage values
+            // Pixel or percentage values
             rx = radius.x || 0;
             ry = radius.y !== undefined ? radius.y : rx;
             break;
@@ -6000,17 +6931,17 @@ var transformWebkitRadialGradientArgs = exports.transformWebkitRadialGradientArg
         position = 'at ' + position;
     }
 
-    return [[shape, extent, radius, position].filter(function (s) {
+    return [[shape, extent, radius, position].filter(function(s) {
         return !!s;
     }).join(' ')].concat(args.slice(idx));
 };
 
 var transformObsoleteColorStops = function transformObsoleteColorStops(args) {
-    return args.map(function (color) {
+    return args.map(function(color) {
         return color.match(FROM_TO_COLORSTOP);
     })
     // $FlowFixMe
-    .map(function (v, index) {
+    .map(function(v, index) {
         if (!v) {
             return args[index];
         }
@@ -6073,9 +7004,63 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.cloneWindow = exports.DocumentCloner = undefined;
 
-var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+var _slicedToArray = (function() {
+ /**
+  *
+  * @param arr
+  * @param i
+  */
+function sliceIterator(arr, i) {
+ var _arr = []; var _n = true; var _d = false; var _e = undefined; try {
+ for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+ _arr.push(_s.value); if (i && _arr.length === i) {
+ break;
+}
+}
+} catch (err) {
+ _d = true; _e = err;
+} finally {
+ try {
+ if (!_n && _i.return) {
+ _i.return();
+}
+} finally {
+ if (_d) {
+ throw _e;
+}
+}
+} return _arr;
+} return function(arr, i) {
+ if (Array.isArray(arr)) {
+ return arr;
+} else if (Symbol.iterator in Object(arr)) {
+ return sliceIterator(arr, i);
+} else {
+ throw new TypeError("Invalid attempt to destructure non-iterable instance");
+}
+};
+}());
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+var _createClass = (function() {
+ /**
+  *
+  * @param target
+  * @param props
+  */
+function defineProperties(target, props) {
+ for (var i = 0; i < props.length; i++) {
+ var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) {
+ descriptor.writable = true;
+} Object.defineProperty(target, descriptor.key, descriptor);
+}
+} return function(Constructor, protoProps, staticProps) {
+ if (protoProps) {
+ defineProperties(Constructor.prototype, protoProps);
+} if (staticProps) {
+ defineProperties(Constructor, staticProps);
+} return Constructor;
+};
+}());
 
 var _Bounds = __webpack_require__(2);
 
@@ -6095,13 +7080,36 @@ var _CanvasRenderer2 = _interopRequireDefault(_CanvasRenderer);
 
 var _PseudoNodeContent = __webpack_require__(56);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+/**
+ *
+ * @param obj
+ */
+function _interopRequireDefault(obj) {
+ return obj && obj.__esModule ? obj : {"default": obj};
+}
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+/**
+ *
+ * @param instance
+ * @param Constructor
+ */
+function _classCallCheck(instance, Constructor) {
+ if (!(instance instanceof Constructor)) {
+ throw new TypeError("Cannot call a class as a function");
+}
+}
 
 var IGNORE_ATTRIBUTE = 'data-html2canvas-ignore';
 
-var DocumentCloner = exports.DocumentCloner = function () {
+var DocumentCloner = exports.DocumentCloner = (function() {
+    /**
+     *
+     * @param element
+     * @param options
+     * @param logger
+     * @param copyInline
+     * @param renderer
+     */
     function DocumentCloner(element, options, logger, copyInline, renderer) {
         _classCallCheck(this, DocumentCloner);
 
@@ -6128,18 +7136,18 @@ var DocumentCloner = exports.DocumentCloner = function () {
 
             if (this.inlineImages && node) {
                 var style = node.style;
-                Promise.all((0, _background.parseBackgroundImage)(style.backgroundImage).map(function (backgroundImage) {
+                Promise.all((0, _background.parseBackgroundImage)(style.backgroundImage).map(function(backgroundImage) {
                     if (backgroundImage.method === 'url') {
-                        return _this.resourceLoader.inlineImage(backgroundImage.args[0]).then(function (img) {
+                        return _this.resourceLoader.inlineImage(backgroundImage.args[0]).then(function(img) {
                             return img && typeof img.src === 'string' ? 'url("' + img.src + '")' : 'none';
-                        }).catch(function (e) {
+                        }).catch(function(e) {
                             if (true) {
                                 _this.logger.log('Unable to load image', e);
                             }
                         });
                     }
                     return Promise.resolve('' + backgroundImage.prefix + backgroundImage.method + '(' + backgroundImage.args.join(',') + ')');
-                })).then(function (backgroundImages) {
+                })).then(function(backgroundImages) {
                     if (backgroundImages.length > 1) {
                         // TODO Multiple backgrounds somehow broken in Chrome
                         style.backgroundColor = '';
@@ -6148,13 +7156,13 @@ var DocumentCloner = exports.DocumentCloner = function () {
                 });
 
                 if (node instanceof HTMLImageElement) {
-                    this.resourceLoader.inlineImage(node.src).then(function (img) {
+                    this.resourceLoader.inlineImage(node.src).then(function(img) {
                         if (img && node instanceof HTMLImageElement && node.parentNode) {
                             var parentNode = node.parentNode;
                             var clonedChild = (0, _Util.copyCSSStyles)(node.style, img.cloneNode(false));
                             parentNode.replaceChild(clonedChild, node);
                         }
-                    }).catch(function (e) {
+                    }).catch(function(e) {
                         if (true) {
                             _this.logger.log('Unable to load image', e);
                         }
@@ -6167,13 +7175,13 @@ var DocumentCloner = exports.DocumentCloner = function () {
         value: function inlineFonts(document) {
             var _this2 = this;
 
-            return Promise.all(Array.from(document.styleSheets).map(function (sheet) {
+            return Promise.all(Array.from(document.styleSheets).map(function(sheet) {
                 if (sheet.href) {
-                    return fetch(sheet.href).then(function (res) {
+                    return fetch(sheet.href).then(function(res) {
                         return res.text();
-                    }).then(function (text) {
+                    }).then(function(text) {
                         return createStyleSheetFontsFromText(text, sheet.href);
-                    }).catch(function (e) {
+                    }).catch(function(e) {
                         if (true) {
                             _this2.logger.log('Unable to load stylesheet', e);
                         }
@@ -6181,31 +7189,31 @@ var DocumentCloner = exports.DocumentCloner = function () {
                     });
                 }
                 return getSheetFonts(sheet, document);
-            })).then(function (fonts) {
-                return fonts.reduce(function (acc, font) {
+            })).then(function(fonts) {
+                return fonts.reduce(function(acc, font) {
                     return acc.concat(font);
                 }, []);
-            }).then(function (fonts) {
-                return Promise.all(fonts.map(function (font) {
-                    return fetch(font.formats[0].src).then(function (response) {
+            }).then(function(fonts) {
+                return Promise.all(fonts.map(function(font) {
+                    return fetch(font.formats[0].src).then(function(response) {
                         return response.blob();
-                    }).then(function (blob) {
-                        return new Promise(function (resolve, reject) {
+                    }).then(function(blob) {
+                        return new Promise(function(resolve, reject) {
                             var reader = new FileReader();
                             reader.onerror = reject;
-                            reader.onload = function () {
+                            reader.onload = function() {
                                 // $FlowFixMe
                                 var result = reader.result;
                                 resolve(result);
                             };
                             reader.readAsDataURL(blob);
                         });
-                    }).then(function (dataUri) {
+                    }).then(function(dataUri) {
                         font.fontFace.setProperty('src', 'url("' + dataUri + '")');
                         return '@font-face {' + font.fontFace.cssText + ' ';
                     });
                 }));
-            }).then(function (fontCss) {
+            }).then(function(fontCss) {
                 var style = document.createElement('style');
                 style.textContent = fontCss.join('\n');
                 _this2.documentElement.appendChild(style);
@@ -6237,7 +7245,7 @@ var DocumentCloner = exports.DocumentCloner = function () {
                     width = _parseBounds.width,
                     height = _parseBounds.height;
 
-                this.resourceLoader.cache[iframeKey] = getIframeDocumentElement(node, this.options).then(function (documentElement) {
+                this.resourceLoader.cache[iframeKey] = getIframeDocumentElement(node, this.options).then(function(documentElement) {
                     return _this3.renderer(documentElement, {
                         async: _this3.options.async,
                         allowTaint: _this3.options.allowTaint,
@@ -6260,10 +7268,10 @@ var DocumentCloner = exports.DocumentCloner = function () {
                         scrollX: documentElement.ownerDocument.defaultView.pageXOffset,
                         scrollY: documentElement.ownerDocument.defaultView.pageYOffset
                     }, _this3.logger.child(iframeKey));
-                }).then(function (canvas) {
-                    return new Promise(function (resolve, reject) {
+                }).then(function(canvas) {
+                    return new Promise(function(resolve, reject) {
                         var iframeCanvas = document.createElement('img');
-                        iframeCanvas.onload = function () {
+                        iframeCanvas.onload = function() {
                             return resolve(canvas);
                         };
                         iframeCanvas.onerror = reject;
@@ -6277,7 +7285,7 @@ var DocumentCloner = exports.DocumentCloner = function () {
             }
 
             if (node instanceof HTMLStyleElement && node.sheet && node.sheet.cssRules) {
-                var css = [].slice.call(node.sheet.cssRules, 0).reduce(function (css, rule) {
+                var css = [].slice.call(node.sheet.cssRules, 0).reduce(function(css, rule) {
                     try {
                         if (rule && rule.cssText) {
                             return css + rule.cssText;
@@ -6362,13 +7370,13 @@ var DocumentCloner = exports.DocumentCloner = function () {
     }]);
 
     return DocumentCloner;
-}();
+}());
 
 var getSheetFonts = function getSheetFonts(sheet, document) {
     // $FlowFixMe
-    return (sheet.cssRules ? Array.from(sheet.cssRules) : []).filter(function (rule) {
+    return (sheet.cssRules ? Array.from(sheet.cssRules) : []).filter(function(rule) {
         return rule.type === CSSRule.FONT_FACE_RULE;
-    }).map(function (rule) {
+    }).map(function(rule) {
         var src = (0, _background.parseBackgroundImage)(rule.style.getPropertyValue('src'));
         var formats = [];
         for (var i = 0; i < src.length; i++) {
@@ -6390,13 +7398,13 @@ var getSheetFonts = function getSheetFonts(sheet, document) {
         return {
             // TODO select correct format for browser),
 
-            formats: formats.filter(function (font) {
+            formats: formats.filter(function(font) {
                 return (/^woff/i.test(font.format)
                 );
             }),
             fontFace: rule.style
         };
-    }).filter(function (font) {
+    }).filter(function(font) {
         return font.formats.length;
     });
 };
@@ -6516,21 +7524,21 @@ var getIframeDocumentElement = function getIframeDocumentElement(node, options) 
     try {
         return Promise.resolve(node.contentWindow.document.documentElement);
     } catch (e) {
-        return options.proxy ? (0, _Proxy.Proxy)(node.src, options).then(function (html) {
+        return options.proxy ? (0, _Proxy.Proxy)(node.src, options).then(function(html) {
             var match = html.match(DATA_URI_REGEXP);
             if (!match) {
                 return Promise.reject();
             }
 
             return match[2] === 'base64' ? window.atob(decodeURIComponent(match[3])) : decodeURIComponent(match[3]);
-        }).then(function (html) {
-            return createIframeContainer(node.ownerDocument, (0, _Bounds.parseBounds)(node, 0, 0)).then(function (cloneIframeContainer) {
+        }).then(function(html) {
+            return createIframeContainer(node.ownerDocument, (0, _Bounds.parseBounds)(node, 0, 0)).then(function(cloneIframeContainer) {
                 var cloneWindow = cloneIframeContainer.contentWindow;
                 var documentClone = cloneWindow.document;
 
                 documentClone.open();
                 documentClone.write(html);
-                var iframeLoad = iframeLoader(cloneIframeContainer).then(function () {
+                var iframeLoad = iframeLoader(cloneIframeContainer).then(function() {
                     return documentClone.documentElement;
                 });
 
@@ -6552,10 +7560,10 @@ var createIframeContainer = function createIframeContainer(ownerDocument, bounds
     cloneIframeContainer.style.border = '0';
     cloneIframeContainer.width = bounds.width.toString();
     cloneIframeContainer.height = bounds.height.toString();
-    cloneIframeContainer.scrolling = 'no'; // ios won't scroll without it
+    cloneIframeContainer.scrolling = 'no'; // Ios won't scroll without it
     cloneIframeContainer.setAttribute(IGNORE_ATTRIBUTE, 'true');
     if (!ownerDocument.body) {
-        return Promise.reject( true ? 'Body element not found in Document that is getting rendered' : '');
+        return Promise.reject(true ? 'Body element not found in Document that is getting rendered' : '');
     }
 
     ownerDocument.body.appendChild(cloneIframeContainer);
@@ -6567,9 +7575,9 @@ var iframeLoader = function iframeLoader(cloneIframeContainer) {
     var cloneWindow = cloneIframeContainer.contentWindow;
     var documentClone = cloneWindow.document;
 
-    return new Promise(function (resolve, reject) {
-        cloneWindow.onload = cloneIframeContainer.onload = documentClone.onreadystatechange = function () {
-            var interval = setInterval(function () {
+    return new Promise(function(resolve, reject) {
+        cloneWindow.onload = cloneIframeContainer.onload = documentClone.onreadystatechange = function() {
+            var interval = setInterval(function() {
                 if (documentClone.body.childNodes.length > 0 && documentClone.readyState === 'complete') {
                     clearInterval(interval);
                     resolve(cloneIframeContainer);
@@ -6584,7 +7592,7 @@ var cloneWindow = exports.cloneWindow = function cloneWindow(ownerDocument, boun
     var scrollX = ownerDocument.defaultView.pageXOffset;
     var scrollY = ownerDocument.defaultView.pageYOffset;
 
-    return createIframeContainer(ownerDocument, bounds).then(function (cloneIframeContainer) {
+    return createIframeContainer(ownerDocument, bounds).then(function(cloneIframeContainer) {
         var cloneWindow = cloneIframeContainer.contentWindow;
         var documentClone = cloneWindow.document;
 
@@ -6592,7 +7600,7 @@ var cloneWindow = exports.cloneWindow = function cloneWindow(ownerDocument, boun
              if window url is about:blank, we can assign the url to current by writing onto the document
              */
 
-        var iframeLoad = iframeLoader(cloneIframeContainer).then(function () {
+        var iframeLoad = iframeLoader(cloneIframeContainer).then(function() {
             cloner.scrolledElements.forEach(initNode);
             cloneWindow.scrollTo(bounds.left, bounds.top);
             if (/(iPad|iPhone|iPod)/g.test(navigator.userAgent) && (cloneWindow.scrollY !== bounds.top || cloneWindow.scrollX !== bounds.left)) {
@@ -6605,11 +7613,11 @@ var cloneWindow = exports.cloneWindow = function cloneWindow(ownerDocument, boun
 
             var onclone = options.onclone;
 
-            return cloner.clonedReferenceElement instanceof cloneWindow.HTMLElement || cloner.clonedReferenceElement instanceof ownerDocument.defaultView.HTMLElement || cloner.clonedReferenceElement instanceof HTMLElement ? typeof onclone === 'function' ? Promise.resolve().then(function () {
+            return cloner.clonedReferenceElement instanceof cloneWindow.HTMLElement || cloner.clonedReferenceElement instanceof ownerDocument.defaultView.HTMLElement || cloner.clonedReferenceElement instanceof HTMLElement ? typeof onclone === 'function' ? Promise.resolve().then(function() {
                 return onclone(documentClone);
-            }).then(function () {
+            }).then(function() {
                 return result;
-            }) : result : Promise.reject( true ? 'Error finding the ' + referenceElement.nodeName + ' in the cloned document' : '');
+            }) : result : Promise.reject(true ? 'Error finding the ' + referenceElement.nodeName + ' in the cloned document' : '');
         });
 
         documentClone.open();
@@ -6661,7 +7669,26 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.ResourceStore = undefined;
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+var _createClass = (function() {
+ /**
+  *
+  * @param target
+  * @param props
+  */
+function defineProperties(target, props) {
+ for (var i = 0; i < props.length; i++) {
+ var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) {
+ descriptor.writable = true;
+} Object.defineProperty(target, descriptor.key, descriptor);
+}
+} return function(Constructor, protoProps, staticProps) {
+ if (protoProps) {
+ defineProperties(Constructor.prototype, protoProps);
+} if (staticProps) {
+ defineProperties(Constructor, staticProps);
+} return Constructor;
+};
+}());
 
 var _Feature = __webpack_require__(10);
 
@@ -6669,11 +7696,32 @@ var _Feature2 = _interopRequireDefault(_Feature);
 
 var _Proxy = __webpack_require__(26);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+/**
+ *
+ * @param obj
+ */
+function _interopRequireDefault(obj) {
+ return obj && obj.__esModule ? obj : {"default": obj};
+}
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+/**
+ *
+ * @param instance
+ * @param Constructor
+ */
+function _classCallCheck(instance, Constructor) {
+ if (!(instance instanceof Constructor)) {
+ throw new TypeError("Cannot call a class as a function");
+}
+}
 
-var ResourceLoader = function () {
+var ResourceLoader = (function() {
+    /**
+     *
+     * @param options
+     * @param logger
+     * @param window
+     */
     function ResourceLoader(options, logger, window) {
         _classCallCheck(this, ResourceLoader);
 
@@ -6703,7 +7751,7 @@ var ResourceLoader = function () {
                     return this.addImage(src, src, false);
                 } else if (!this.isSameOrigin(src)) {
                     if (typeof this.options.proxy === 'string') {
-                        this.cache[src] = (0, _Proxy.Proxy)(src, this.options).then(function (src) {
+                        this.cache[src] = (0, _Proxy.Proxy)(src, this.options).then(function(src) {
                             return _loadImage(src, _this.options.imageTimeout || 0);
                         });
                         return src;
@@ -6725,7 +7773,7 @@ var ResourceLoader = function () {
                 return this.cache[src];
             }
             if (!this.isSameOrigin(src) && typeof this.options.proxy === 'string') {
-                return this.cache[src] = (0, _Proxy.Proxy)(src, this.options).then(function (src) {
+                return this.cache[src] = (0, _Proxy.Proxy)(src, this.options).then(function(src) {
                     return _loadImage(src, _this2.options.imageTimeout || 0);
                 });
             }
@@ -6737,20 +7785,20 @@ var ResourceLoader = function () {
         value: function xhrImage(src) {
             var _this3 = this;
 
-            this.cache[src] = new Promise(function (resolve, reject) {
+            this.cache[src] = new Promise(function(resolve, reject) {
                 var xhr = new XMLHttpRequest();
-                xhr.onreadystatechange = function () {
+                xhr.onreadystatechange = function() {
                     if (xhr.readyState === 4) {
                         if (xhr.status !== 200) {
                             reject('Failed to fetch image ' + src.substring(0, 256) + ' with status code ' + xhr.status);
                         } else {
                             var reader = new FileReader();
-                            reader.addEventListener('load', function () {
+                            reader.addEventListener('load', function() {
                                 // $FlowFixMe
                                 var result = reader.result;
                                 resolve(result);
                             }, false);
-                            reader.addEventListener('error', function (e) {
+                            reader.addEventListener('error', function(e) {
                                 return reject(e);
                             }, false);
                             reader.readAsDataURL(xhr.response);
@@ -6761,13 +7809,13 @@ var ResourceLoader = function () {
                 if (_this3.options.imageTimeout) {
                     var timeout = _this3.options.imageTimeout;
                     xhr.timeout = timeout;
-                    xhr.ontimeout = function () {
-                        return reject( true ? 'Timed out (' + timeout + 'ms) fetching ' + src.substring(0, 256) : '');
+                    xhr.ontimeout = function() {
+                        return reject(true ? 'Timed out (' + timeout + 'ms) fetching ' + src.substring(0, 256) : '');
                     };
                 }
                 xhr.open('GET', src, true);
                 xhr.send();
-            }).then(function (src) {
+            }).then(function(src) {
                 return _loadImage(src, _this3.options.imageTimeout || 0);
             });
 
@@ -6795,12 +7843,12 @@ var ResourceLoader = function () {
             }
 
             var imageLoadHandler = function imageLoadHandler(supportsDataImages) {
-                return new Promise(function (resolve, reject) {
+                return new Promise(function(resolve, reject) {
                     var img = new Image();
-                    img.onload = function () {
+                    img.onload = function() {
                         return resolve(img);
                     };
-                    //ios safari 10.3 taints canvas with data urls unless crossOrigin is set to anonymous
+                    // Ios safari 10.3 taints canvas with data urls unless crossOrigin is set to anonymous
                     if (!supportsDataImages || useCORS) {
                         img.crossOrigin = 'anonymous';
                     }
@@ -6809,14 +7857,14 @@ var ResourceLoader = function () {
                     img.src = src;
                     if (img.complete === true) {
                         // Inline XML images may fail to parse, throwing an Error later on
-                        setTimeout(function () {
+                        setTimeout(function() {
                             resolve(img);
                         }, 500);
                     }
                     if (_this4.options.imageTimeout) {
                         var timeout = _this4.options.imageTimeout;
-                        setTimeout(function () {
-                            return reject( true ? 'Timed out (' + timeout + 'ms) fetching ' + src.substring(0, 256) : '');
+                        setTimeout(function() {
+                            return reject(true ? 'Timed out (' + timeout + 'ms) fetching ' + src.substring(0, 256) : '');
                         }, timeout);
                     }
                 });
@@ -6845,15 +7893,15 @@ var ResourceLoader = function () {
             var _this5 = this;
 
             var keys = Object.keys(this.cache);
-            var values = keys.map(function (str) {
-                return _this5.cache[str].catch(function (e) {
+            var values = keys.map(function(str) {
+                return _this5.cache[str].catch(function(e) {
                     if (true) {
                         _this5.logger.log('Unable to load image', e);
                     }
                     return null;
                 });
             });
-            return Promise.all(values).then(function (images) {
+            return Promise.all(values).then(function(images) {
                 if (true) {
                     _this5.logger.log('Finished loading ' + images.length + ' images', images);
                 }
@@ -6863,11 +7911,16 @@ var ResourceLoader = function () {
     }]);
 
     return ResourceLoader;
-}();
+}());
 
 exports.default = ResourceLoader;
 
-var ResourceStore = exports.ResourceStore = function () {
+var ResourceStore = exports.ResourceStore = (function() {
+    /**
+     *
+     * @param keys
+     * @param resources
+     */
     function ResourceStore(keys, resources) {
         _classCallCheck(this, ResourceStore);
 
@@ -6884,7 +7937,7 @@ var ResourceStore = exports.ResourceStore = function () {
     }]);
 
     return ResourceStore;
-}();
+}());
 
 var INLINE_SVG = /^data:image\/svg\+xml/i;
 var INLINE_BASE64 = /^data:image\/.*;base64,/i;
@@ -6905,22 +7958,22 @@ var isSVG = function isSVG(src) {
 };
 
 var _loadImage = function _loadImage(src, timeout) {
-    return new Promise(function (resolve, reject) {
+    return new Promise(function(resolve, reject) {
         var img = new Image();
-        img.onload = function () {
+        img.onload = function() {
             return resolve(img);
         };
         img.onerror = reject;
         img.src = src;
         if (img.complete === true) {
             // Inline XML images may fail to parse, throwing an Error later on
-            setTimeout(function () {
+            setTimeout(function() {
                 resolve(img);
             }, 500);
         }
         if (timeout) {
-            setTimeout(function () {
-                return reject( true ? 'Timed out (' + timeout + 'ms) loading image' : '');
+            setTimeout(function() {
+                return reject(true ? 'Timed out (' + timeout + 'ms) loading image' : '');
             }, timeout);
         }
     });
@@ -6938,7 +7991,42 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.parseContent = exports.resolvePseudoContent = exports.popCounters = exports.parseCounterReset = exports.TOKEN_TYPE = exports.PSEUDO_CONTENT_ITEM_TYPE = undefined;
 
-var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+var _slicedToArray = (function() {
+ /**
+  *
+  * @param arr
+  * @param i
+  */
+function sliceIterator(arr, i) {
+ var _arr = []; var _n = true; var _d = false; var _e = undefined; try {
+ for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+ _arr.push(_s.value); if (i && _arr.length === i) {
+ break;
+}
+}
+} catch (err) {
+ _d = true; _e = err;
+} finally {
+ try {
+ if (!_n && _i.return) {
+ _i.return();
+}
+} finally {
+ if (_d) {
+ throw _e;
+}
+}
+} return _arr;
+} return function(arr, i) {
+ if (Array.isArray(arr)) {
+ return arr;
+} else if (Symbol.iterator in Object(arr)) {
+ return sliceIterator(arr, i);
+} else {
+ throw new TypeError("Invalid attempt to destructure non-iterable instance");
+}
+};
+}());
 
 var _ListItem = __webpack_require__(14);
 
@@ -7003,7 +8091,7 @@ var resolvePseudoContent = exports.resolvePseudoContent = function resolvePseudo
     var contentItems = [];
     var s = '';
 
-    // increment the counter (if there is a "counter-increment" declaration)
+    // Increment the counter (if there is a "counter-increment" declaration)
     var counterIncrement = style.counterIncrement;
     if (counterIncrement && counterIncrement !== 'none') {
         var _counterIncrement$spl = counterIncrement.split(/\s+/),
@@ -7017,7 +8105,7 @@ var resolvePseudoContent = exports.resolvePseudoContent = function resolvePseudo
         }
     }
 
-    // build the content string
+    // Build the content string
     for (var i = 0; i < len; i++) {
         var token = tokens[i];
         switch (token.type) {
@@ -7057,16 +8145,16 @@ var resolvePseudoContent = exports.resolvePseudoContent = function resolvePseudo
 
             case TOKEN_TYPE.URL:
                 if (s) {
-                    contentItems.push({ type: PSEUDO_CONTENT_ITEM_TYPE.TEXT, value: s });
+                    contentItems.push({type: PSEUDO_CONTENT_ITEM_TYPE.TEXT, value: s});
                     s = '';
                 }
-                contentItems.push({ type: PSEUDO_CONTENT_ITEM_TYPE.IMAGE, value: token.value || '' });
+                contentItems.push({type: PSEUDO_CONTENT_ITEM_TYPE.IMAGE, value: token.value || ''});
                 break;
         }
     }
 
     if (s) {
-        contentItems.push({ type: PSEUDO_CONTENT_ITEM_TYPE.TEXT, value: s });
+        contentItems.push({type: PSEUDO_CONTENT_ITEM_TYPE.TEXT, value: s});
     }
 
     return contentItems;
@@ -7098,7 +8186,7 @@ var parseContent = exports.parseContent = function parseContent(content, cache) 
                 } else {
                     isString = !isString;
                     if (!isFunction && !isString) {
-                        tokens.push({ type: TOKEN_TYPE.STRING, value: str });
+                        tokens.push({type: TOKEN_TYPE.STRING, value: str});
                         str = '';
                     }
                 }
@@ -7135,7 +8223,7 @@ var parseContent = exports.parseContent = function parseContent(content, cache) 
                     switch (functionName) {
                         case 'attr':
                             if (args.length > 0) {
-                                tokens.push({ type: TOKEN_TYPE.ATTRIBUTE, value: args[0] });
+                                tokens.push({type: TOKEN_TYPE.ATTRIBUTE, value: args[0]});
                             }
                             break;
 
@@ -7170,7 +8258,7 @@ var parseContent = exports.parseContent = function parseContent(content, cache) 
 
                         case 'url':
                             if (args.length > 0) {
-                                tokens.push({ type: TOKEN_TYPE.URL, value: args[0] });
+                                tokens.push({type: TOKEN_TYPE.URL, value: args[0]});
                             }
                             break;
                     }
@@ -7222,10 +8310,10 @@ var parseContent = exports.parseContent = function parseContent(content, cache) 
 var addOtherToken = function addOtherToken(tokens, identifier) {
     switch (identifier) {
         case 'open-quote':
-            tokens.push({ type: TOKEN_TYPE.OPENQUOTE });
+            tokens.push({type: TOKEN_TYPE.OPENQUOTE});
             break;
         case 'close-quote':
-            tokens.push({ type: TOKEN_TYPE.CLOSEQUOTE });
+            tokens.push({type: TOKEN_TYPE.CLOSEQUOTE});
             break;
     }
 };
@@ -7257,5 +8345,5 @@ var formatCounterValue = function formatCounterValue(counter, glue, format) {
 };
 
 /***/ })
-/******/ ]);
+/** ****/ ]);
 });

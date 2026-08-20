@@ -37,8 +37,8 @@ class mobile {
      */
     public static function edusupport_init(array $args): array {
         global $DB, $USER;
-        $courseids = array();
-        $allsupportforums = $DB->get_records('local_edusupport', array());
+        $courseids = [];
+        $allsupportforums = $DB->get_records('local_edusupport', []);
         foreach ($allsupportforums as $supportforum) {
             // If we are part of the support team of this forum, add the course.
             if (!empty(\local_edusupport::get_supporter_level($supportforum->courseid, $USER->id))) {
@@ -50,8 +50,7 @@ class mobile {
             'restrict' => [
                 'courses' => $courseids,
             ],
-            //'javascript' => file_get_contents($CFG->dirroot . '/blocks/news/appjs/news_init.js')
+            // 'javascript' => file_get_contents($CFG->dirroot . '/blocks/news/appjs/news_init.js')
         ];
     }
-
 }

@@ -24,10 +24,11 @@ defined('MOODLE_INTERNAL') || die;
 
 function local_edusupport_extend_navigation_course($parentnode, $course, $context) {
     // If we allow support users on course level, we can remove the next line.
-    if (!is_siteadmin())
+    if (!is_siteadmin()) {
         return;
-    //$coursecontext = \context_course::instance($course->id);
-    //if (!has_capability('local/edusupport:canforward2ndlevel', $coursecontext)) return;
+    }
+    // $coursecontext = \context_course::instance($course->id);
+    // if (!has_capability('local/edusupport:canforward2ndlevel', $coursecontext)) return;
 
     // We want to add these new nodes after the Edit settings node, and before the
     // Locally assigned roles node. Of course, both of those are controlled by capabilities.
@@ -43,10 +44,12 @@ function local_edusupport_extend_navigation_course($parentnode, $course, $contex
 
     if (is_siteadmin()) {
         $url = '/local/edusupport/chooseforum.php';
-        $node = navigation_node::create(get_string('supportforum:choose', 'local_edusupport'),
-            new moodle_url($url, array('courseid' => $course->id)),
+        $node = navigation_node::create(
+            get_string('supportforum:choose', 'local_edusupport'),
+            new moodle_url($url, ['courseid' => $course->id]),
             navigation_node::TYPE_SETTING, null, 'advancedsettings',
-            new pix_icon('i/marker', 'eduSupport'));
+            new pix_icon('i/marker', 'eduSupport')
+        );
         $parentnode->add_node($node, $beforekey);
     }
     /*
@@ -74,7 +77,7 @@ function local_edusupport_extend_navigation_course($parentnode, $course, $contex
  * @package  local_edusupport --> we fake downloads for mod_forum.
  * @category files
  */
-function local_edusupport_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options = array()) {
+function local_edusupport_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options = []) {
     global $CFG, $DB, $USER;
     require_once($CFG->dirroot . '/local/edusupport/classes/lib.php');
     require_once($CFG->dirroot . '/mod/forum/lib.php');
@@ -84,13 +87,13 @@ function local_edusupport_pluginfile($course, $cm, $context, $filearea, $args, $
     }
 
     // instead of requiring course login we check if the current user is support user of this discussion!
-    //require_course_login($course, true, $cm);
+    // require_course_login($course, true, $cm);
     if (!\local_edusupport\lib::is_supportteam($USER->id, $course->id)) {
         return false;
     }
 
     $postid = (int)array_shift($args);
-    if (!$post = $DB->get_record('forum_posts', array('id' => $postid))) {
+    if (!$post = $DB->get_record('forum_posts', ['id' => $postid])) {
         return false;
     }
 
@@ -101,7 +104,7 @@ function local_edusupport_pluginfile($course, $cm, $context, $filearea, $args, $
         return false;
     }
 
-    if (!$discussion = $DB->get_record('forum_discussions', array('id' => $post->discussion))) {
+    if (!$discussion = $DB->get_record('forum_discussions', ['id' => $post->discussion])) {
         return false;
     }
 
@@ -147,7 +150,7 @@ function local_edusupport_pluginfile($course, $cm, $context, $filearea, $args, $
  */
 function local_edusupport_pre_course_category_delete($category) {
     global $DB;
-    $courses = $DB->get_records('course', array('category' => $category->id));
+    $courses = $DB->get_records('course', ['category' => $category->id]);
     foreach ($courses as $course) {
         local_edusupport_pre_course_delete($course);
     }
@@ -159,7 +162,7 @@ function local_edusupport_pre_course_category_delete($category) {
  */
 function local_edusupport_pre_course_delete($course) {
     global $DB;
-    $supportforums = $DB->get_records('local_edusupport', array('courseid' => $course->id));
+    $supportforums = $DB->get_records('local_edusupport', ['courseid' => $course->id]);
     foreach ($supportforums as $supportforum) {
         \local_edusupport\lib::supportforum_disable($supportforum->id);
     }
@@ -171,7 +174,7 @@ function local_edusupport_pre_course_delete($course) {
  */
 function local_edusupport_pre_course_module_delete($cm) {
     global $DB;
-    $forumtype = $DB->get_record('modules', array('name' => 'forum'));
+    $forumtype = $DB->get_record('modules', ['name' => 'forum']);
     if (!empty($forumtype->id) && !empty($cm->module) && $cm->module == $forumtype->id) {
         \local_edusupport\lib::supportforum_disable($cm->instance);
     }

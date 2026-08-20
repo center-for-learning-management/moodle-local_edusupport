@@ -31,7 +31,7 @@ $state = optional_param('state', 0, PARAM_INT);
 $context = context_course::instance($courseid);
 $PAGE->set_context($context);
 require_login($courseid);
-$PAGE->set_url(new moodle_url('/local/edusupport/chooseforum.php', array('courseid' => $courseid)));
+$PAGE->set_url(new moodle_url('/local/edusupport/chooseforum.php', ['courseid' => $courseid]));
 
 $title = get_string('supportforum:choose', 'local_edusupport');
 $PAGE->set_title($title);
@@ -40,28 +40,27 @@ $PAGE->set_heading($title);
 echo $OUTPUT->header();
 
 if (!is_siteadmin()) {
-    $tocmurl = new moodle_url('/course/view.php', array('id' => $courseid));
-    echo $OUTPUT->render_from_template('local_edusupport/alert', array(
+    $tocmurl = new moodle_url('/course/view.php', ['id' => $courseid]);
+    echo $OUTPUT->render_from_template('local_edusupport/alert', [
         'content' => get_string('missing_permission', 'local_edusupport'),
         'type' => 'danger',
         'url' => $tocmurl->__toString(),
-    ));
+    ]);
 } else {
     if (!empty($forumid)) {
         $dedicatedsupporter = optional_param('dedicatedsupporter', 0, PARAM_INT);
         if (!empty($dedicatedsupporter)) {
             if (\local_edusupport\lib::supportforum_setdedicatedsupporter($forumid, $dedicatedsupporter)) {
-                echo $OUTPUT->render_from_template('local_edusupport/alert', array(
+                echo $OUTPUT->render_from_template('local_edusupport/alert', [
                     'content' => get_string('dedicatedsupporter:successfully_set', 'local_edusupport'),
                     'type' => 'success',
-                ));
+                ]);
             } else {
-                echo $OUTPUT->render_from_template('local_edusupport/alert', array(
+                echo $OUTPUT->render_from_template('local_edusupport/alert', [
                     'content' => get_string('dedicatedsupporter:not_successfully_set', 'local_edusupport'),
                     'type' => 'danger',
-                ));
+                ]);
             }
-
         } else {
             switch ($state) {
                 case 1:
@@ -79,9 +78,9 @@ if (!is_siteadmin()) {
                 WHERE courseid=1
                     OR courseid=?
                 ORDER BY supportlevel ASC";
-    $supporters = array_values($DB->get_records_sql($sql, array($courseid)));
+    $supporters = array_values($DB->get_records_sql($sql, [$courseid]));
     foreach ($supporters as &$supporter) {
-        $u = $DB->get_record('user', array('id' => $supporter->userid));
+        $u = $DB->get_record('user', ['id' => $supporter->userid]);
         $supporter->userfullname = fullname($u);
         $supporter->firstname = $u->firstname;
         $supporter->lastname = $u->lastname;
@@ -96,10 +95,10 @@ if (!is_siteadmin()) {
                 WHERE course=?
                     AND type='general'
                 ORDER BY name ASC";
-    $forums = array_values($DB->get_records_sql($sql, array($courseid)));
+    $forums = array_values($DB->get_records_sql($sql, [$courseid]));
 
     foreach ($forums as &$forum) {
-        $state = $DB->get_record('local_edusupport', array('forumid' => $forum->id));
+        $state = $DB->get_record('local_edusupport', ['forumid' => $forum->id]);
         $forum->state = (!empty($state->id));
         $forum->dedicatedsupporter = !empty($state->dedicatedsupporter) ? $state->dedicatedsupporter : 0;
         $forum->supporters = json_decode(json_encode($supporters));
@@ -110,7 +109,7 @@ if (!is_siteadmin()) {
         }
     }
 
-    echo $OUTPUT->render_from_template('local_edusupport/chooseforum', array('forums' => $forums, 'wwwroot' => $CFG->wwwroot));
+    echo $OUTPUT->render_from_template('local_edusupport/chooseforum', ['forums' => $forums, 'wwwroot' => $CFG->wwwroot]);
 }
 
 echo $OUTPUT->footer();

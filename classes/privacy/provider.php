@@ -37,7 +37,6 @@ class provider implements
     \core_privacy\local\metadata\provider,
     \core_privacy\local\request\core_userlist_provider,
     \core_privacy\local\request\plugin\provider {
-
     public static function get_metadata(collection $collection): collection {
 
         // Table edusuport subscribers.
@@ -176,7 +175,7 @@ class provider implements
         $dataissues[] = null;
         $user = $contextlist->get_user();
         $context = context_user::instance($user->id);
-        list($contextsql, $contextparams) = $DB->get_in_or_equal($contextlist->get_contextids(), SQL_PARAMS_NAMED);
+        [$contextsql, $contextparams] = $DB->get_in_or_equal($contextlist->get_contextids(), SQL_PARAMS_NAMED);
         $sql = "SELECT ctx.id as cmid, esc.*
         FROM {context} ctx
         JOIN {local_edusupport_subscr} esc ON ctx.instanceid = esc.userid AND ctx.contextlevel = :contextlevel
@@ -209,7 +208,6 @@ class provider implements
                 'userid' => $row->userid,
                 'supportlevel' => $row->supportlevel,
             ];
-
         }
         writer::with_context($context)
             ->export_data([get_string('pluginname', 'local_edusupport'), get_string('supporters', 'local_edusupport')], (object)$datasupport);
@@ -269,8 +267,6 @@ class provider implements
                 static::alter_currentsupporter($context->instanceid);
             }
         }
-
-
     }
 
     /**
@@ -289,7 +285,6 @@ class provider implements
         SET currentsupporter = '-1'
         WHERE currentsupporter = :userid";
         $DB->execute($sql, $params);
-
     }
 
     /**
@@ -303,6 +298,5 @@ class provider implements
 
         $DB->delete_records('local_edusupport_supporters', ['userid' => $userid]);
         $DB->delete_records('local_edusupport_subscr', ['userid' => $userid]);
-
     }
 }

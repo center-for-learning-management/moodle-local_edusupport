@@ -36,7 +36,7 @@ if (isguestuser()) {
     throw new \moodle_exception('noguest');
 }
 
-$PAGE->set_url(new moodle_url('/local/edusupport/create_issue.php', array('url' => $returnurl)));
+$PAGE->set_url(new moodle_url('/local/edusupport/create_issue.php', ['url' => $returnurl]));
 $PAGE->set_pagelayout('standard');
 $PAGE->set_title(get_string('create_issue', 'local_edusupport'));
 $PAGE->set_heading(get_string('create_issue', 'local_edusupport'));
@@ -47,7 +47,7 @@ if ($data = $form->get_data()) {
     $discussionid = \local_edusupport\lib::create_issue($data);
     if ($discussionid > 0) {
         redirect(
-            new moodle_url('/mod/forum/discuss.php', array('d' => $discussionid)),
+            new moodle_url('/mod/forum/discuss.php', ['d' => $discussionid]),
             get_string('create_issue_success_description', 'local_edusupport'),
             null,
             \core\output\notification::NOTIFY_SUCCESS
@@ -55,7 +55,7 @@ if ($data = $form->get_data()) {
     }
     // A mailed issue has no page to link to. We redirect to ourselves so that a reload cannot
     // submit the issue twice, and show the confirmation instead of the form.
-    redirect(new moodle_url($PAGE->url, array('sent' => 1)));
+    redirect(new moodle_url($PAGE->url, ['sent' => 1]));
 }
 
 echo $OUTPUT->header();
@@ -66,10 +66,10 @@ if ($sent) {
         \core\output\notification::NOTIFY_SUCCESS
     );
 } else {
-    $form->set_data((object)array(
+    $form->set_data((object)[
         'url' => $returnurl,
         'contactphone' => $USER->phone1,
-    ));
+    ]);
     $form->display();
 }
 
