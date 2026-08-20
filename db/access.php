@@ -24,13 +24,13 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-$capabilities = array(
-    'local/edusupport:canforward2ndlevel' => array(
+$capabilities = [
+    'local/edusupport:canforward2ndlevel' => [
         'riskbitmask' => RISK_XSS,
         'captype' => 'write',
         'contextlevel' => CONTEXT_COURSE,
-        'archetypes' => array(
+        'archetypes' => [
             'editingteacher' => CAP_ALLOW,
-        ),
-    ),
-);
+        ],
+    ],
+];

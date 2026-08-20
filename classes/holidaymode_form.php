@@ -35,9 +35,9 @@ class holidaymode_form extends \moodleform {
         $mform->disable_form_change_checker();
     }
 
-    //Custom validation should be added here
+    // Custom validation should be added here
     function validation($data, $files) {
-        $errors = array();
+        $errors = [];
         return $errors;
     }
 }

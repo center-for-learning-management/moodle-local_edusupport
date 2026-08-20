@@ -104,7 +104,8 @@ if ($hassiteconfig) {
             'local_edusupport/deletethreshhold',
             get_string('deletethreshhold', 'local_edusupport'),
             get_string('deletethreshhold:description', 'local_edusupport'),
-            4 * WEEKSECS)
+            4 * WEEKSECS
+        )
     );
 
     $options = [
@@ -120,7 +121,8 @@ if ($hassiteconfig) {
             get_string('spamprotection:threshold', 'local_edusupport'),
             get_string('spamprotection:threshold:description', 'local_edusupport'),
             600,
-            $options)
+            $options
+        )
     );
 
     $settings->add(
@@ -129,16 +131,17 @@ if ($hassiteconfig) {
             get_string('spamprotection:limit', 'local_edusupport'),
             get_string('spamprotection:limit:description', 'local_edusupport'),
             5,
-            [1 => 1, 2 => 2, 5 => 5, 10 => 10, 20 => 20])
+            [1 => 1, 2 => 2, 5 => 5, 10 => 10, 20 => 20]
+        )
     );
 
 
     // @TODO a feature from the future.
     // $settings->add(new admin_setting_configcheckbox('local_edusupport/sendreminders', get_string('cron:reminder:title', 'local_edusupport'), '', '', PARAM_INT));
 
-    $actions = array(
-        (object)array('name' => 'supporters', 'href' => 'choosesupporters.php'),
-    );
+    $actions = [
+        (object)['name' => 'supporters', 'href' => 'choosesupporters.php'],
+    ];
     $links = "<div class=\"grid-eq-3\">";
     foreach ($actions as $action) {
         $links .= '<a class="btn btn-secondary" href="' . $CFG->wwwroot . '/local/edusupport/' . $action->href . '">' .

@@ -63,15 +63,15 @@ class create_issue_form extends moodleform {
         require_once($CFG->dirroot . '/local/edusupport/classes/lib.php');
         $potentialtargets = \local_edusupport\lib::get_potentialtargets();
 
-        $hideifs = array('mail');
+        $hideifs = ['mail'];
 
         // If there are no potentialtargets we don't care. We will send a mail to the Moodle default support contact.
-        $options = array();
-        $labels = array();
+        $options = [];
+        $labels = [];
 
         foreach ($potentialtargets as $pt) {
             $managers = array_values(\local_edusupport\lib::get_course_supporters($pt));
-            $label = array();
+            $label = [];
             for ($a = 0; $a < count($managers) && $a < 3; $a++) {
                 $manager = $managers[$a];
                 $label[] = "<a href=\"{$CFG->wwwroot}/user/profile.php?id={$manager->id}\" target=\"_blank\">{$manager->firstname} {$manager->lastname}</a>";
@@ -98,7 +98,7 @@ class create_issue_form extends moodleform {
         }
         $supportuser = \core_user::get_support_user();
         if (count($potentialtargets) == 0) {
-            $options['mail'] = get_string('email_to_xyz', 'local_edusupport', (object)array('email' => $supportuser->email));
+            $options['mail'] = get_string('email_to_xyz', 'local_edusupport', (object)['email' => $supportuser->email]);
             $labels['mail'] = $supportuser->email;
         }
 
@@ -114,7 +114,7 @@ class create_issue_form extends moodleform {
             '$(pt2).closest(\'div.form-group\').css(\'display\', hide ? \'none\' : \'block\');',
             '});',
         ];
-        $mform->addElement('select', 'forum_group', get_string('to_group', 'local_edusupport'), $options, array('onchange' => implode("", $postto2ndlevel_hideshow)));
+        $mform->addElement('select', 'forum_group', get_string('to_group', 'local_edusupport'), $options, ['onchange' => implode("", $postto2ndlevel_hideshow)]);
         $mform->setType('forum_group', PARAM_TEXT);
 
         $managerslabel = [
@@ -134,24 +134,24 @@ class create_issue_form extends moodleform {
 
         $mform->addElement('html', implode("\n", $managerslabel));
 
-        $mform->addElement('text', 'subject', get_string('subject', 'local_edusupport'), array('style' => 'width: 100%;'));
+        $mform->addElement('text', 'subject', get_string('subject', 'local_edusupport'), ['style' => 'width: 100%;']);
         $mform->setType('subject', PARAM_TEXT);
         $mform->addRule('subject', get_string('subject_missing', 'local_edusupport'), 'required', null, 'server');
 
         if (!$disablephonefield) {
-            $mform->addElement('text', 'contactphone', get_string('contactphone', 'local_edusupport'), array('style' => 'width: 100%;'));
+            $mform->addElement('text', 'contactphone', get_string('contactphone', 'local_edusupport'), ['style' => 'width: 100%;']);
         } else {
             $mform->addElement('hidden', 'contactphone', '');
         }
         $mform->setType('contactphone', PARAM_TEXT);
 
-        $mform->addElement('textarea', 'description', get_string('description', 'local_edusupport'), array('style' => 'width: 100%;', 'rows' => 10));
+        $mform->addElement('textarea', 'description', get_string('description', 'local_edusupport'), ['style' => 'width: 100%;', 'rows' => 10]);
         // Kept raw so the user can paste error messages containing angle brackets, it is
         // escaped before it goes into the post.
         $mform->setType('description', PARAM_RAW);
         $mform->addRule('description', get_string('description_missing', 'local_edusupport'), 'required', null, 'server');
 
-        $mform->addElement('checkbox', 'postto2ndlevel', '', get_string('postto2ndlevel:description', 'local_edusupport', array('sitename' => $SITE->fullname)));
+        $mform->addElement('checkbox', 'postto2ndlevel', '', get_string('postto2ndlevel:description', 'local_edusupport', ['sitename' => $SITE->fullname]));
         $mform->setType('postto2ndlevel', PARAM_BOOL);
         $mform->setDefault('postto2ndlevel', 0);
 
@@ -160,10 +160,10 @@ class create_issue_form extends moodleform {
             return '.' . $extension;
         }, array_keys(static::SCREENSHOT_TYPES));
 
-        $mform->addElement('filepicker', 'screenshot', get_string('screenshot', 'local_edusupport'), null, array(
+        $mform->addElement('filepicker', 'screenshot', get_string('screenshot', 'local_edusupport'), null, [
             'maxbytes' => $this->maxbytes,
             'accepted_types' => $acceptedtypes,
-        ));
+        ]);
         $mform->addElement('static', 'screenshot_description', '', get_string('screenshot:description', 'local_edusupport'));
 
         $mform->addElement('html', '<script> setTimeout(function() { ' . implode('', $postto2ndlevel_hideshow) . ' }, 100);</script>');
@@ -191,8 +191,10 @@ class create_issue_form extends moodleform {
         }
 
         $usercontext = \context_user::instance($USER->id);
-        $files = get_file_storage()->get_area_files($usercontext->id, 'user', 'draft',
-            $draftitemid, 'id DESC', false);
+        $files = get_file_storage()->get_area_files(
+            $usercontext->id, 'user', 'draft',
+            $draftitemid, 'id DESC', false
+        );
         array_shift($files);
         foreach ($files as $file) {
             $file->delete();
@@ -215,8 +217,10 @@ class create_issue_form extends moodleform {
         // content really is an image of that type, so a renamed file cannot pass.
         if (!empty($data['screenshot'])) {
             $usercontext = \context_user::instance($USER->id);
-            $draftfiles = get_file_storage()->get_area_files($usercontext->id, 'user', 'draft',
-                $data['screenshot'], 'id DESC', false);
+            $draftfiles = get_file_storage()->get_area_files(
+                $usercontext->id, 'user', 'draft',
+                $data['screenshot'], 'id DESC', false
+            );
             $file = reset($draftfiles);
             if ($file && !static::is_valid_screenshot($file->get_content(), $file->get_filename())) {
                 $errors['screenshot'] = get_string('screenshot:invalid', 'local_edusupport');

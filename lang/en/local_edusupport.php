@@ -21,46 +21,42 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$string['pluginname'] = 'Help';
-$string['edusupport:addinstance'] = 'Add eduSupport block';
-$string['edusupport:myaddinstance'] = 'Add eduSupport block';
-
 $string['archive'] = 'Archive';
 $string['assigned'] = 'Assigned';
 $string['autocreate_orggroup'] = 'Automatically create groups for eduvidual-Organizations';
 $string['autocreate_usergroup'] = 'Automatically create a private group for user';
 $string['be_more_accurate'] = 'Please be more accurate when describing your problem!';
-$string['edusupport:canforward2ndlevel'] = 'Can forward issues to platform support team';
 $string['cachedef_supportmenu'] = 'Cache for the supportmenu';
-$string['changes_saved_successfully'] = 'Changes saved successfully.';
 $string['changes_saved_fail'] = 'Changes could not be saved.';
+$string['changes_saved_successfully'] = 'Changes saved successfully.';
 $string['contactphone'] = 'Telephone';
 $string['contactphone_missing'] = 'Please enter your telephone number';
 $string['coursecategorydeletion'] = 'You are trying to remove a category, that contains supportforums. Please ensure, that you disable the support forums first!';
 $string['courseconfig'] = 'Course config';
 $string['create_issue'] = 'Contact support';
-$string['create_issue_error_title'] = 'Error';
 $string['create_issue_error_description'] = 'Your issue could not be stored!';
+$string['create_issue_error_title'] = 'Error';
 $string['create_issue_mail_success_description'] = 'Your issue has been stored. We will help you as soon as possible!';
-$string['create_issue_success_title'] = 'Success';
+$string['create_issue_success_close'] = 'close';
 $string['create_issue_success_description'] = 'Your issue has been stored. We will help you as soon as possible!';
 $string['create_issue_success_description_mail'] = 'Your issue has been sent by mail. We will help you as soon as possible!';
 $string['create_issue_success_goto'] = 'view issue';
 $string['create_issue_success_responsibles'] = 'Contact person for this ticket is/are:';
-$string['create_issue_success_close'] = 'close';
-$string['cron:reminder:title'] = 'eduSupport reminder';
-$string['cron:reminder:intro'] = 'This is a friendly reminder about open issues, that are assigned to you as eduSupporter!';
+$string['create_issue_success_title'] = 'Success';
 $string['cron:deleteexpiredissues:title'] = 'delete expired issues';
+$string['cron:reminder:intro'] = 'This is a friendly reminder about open issues, that are assigned to you as eduSupporter!';
+$string['cron:reminder:title'] = 'eduSupport reminder';
 $string['dedicatedsupporter'] = 'Dedicated';
 $string['dedicatedsupporter:not_successfully_set'] = 'Dedicated supporter could not be set';
 $string['dedicatedsupporter:successfully_set'] = 'Successfully set dedicated supporter';
-$string['description'] = 'Description';
-$string['description_missing'] = 'Missing description';
 $string['deletethreshhold'] = 'Delete closed issues after';
 $string['deletethreshhold:description'] = 'Set the threshhold for the deletion of closed issues in the issues view. This only affects the issues page, but not the forum posts. 0 means to keep closed issues forever (not yet recommended)';
-$string['goto_tutorials'] = 'Documents & Tutorials';
-$string['goto_targetforum'] = 'Supportforum';
+$string['description'] = 'Description';
+$string['description_missing'] = 'Missing description';
+$string['edusupport:addinstance'] = 'Add eduSupport block';
+$string['edusupport:canforward2ndlevel'] = 'Can forward issues to platform support team';
 $string['edusupport:manage'] = 'Manage';
+$string['edusupport:myaddinstance'] = 'Add eduSupport block';
 $string['email_to_xyz'] = 'Send mail to {$a->email}';
 $string['extralinks'] = 'Extralinks';
 $string['extralinks:description'] = 'If you enter links here, the "help"-Button will be a menu instead of button. It will include the "help"-Button as first element, and all extra links as additional links. Enter links line by line in the following form: linkname|url|faicon|target';
@@ -68,16 +64,18 @@ $string['faqlink'] = 'FAQ-link';
 $string['faqlink:description'] = 'link to FAQ';
 $string['faqread'] = 'faq read toggle';
 $string['faqread:description'] = 'I confirm, that I have read the <a href="{$a}" target="_blank">FAQ</a> prior to posting my question.';
+$string['goto_targetforum'] = 'Supportforum';
+$string['goto_tutorials'] = 'Documents & Tutorials';
 $string['header'] = 'Request for help in {$a}';
 $string['holidaymode'] = 'Holidaymode';
+$string['holidaymode_end'] = 'End holidaymode';
 $string['holidaymode_is_on'] = 'Holidaymode is on';
 $string['holidaymode_is_on_descr'] = 'As long as you are on holidays, no new issues will be assigned to you.';
-$string['holidaymode_end'] = 'End holidaymode';
 $string['issue'] = 'Issue';
-$string['issue:countcurrent'] = 'Open issues';
 $string['issue:countassigned'] = 'Subscribed issues';
-$string['issue:countother'] = 'Other issues';
 $string['issue:countclosed'] = 'Closed issues';
+$string['issue:countcurrent'] = 'Open issues';
+$string['issue:countother'] = 'Other issues';
 $string['issue_assign'] = 'Assign issue';
 $string['issue_assign_3rdlevel:post'] = '<a href="{$a->wwwroot}/user/view.php?id={$a->fromuserid}">{$a->fromuserfullname}</a> has assigned this issue to <a href="{$a->wwwroot}/user/view.php?id={$a->touserid}">{$a->touserfullname}</a>.';
 $string['issue_assign_3rdlevel:postself'] = '<a href="{$a->wwwroot}/user/view.php?id={$a->fromuserid}">{$a->fromuserfullname}</a> has taken responsibility for this issue.';
@@ -87,8 +85,8 @@ $string['issue_assign_nextlevel:post'] = '<a href="{$a->wwwroot}/user/view.php?i
 $string['issue_assigned:subject'] = 'Supportissue assigned';
 $string['issue_assigned:text'] = 'The support issue was assigned to <a href="{$a->wwwroot}/user/view.php?id={$a->id}">{$a->firstname} {$a->lastname}</a>!';
 $string['issue_close'] = 'Close issue';
-$string['issue_closed:subject'] = 'Issue closed';
 $string['issue_closed:post'] = 'This issue closed was closed by <a href="{$a->wwwroot}/user/view.php?id={$a->fromuserid}">{$a->fromuserfullname}</a>. If you need further assistance please forward this issue again to the platform support team.';
+$string['issue_closed:subject'] = 'Issue closed';
 $string['issue_responsibles:post'] = '
     <p>
         The responsibility for this issue has been assigned to: {$a->responsibles}!
@@ -108,11 +106,11 @@ $string['issues:assigned:none'] = 'Currently you do not have any issue subscript
 $string['issues:closed'] = 'Closed issues';
 $string['issues:current'] = 'My issues';
 $string['issues:current:none'] = 'Seems you deserve a break - no issue left for your!';
-$string['issues:other'] = 'Other issues';
-$string['issues:other:none'] = 'Great, there seem to be no more problems on that planet!';
+$string['issues:openall'] = '{$a} total open';
 $string['issues:openmine'] = '{$a} for me';
 $string['issues:opennosupporter'] = '{$a} unassigned';
-$string['issues:openall'] = '{$a} total open';
+$string['issues:other'] = 'Other issues';
+$string['issues:other:none'] = 'Great, there seem to be no more problems on that planet!';
 $string['label:2ndlevel'] = 'Platform support team';
 $string['missing_permission'] = 'Missing required permission';
 $string['missing_targetforum'] = 'Missing target forum, must be configured!';
@@ -121,21 +119,23 @@ $string['no_such_issue'] = 'This is not an open issue! You can navigate to the <
 $string['only_you'] = 'Only you and our team';
 $string['phonefield'] = 'disable phone field';
 $string['phonefield:description'] = 'Deactivate phone field in the form for creating issues';
+$string['pluginname'] = 'Help';
+
 $string['postto2ndlevel'] = 'Submit to platform support team';
 $string['postto2ndlevel:description'] = 'Directly forward to the {$a->sitename}-Support!';
-$string['privacy:metadata'] = 'This plugin does not store any personal data as it uses a forum as target.';
 $string['priority'] = 'set priority';
 $string['prioritylvl'] = 'enable priorities';
 $string['prioritylvl:description'] = 'If enabled you can select priorities in the issues list';
+$string['prioritylvl:high'] = 'high priority';
 $string['prioritylvl:low'] = 'low priority';
 $string['prioritylvl:mid'] = 'mid priority';
-$string['prioritylvl:high'] = 'high priority';
+$string['privacy:metadata'] = 'This plugin does not store any personal data as it uses a forum as target.';
 $string['relativeurlsupportarea'] = 'Relative URL to Supportarea';
 $string['screenshot'] = 'Post screenshot';
 $string['screenshot:description'] = 'A screenshot may help to solve the problem.';
 $string['screenshot:generateinfo'] = 'To generate the screenshot the form will be hidden, and reappears afterwards.';
-$string['screenshot:upload:failed'] = 'Preparation of file failed!';
 $string['screenshot:invalid'] = 'The uploaded file is not a valid image, or its content does not match its file extension. Allowed are GIF, JPG, PNG and WEBP.';
+$string['screenshot:upload:failed'] = 'Preparation of file failed!';
 $string['screenshot:upload:successful'] = 'File has been successfully prepared for uploading!';
 $string['select_isselected'] = 'Currently selected';
 $string['select_unavailable'] = 'Unavailable';
@@ -157,8 +157,8 @@ $string['supportforum:disable'] = 'disable';
 $string['supportforum:enable'] = 'enable';
 $string['supportlevel'] = 'Supportlevel';
 $string['targetforum'] = 'Supportforum';
-$string['targetforum:description'] = 'Please select the forum that should be used as target for support issues within this course. This forum will be forced to have some group mode enabled. The Plugin will create an individual group for every single user.';
 $string['targetforum:core:description'] = 'All users will be automatically enrolled to the systemwide supportforum as soon as they create a support issue. Furthermore groups can be created and managed automatically to seperate support issues.';
+$string['targetforum:description'] = 'Please select the forum that should be used as target for support issues within this course. This forum will be forced to have some group mode enabled. The Plugin will create an individual group for every single user.';
 $string['to_group'] = 'To';
 $string['toggle'] = 'Course Supportforum';
 $string['trackhost'] = 'Track host';
@@ -166,9 +166,9 @@ $string['trackhost:description'] = 'Big moodle sites may use an architecture wit
 $string['userid'] = 'UserID';
 $string['userlinks'] = 'enable userlinks';
 $string['userlinks:description'] = 'show userlinks in issues list';
-$string['your_issues'] = 'Your issues';
 $string['webhost'] = 'Host';
 $string['weburl'] = 'URL';
+$string['your_issues'] = 'Your issues';
 
 /* PrivaCY API */
 $string['privacy:metadata:edusupport:subscr'] = 'All subscribed issues';

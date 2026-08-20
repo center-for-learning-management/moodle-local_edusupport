@@ -34,16 +34,18 @@ class hook_callbacks {
 
         if (strpos($_SERVER["SCRIPT_FILENAME"], '/mod/forum/discuss.php') > 0) {
             $d = optional_param('d', 0, PARAM_INT);
-            $discussion = $DB->get_record('forum_discussions', array('id' => $d));
+            $discussion = $DB->get_record('forum_discussions', ['id' => $d]);
             $coursecontext = \context_course::instance($discussion->course);
-            if (has_capability('local/edusupport:canforward2ndlevel', $coursecontext)
-                && \local_edusupport\lib::is_supportforum($discussion->forum)) {
+            if (
+                has_capability('local/edusupport:canforward2ndlevel', $coursecontext)
+                && \local_edusupport\lib::is_supportforum($discussion->forum)
+            ) {
                 $sql = "SELECT id
                         FROM {local_edusupport_subscr}
                         WHERE discussionid=? LIMIT 1 OFFSET 0";
-                $chk = $DB->get_record_sql($sql, array($discussion->id));
+                $chk = $DB->get_record_sql($sql, [$discussion->id]);
 
-                $PAGE->requires->js_call_amd('local_edusupport/main', 'injectForwardButton', array($d, !empty($chk->id), $SITE->fullname));
+                $PAGE->requires->js_call_amd('local_edusupport/main', 'injectForwardButton', [$d, !empty($chk->id), $SITE->fullname]);
             }
             if (\local_edusupport\lib::is_supportforum($discussion->forum)) {
                 $PAGE->requires->js_call_amd('local_edusupport/main', 'injectTest');
@@ -66,11 +68,11 @@ class hook_callbacks {
                                 path LIKE ?
                                 OR path LIKE ?
                             )";
-                $subcategories = $DB->get_records_sql($sql, array(CONTEXT_COURSECAT, $coursecatcontext->path, $coursecatcontext->path . '/%'));
+                $subcategories = $DB->get_records_sql($sql, [CONTEXT_COURSECAT, $coursecatcontext->path, $coursecatcontext->path . '/%']);
                 foreach ($subcategories as $subcategory) {
-                    $chkforforum = $DB->get_record('local_edusupport', array('categoryid' => $subcategory->instanceid));
+                    $chkforforum = $DB->get_record('local_edusupport', ['categoryid' => $subcategory->instanceid]);
                     if (!empty($chkforforum->id)) {
-                        redirect(new \moodle_url('/local/edusupport/error.php', array('error' => 'coursecategorydeletion', 'categoryid' => $categoryid)));
+                        redirect(new \moodle_url('/local/edusupport/error.php', ['error' => 'coursecategorydeletion', 'categoryid' => $categoryid]));
                     }
                 }
             }
@@ -78,17 +80,17 @@ class hook_callbacks {
             // Check if the coursecategory exists and is visible.
             $coursecat = \core_course_category::get($categoryid, MUST_EXIST, true);
             if (empty($coursecat->__get('visible'))) {
-                $coursecat->update(array('visible' => 1));
+                $coursecat->update(['visible' => 1]);
             }
 
             // Check for any supportforum-courses that are should be contained by this coursecat.
-            $supportforums = $DB->get_records('local_edusupport', array('categoryid' => $categoryid));
+            $supportforums = $DB->get_records('local_edusupport', ['categoryid' => $categoryid]);
             foreach ($supportforums as $supportforum) {
                 // Check if the course is in place and the category
-                $course = $DB->get_record('course', array('id' => $supportforum->id));
+                $course = $DB->get_record('course', ['id' => $supportforum->id]);
                 if (!empty($course->id) && $course->category != $categoryid) {
                     // Update our database
-                    $DB->set_field('local_edusupport', 'categoryid', $categoryid, array('courseid' => $course->id));
+                    $DB->set_field('local_edusupport', 'categoryid', $categoryid, ['courseid' => $course->id]);
                 }
             }
         }

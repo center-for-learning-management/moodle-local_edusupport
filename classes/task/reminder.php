@@ -32,8 +32,9 @@ class reminder extends \core\task\scheduled_task {
     }
 
     public function execute($debug = false) {
-        if (!get_config('local_edusupport', 'sendreminders'))
+        if (!get_config('local_edusupport', 'sendreminders')) {
             return;
+        }
         echo "Sending";
         global $DB;
         $sql = "SELECT discussionid,currentsupporter
@@ -41,7 +42,7 @@ class reminder extends \core\task\scheduled_task {
                     WHERE opened=1
                         AND currentsupporter>0
                     ORDER BY currentsupporter ASC";
-        $issues = $DB->get_records_sql($sql, array());
+        $issues = $DB->get_records_sql($sql, []);
         if ($debug) {
             print_r($issues);
         }
@@ -50,14 +51,14 @@ class reminder extends \core\task\scheduled_task {
         foreach ($issues as $issue) {
             if (!empty($currentsupporter->id) && $issue->currentsupporter != $currentsupporter->id) {
                 $this->send($currentsupporter, $reminders, $debug);
-                $reminders = array();
+                $reminders = [];
                 $currentsupporter = $issue->currentsupporter;
             }
-            $currentsupporter = $DB->get_record('user', array('id' => $issue->currentsupporter));
-            $discussion = $DB->get_record('forum_discussions', array('id' => $issue->discussionid));
+            $currentsupporter = $DB->get_record('user', ['id' => $issue->currentsupporter]);
+            $discussion = $DB->get_record('forum_discussions', ['id' => $issue->discussionid]);
             if (!empty($discussion->firstpost)) {
-                $post = $DB->get_record('forum_posts', array('id' => $discussion->firstpost));
-                $user = $DB->get_record('users', array('id' => $discussion->userid));
+                $post = $DB->get_record('forum_posts', ['id' => $discussion->firstpost]);
+                $user = $DB->get_record('users', ['id' => $discussion->userid]);
                 $discussion->message = $post->message;
                 $discussion->userfullname = \fullname($user);
                 $discussion->useremail = $user->email;
@@ -67,11 +68,11 @@ class reminder extends \core\task\scheduled_task {
         $this->send($currentsupporter, $reminders, $debug);
     }
 
-    private function send($supporter, $reminders = array(), $debug = false) {
+    private function send($supporter, $reminders = [], $debug = false) {
         global $CFG, $OUTPUT;
         if (!empty($supporter->id) && $supporter->id > 0 && count($reminders) > 0) {
             $subject = $this->get_name();
-            $mailhtml = $OUTPUT->render_from_template('local_edusupport/reminder_discussions', array('discussions' => $reminders, 'wwwroot' => $CFG->wwwroot));
+            $mailhtml = $OUTPUT->render_from_template('local_edusupport/reminder_discussions', ['discussions' => $reminders, 'wwwroot' => $CFG->wwwroot]);
             $mailtext = html_to_text($mailhtml);
 
             if ($debug) {

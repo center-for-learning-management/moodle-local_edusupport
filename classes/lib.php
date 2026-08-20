@@ -34,8 +34,9 @@ class lib {
 
     public static function can_config_course($courseid) {
         global $USER;
-        if (self::can_config_global())
+        if (self::can_config_global()) {
             return true;
+        }
         $context = context_course::instance($courseid);
         return is_enrolled($context, $USER, 'moodle/course:activityvisibility');
     }
@@ -51,7 +52,7 @@ class lib {
     public static function close_issue($discussionid) {
         global $CFG, $DB, $USER;
 
-        $discussion = $DB->get_record('forum_discussions', array('id' => $discussionid));
+        $discussion = $DB->get_record('forum_discussions', ['id' => $discussionid]);
         $issue = self::get_issue($discussionid);
         if (!self::is_supportforum($discussion->forum)) {
             return false;
@@ -62,21 +63,22 @@ class lib {
         }
 
         // 2.) create a post that we closed that issue.
-        self::create_post($issue->discussionid,
+        self::create_post(
+            $issue->discussionid,
             get_string(
                 'issue_closed:post',
                 'local_edusupport',
-                array(
+                [
                     'fromuserfullname' => \fullname($USER),
                     'fromuserid' => $USER->id,
                     'wwwroot' => $CFG->wwwroot,
-                )
+                ]
             ),
             get_string('issue_closed:subject', 'local_edusupport')
         );
 
         // 3.) remove all supporters from the abo-list
-        $DB->delete_records('local_edusupport_subscr', array('discussionid' => $discussionid));
+        $DB->delete_records('local_edusupport_subscr', ['discussionid' => $discussionid]);
 
         $issue->opened = 0;
         $issue->discussionid = $discussionid;
@@ -98,12 +100,12 @@ class lib {
     public static function delete_issue($discussionid) {
         global $CFG, $DB, $USER;
 
-        $issue = $DB->get_record('local_edusupport_issues', array('discussionid' => $discussionid));
+        $issue = $DB->get_record('local_edusupport_issues', ['discussionid' => $discussionid]);
         if (!empty($issue->id)) {
             // remove all supporters from the abo-list
-            $DB->delete_records('local_edusupport_subscr', array('discussionid' => $discussionid));
+            $DB->delete_records('local_edusupport_subscr', ['discussionid' => $discussionid]);
             // delete issue.
-            $DB->delete_records('local_edusupport_issues', array('discussionid' => $discussionid));
+            $DB->delete_records('local_edusupport_issues', ['discussionid' => $discussionid]);
         }
         return true;
     }
@@ -118,30 +120,34 @@ class lib {
         }
 
         $_extralinks = get_config('local_edusupport', 'extralinks');
-        $extralinks = array();
+        $extralinks = [];
         if (!empty($_extralinks)) {
             $_extralinks = explode("\n", $_extralinks);
             for ($a = 0; $a < count($_extralinks); $a++) {
                 $tmp = explode('|', $_extralinks[$a]);
-                $extralink = (object)array('id' => $a);
-                if (!empty($tmp[0]))
+                $extralink = (object)['id' => $a];
+                if (!empty($tmp[0])) {
                     $extralink->name = $tmp[0];
-                if (!empty($tmp[1]))
+                }
+                if (!empty($tmp[1])) {
                     $extralink->url = $tmp[1];
-                if (!empty($tmp[2]))
+                }
+                if (!empty($tmp[2])) {
                     $extralink->faicon = $tmp[2];
-                if (!empty($tmp[3]))
+                }
+                if (!empty($tmp[3])) {
                     $extralink->target = trim($tmp[3]);
+                }
                 $extralinks[] = $extralink;
             }
         }
 
         global $OUTPUT;
-        $nav = $OUTPUT->render_from_template('local_edusupport/injectbutton', array(
+        $nav = $OUTPUT->render_from_template('local_edusupport/injectbutton', [
             'extralinks' => $extralinks,
             'hasextralinks' => count($extralinks) > 0,
             'createurl' => (new \moodle_url('/local/edusupport/create_issue.php'))->out(false),
-        ));
+        ]);
         $cache->set('rendered', $nav);
         return $nav;
     }
@@ -152,7 +158,7 @@ class lib {
      **/
     public static function reopen_issue($discussionid) {
         global $CFG, $DB, $USER;
-        $discussion = $DB->get_record('forum_discussions', array('id' => $discussionid));
+        $discussion = $DB->get_record('forum_discussions', ['id' => $discussionid]);
         $issue = self::get_issue($discussionid);
 
         $issue->opened = 1;
@@ -177,10 +183,11 @@ class lib {
      */
     public static function create_post($discussionid, $text, $subject = "") {
         global $DB, $USER;
-        if (empty($subject))
+        if (empty($subject)) {
             $subject = substr($text, 0, 30);
-        $discussion = $DB->get_record('forum_discussions', array('id' => $discussionid));
-        $post = $DB->get_record('forum_posts', array('discussion' => $discussionid, 'parent' => 0));
+        }
+        $discussion = $DB->get_record('forum_discussions', ['id' => $discussionid]);
+        $post = $DB->get_record('forum_posts', ['discussion' => $discussionid, 'parent' => 0]);
         $post->parent = $post->id;
         unset($post->id);
         $post->userid = $USER->id;
@@ -192,18 +199,18 @@ class lib {
         $post->messageformat = 1;
         $post->id = $DB->insert_record('forum_posts', $post, 1);
 
-        $forum = $DB->get_record('forum', array('id' => $discussion->forum));
-        $dbcontext = $DB->get_record('course_modules', array('course' => $discussion->course, 'instance' => $discussion->forum));
+        $forum = $DB->get_record('forum', ['id' => $discussion->forum]);
+        $dbcontext = $DB->get_record('course_modules', ['course' => $discussion->course, 'instance' => $discussion->forum]);
         $context = \context_module::instance($dbcontext->id);
-        $eventparams = array(
+        $eventparams = [
             'context' => $context,
             'objectid' => $post->id,
-            'other' => array(
+            'other' => [
                 'discussionid' => $discussion->id,
                 'forumid' => $discussion->forum,
                 'forumtype' => $forum->type,
-            ),
-        );
+            ],
+        ];
         $event = \mod_forum\event\post_created::create($eventparams);
         $event->add_record_snapshot('forum_posts', $post);
         $event->trigger();
@@ -214,7 +221,7 @@ class lib {
      * @param object.
      * @return object.
      */
-    public static function expose_properties($object = array()) {
+    public static function expose_properties($object = []) {
         global $CFG;
         $object = (array)$object;
         $keys = array_keys($object);
@@ -239,31 +246,34 @@ class lib {
         // Store rating if we are permitted to.
         global $CFG, $DB, $USER;
 
-        if (empty($USER->id) || isguestuser($USER))
+        if (empty($USER->id) || isguestuser($USER)) {
             return;
+        }
 
-        $forum = $DB->get_record('forum', array('id' => $forumid));
-        $course = $DB->get_record('course', array('id' => $forum->course));
+        $forum = $DB->get_record('forum', ['id' => $forumid]);
+        $course = $DB->get_record('course', ['id' => $forum->course]);
 
         $cm = \get_coursemodule_from_instance('forum', $forumid);
 
         $groupmode = \groups_get_activity_groupmode($cm);
         // If we do not use groups in this forum, return without groups.
-        if (empty($groupmode))
+        if (empty($groupmode)) {
             return;
+        }
 
         // We do not use the function groups_get_user_groups, as it does not
         // return groups that don't have members!!
         // $_groups = \groups_get_user_groups($course->id);
-        $_groups = $DB->get_records('groups', array('courseid' => $course->id));
-        if (count($_groups) == 0)
+        $_groups = $DB->get_records('groups', ['courseid' => $course->id]);
+        if (count($_groups) == 0) {
             return;
+        }
 
         require_once($CFG->dirroot . '/mod/forum/lib.php');
 
-        $groups = array();
+        $groups = [];
         foreach ($_groups as $k => $group) {
-            $ismember = $DB->get_record('groups_members', array('groupid' => $group->id, 'userid' => $USER->id));
+            $ismember = $DB->get_record('groups_members', ['groupid' => $group->id, 'userid' => $USER->id]);
             if (!empty($ismember->id)) {
                 $groups[$k] = $group;
             }
@@ -279,15 +289,16 @@ class lib {
      */
     public static function get_issue($discussionid, $createifnotexist = false) {
         global $DB;
-        if (empty($discussionid))
+        if (empty($discussionid)) {
             return;
-        $issue = $DB->get_record('local_edusupport_issues', array('discussionid' => $discussionid));
+        }
+        $issue = $DB->get_record('local_edusupport_issues', ['discussionid' => $discussionid]);
         if (empty($issue->id) && !empty($createifnotexist)) {
-            $issue = (object)array(
+            $issue = (object)[
                 'discussionid' => $discussionid,
                 'currentsupporter' => 0,
                 'created' => time(),
-            );
+            ];
             $issue->id = $DB->insert_record('local_edusupport_issues', $issue);
         }
         return $issue;
@@ -300,17 +311,18 @@ class lib {
      */
     public static function get_potentialtargets($userid = 0) {
         global $DB, $USER;
-        if (empty($userid))
+        if (empty($userid)) {
             $userid = $USER->id;
+        }
 
         $courseids = array_keys(enrol_get_all_users_courses($userid));
 
-        $forums = array();
+        $forums = [];
         if (!$courseids) {
             return $forums;
         }
 
-        list($insql, $inparams) = $DB->get_in_or_equal($courseids);
+        [$insql, $inparams] = $DB->get_in_or_equal($courseids);
         $sql = "SELECT f.id,f.name,f.course
                     FROM {local_edusupport} be, {forum} f, {course} c
                     WHERE f.course=c.id
@@ -320,10 +332,11 @@ class lib {
         $_forums = $DB->get_records_sql($sql, $inparams);
         $delimiter = ' > ';
         foreach ($_forums as &$forum) {
-            $course = $DB->get_record('course', array('id' => $forum->course), 'id,fullname');
+            $course = $DB->get_record('course', ['id' => $forum->course], 'id,fullname');
             $coursecontext = \context_course::instance($forum->course);
-            if (empty($coursecontext->id))
+            if (empty($coursecontext->id)) {
                 continue;
+            }
 
             $fcm = get_coursemodule_from_instance('forum', $forum->id, 0, false, MUST_EXIST);
             $fctx = \context_module::instance($fcm->id);
@@ -373,12 +386,13 @@ class lib {
      */
     public static function is_supportteam($userid = 0, $courseid = 0, $includeglobalteam = true) {
         global $DB, $USER;
-        if (empty($userid))
+        if (empty($userid)) {
             $userid = $USER->id;
+        }
         $sql = "SELECT id,userid
                     FROM {local_edusupport_supporters}
                     WHERE userid = ?";
-        $params = array($userid);
+        $params = [$userid];
 
         if ($courseid > 0 && !$includeglobalteam) {
             $sql .= " AND courseid = ?";
@@ -405,7 +419,7 @@ class lib {
      */
     public static function is_supportforum($forumid) {
         global $DB;
-        $chk = $DB->get_record('local_edusupport', array('forumid' => $forumid));
+        $chk = $DB->get_record('local_edusupport', ['forumid' => $forumid]);
         return !empty($chk->id);
     }
 
@@ -450,7 +464,7 @@ class lib {
     public static function revoke_issue($discussionid) {
         global $CFG, $DB, $USER;
 
-        $discussion = $DB->get_record('forum_discussions', array('id' => $discussionid));
+        $discussion = $DB->get_record('forum_discussions', ['id' => $discussionid]);
         $issue = self::get_issue($discussionid);
         if (!self::is_supportforum($discussion->forum)) {
             return false;
@@ -462,24 +476,25 @@ class lib {
         }
 
         // 2.) create a post that we closed that issue.
-        self::create_post($issue->discussionid,
+        self::create_post(
+            $issue->discussionid,
             get_string(
                 'issue_revoke:post',
                 'local_edusupport',
-                array(
+                [
                     'fromuserfullname' => \fullname($USER),
                     'fromuserid' => $USER->id,
                     'wwwroot' => $CFG->wwwroot,
-                )
+                ]
             ),
             get_string('issue_revoke:subject', 'local_edusupport')
         );
 
         // 3.) remove all supporters from the abo-list
-        $DB->delete_records('local_edusupport_subscr', array('discussionid' => $discussionid));
+        $DB->delete_records('local_edusupport_subscr', ['discussionid' => $discussionid]);
 
         // 4.) remove issue-link from database
-        $DB->delete_records('local_edusupport_issues', array('discussionid' => $discussionid));
+        $DB->delete_records('local_edusupport_issues', ['discussionid' => $discussionid]);
 
         return true;
     }
@@ -492,14 +507,14 @@ class lib {
     public static function set_2nd_level($discussionid) {
         global $CFG, $DB, $USER;
 
-        $discussion = $DB->get_record('forum_discussions', array('id' => $discussionid));
+        $discussion = $DB->get_record('forum_discussions', ['id' => $discussionid]);
         $issue = self::get_issue($discussionid, true);
         if (!self::is_supportforum($discussion->forum)) {
             return false;
         }
 
         // @TODO Only subscribe 1 person and make it responsible!
-        $supportforum = $DB->get_record('local_edusupport', array('forumid' => $discussion->forum));
+        $supportforum = $DB->get_record('local_edusupport', ['forumid' => $discussion->forum]);
         $sql = "SELECT *
                     FROM {local_edusupport_supporters}
                     WHERE supportlevel = ''
@@ -509,7 +524,7 @@ class lib {
                             OR
                             courseid = ?
                         )";
-        $supporters = $DB->get_records_sql($sql, array(time(), \local_edusupport\lib::SYSTEM_COURSE_ID, $discussion->course));
+        $supporters = $DB->get_records_sql($sql, [time(), self::SYSTEM_COURSE_ID, $discussion->course]);
 
         if (count($supporters) == 0) {
             // Fall back without holidaymode.
@@ -521,7 +536,7 @@ class lib {
                                 OR
                                 courseid = ?
                             )";
-            $supporters = $DB->get_records_sql($sql, array(\local_edusupport\lib::SYSTEM_COURSE_ID, $discussion->course));
+            $supporters = $DB->get_records_sql($sql, [self::SYSTEM_COURSE_ID, $discussion->course]);
         }
 
         if (!empty($supportforum->dedicatedsupporter) && !empty($supporters[$supportforum->dedicatedsupporter]->id)) {
@@ -531,15 +546,16 @@ class lib {
             $keys = array_keys($supporters);
             $dedicated = $supporters[$keys[array_rand($keys)]];
         }
-        $DB->set_field('local_edusupport_issues', 'currentsupporter', $dedicated->userid, array('discussionid' => $discussion->id));
+        $DB->set_field('local_edusupport_issues', 'currentsupporter', $dedicated->userid, ['discussionid' => $discussion->id]);
         self::subscription_add($discussionid, $dedicated->userid);
 
-        self::create_post($issue->discussionid,
-            get_string('issue_assign_nextlevel:post', 'local_edusupport', (object)array(
+        self::create_post(
+            $issue->discussionid,
+            get_string('issue_assign_nextlevel:post', 'local_edusupport', (object)[
                 'fromuserfullname' => \fullname($USER),
                 'fromuserid' => $USER->id,
                 'wwwroot' => $CFG->wwwroot,
-            )),
+            ]),
             get_string('issue_assigned:subject', 'local_edusupport')
         );
 
@@ -555,7 +571,7 @@ class lib {
     public static function set_current_supporter($discussionid, $userid) {
         global $CFG, $DB, $USER;
 
-        $discussion = $DB->get_record('forum_discussions', array('id' => $discussionid));
+        $discussion = $DB->get_record('forum_discussions', ['id' => $discussionid]);
         $issue = self::get_issue($discussionid);
         if (!self::is_supportforum($discussion->forum)) {
             return -1;
@@ -570,26 +586,27 @@ class lib {
         }
 
         // Set currentsupporter and add to subscribed users.
-        $DB->set_field('local_edusupport_issues', 'currentsupporter', $userid, array('discussionid' => $discussion->id));
+        $DB->set_field('local_edusupport_issues', 'currentsupporter', $userid, ['discussionid' => $discussion->id]);
         self::subscription_add($discussionid, $userid);
 
-        $supporter = $DB->get_record('local_edusupport_supporters', array('userid' => $userid));
+        $supporter = $DB->get_record('local_edusupport_supporters', ['userid' => $userid]);
         if (empty($supporter->supportlevel)) {
             $supporter->supportlevel = get_string('label:2ndlevel', 'local_edusupport');
         }
-        $touser = $DB->get_record('user', array('id' => $userid));
-        self::create_post($discussionid,
+        $touser = $DB->get_record('user', ['id' => $userid]);
+        self::create_post(
+            $discussionid,
             get_string(
                 ($userid == $USER->id) ? 'issue_assign_3rdlevel:postself' : 'issue_assign_3rdlevel:post',
                 'local_edusupport',
-                (object)array(
+                (object)[
                     'fromuserfullname' => \fullname($USER),
                     'fromuserid' => $USER->id,
                     'touserfullname' => \fullname($touser),
                     'touserid' => $userid,
                     'tosupportlevel' => $supporter->supportlevel,
                     'wwwroot' => $CFG->wwwroot,
-                )
+                ]
             ),
             get_string('issue_assigned:subject', 'local_edusupport')
         );
@@ -606,7 +623,6 @@ class lib {
 
         $DB->update_record('local_edusupport_issues', $issue);
         return true;
-
     }
 
 
@@ -617,19 +633,21 @@ class lib {
      */
     public static function subscription_add($discussionid, $userid = 0) {
         global $DB, $USER;
-        if (empty($userid))
+        if (empty($userid)) {
             $userid = $USER->id;
-        $discussion = $DB->get_record('forum_discussions', array('id' => $discussionid));
-        if (!self::is_supportteam($userid, $discussion->course))
+        }
+        $discussion = $DB->get_record('forum_discussions', ['id' => $discussionid]);
+        if (!self::is_supportteam($userid, $discussion->course)) {
             return;
+        }
         $issue = self::get_issue($discussionid);
-        $subscription = $DB->get_record('local_edusupport_subscr', array('discussionid' => $discussionid, 'userid' => $userid));
+        $subscription = $DB->get_record('local_edusupport_subscr', ['discussionid' => $discussionid, 'userid' => $userid]);
         if (empty($subscription->id)) {
-            $subscription = (object)array(
+            $subscription = (object)[
                 'issueid' => $issue->id,
                 'discussionid' => $discussionid,
                 'userid' => $userid,
-            );
+            ];
             $subscription->id = $DB->insert_record('local_edusupport_subscr', $subscription);
         }
         return $subscription;
@@ -642,9 +660,10 @@ class lib {
      */
     public static function subscription_remove($discussionid, $userid = 0) {
         global $DB, $USER;
-        if (empty($userid))
+        if (empty($userid)) {
             $userid = $USER->id;
-        $DB->delete_records('local_edusupport_subscr', array('discussionid' => $discussionid, 'userid' => $userid));
+        }
+        $DB->delete_records('local_edusupport_subscr', ['discussionid' => $discussionid, 'userid' => $userid]);
     }
 
     /**
@@ -654,9 +673,9 @@ class lib {
      */
     public static function supportforum_disable($forumid) {
         global $DB;
-        $DB->delete_records('local_edusupport', array('forumid' => $forumid));
+        $DB->delete_records('local_edusupport', ['forumid' => $forumid]);
         self::supportforum_managecaps($forumid, false);
-        \local_edusupport\lib::supportforum_rolecheck($forumid);
+        self::supportforum_rolecheck($forumid);
         // @TODO shall we check for orphaned discussions too?
     }
 
@@ -667,28 +686,30 @@ class lib {
      **/
     public static function supportforum_enable($forumid) {
         global $DB, $USER;
-        $forum = $DB->get_record('forum', array('id' => $forumid));
-        if (empty($forum->course))
+        $forum = $DB->get_record('forum', ['id' => $forumid]);
+        if (empty($forum->course)) {
             return false;
+        }
 
-        $supportforum = $DB->get_record('local_edusupport', array('forumid' => $forumid));
+        $supportforum = $DB->get_record('local_edusupport', ['forumid' => $forumid]);
         if (empty($supportforum->id)) {
-            $course = $DB->get_record('course', array('id' => $forum->course));
-            $supportforum = (object)array(
+            $course = $DB->get_record('course', ['id' => $forum->course]);
+            $supportforum = (object)[
                 'categoryid' => $course->category,
                 'courseid' => $forum->course,
                 'forumid' => $forum->id,
                 'archiveid' => 0,
                 'dedicatedsupporter' => 0,
-            );
+            ];
             $supportforum->id = $DB->insert_record('local_edusupport', $supportforum);
         }
 
         self::supportforum_managecaps($forumid, true);
-        \local_edusupport\lib::supportforum_rolecheck($forumid);
-        if (!empty($supportforum->id))
+        self::supportforum_rolecheck($forumid);
+        if (!empty($supportforum->id)) {
             return $supportforum;
-        else return false;
+        } else { return false;
+        }
     }
 
     /**
@@ -698,15 +719,16 @@ class lib {
      **/
     public static function supportforum_managecaps($forumid, $trigger) {
         global $DB, $USER;
-        $forum = $DB->get_record('forum', array('id' => $forumid));
-        if (empty($forum->course))
+        $forum = $DB->get_record('forum', ['id' => $forumid]);
+        if (empty($forum->course)) {
             return false;
+        }
 
         $cm = \get_coursemodule_from_instance('forum', $forumid, 0, false, MUST_EXIST);
         $ctxmod = \context_module::instance($cm->id);
         $ctxcourse = \context_course::instance($forum->course);
 
-        $capabilities = array(
+        $capabilities = [
             'moodle/course:activityvisibility',
             'moodle/course:changecategory',
             'moodle/course:changefullname',
@@ -721,8 +743,8 @@ class lib {
             'moodle/restore:restorecourse',
             'moodle/restore:restoresection',
             'moodle/restore:viewautomatedfilearea',
-        );
-        $roles = array(
+        ];
+        $roles = [
             7,
             7,
             7,
@@ -737,8 +759,8 @@ class lib {
             7,
             7,
             7,
-        );
-        $contexts = array(
+        ];
+        $contexts = [
             $ctxmod,
             $ctxcourse,
             $ctxcourse,
@@ -753,7 +775,7 @@ class lib {
             $ctxcourse,
             $ctxcourse,
             $ctxcourse,
-        );
+        ];
         $permission = ($trigger) ? CAP_PROHIBIT : CAP_INHERIT;
         for ($a = 0; $a < count($capabilities); $a++) {
             \role_change_permission($roles[$a], $contexts[$a], $capabilities[$a], $permission);
@@ -768,14 +790,15 @@ class lib {
         global $DB;
         if (empty($forumid)) {
             // We have to re-sync all supportforums.
-            $forums = $DB->get_records('local_edusupport', array());
+            $forums = $DB->get_records('local_edusupport', []);
             foreach ($forums as $forum) {
                 self::supportforum_rolecheck($forum->forumid);
             }
         } else {
-            $forum = $DB->get_record('forum', array('id' => $forumid), '*', IGNORE_MISSING);
-            if (empty($forum->id))
+            $forum = $DB->get_record('forum', ['id' => $forumid], '*', IGNORE_MISSING);
+            if (empty($forum->id)) {
                 return;
+            }
             $issupportforum = self::is_supportforum($forumid);
 
             $cm = \get_coursemodule_from_instance('forum', $forumid, $forum->course, false, MUST_EXIST);
@@ -785,12 +808,12 @@ class lib {
 
             // Get all users that currently have the supporter-role.
             $sql = "SELECT userid FROM {role_assignments} WHERE roleid=? AND contextid=?";
-            $curmembers = array_keys($DB->get_records_sql($sql, array($roleid, $ctx->id)));
+            $curmembers = array_keys($DB->get_records_sql($sql, [$roleid, $ctx->id]));
             foreach ($curmembers as $curmember) {
                 $unassign = false;
-                if (!$issupportforum)
+                if (!$issupportforum) {
                     $unassign = true;
-                else {
+                } else {
                     $issupporter = self::is_supportteam($curmember, $forum->course);
                     $unassign = empty($issupporter->id);
                 }
@@ -804,7 +827,7 @@ class lib {
                 $sql = "SELECT *
                             FROM {local_edusupport_supporters}
                             WHERE courseid=? OR courseid=?";
-                $params = array(self::SYSTEM_COURSE_ID, $forum->course);
+                $params = [self::SYSTEM_COURSE_ID, $forum->course];
                 $members = $DB->get_records_sql($sql, $params);
                 foreach ($members as $member) {
                     role_assign($roleid, $member->userid, $ctx->id);
@@ -818,15 +841,17 @@ class lib {
      * @param userid.
      **/
     public static function supportforum_setdedicatedsupporter($forumid, $userid) {
-        if (!self::is_supportforum($forumid))
+        if (!self::is_supportforum($forumid)) {
             return false;
+        }
         global $DB;
         if ($userid == -1) {
-            $DB->set_field('local_edusupport', 'dedicatedsupporter', -1, array('forumid' => $forumid));
+            $DB->set_field('local_edusupport', 'dedicatedsupporter', -1, ['forumid' => $forumid]);
         } else {
-            if (!self::is_supportteam($userid))
+            if (!self::is_supportteam($userid)) {
                 return false;
-            $DB->set_field('local_edusupport', 'dedicatedsupporter', $userid, array('forumid' => $forumid));
+            }
+            $DB->set_field('local_edusupport', 'dedicatedsupporter', $userid, ['forumid' => $forumid]);
         }
         return true;
     }
@@ -869,7 +894,7 @@ class lib {
         $cache = \cache::make('local_edusupport', 'spamprotect');
         $timeoffset = time() - $protecttime;
         // The cache returns false as long as nothing has been stored for this session.
-        $log = $cache->get('log') ?: array();
+        $log = $cache->get('log') ?: [];
         if ($log) {
             for ($a = 0; $a < count($log); $a++) {
                 if ($log[$a] < $timeoffset) {
@@ -900,8 +925,10 @@ class lib {
         $screenshot = null;
         if ($data->screenshot) {
             $usercontext = \context_user::instance($USER->id);
-            $draftfiles = get_file_storage()->get_area_files($usercontext->id, 'user', 'draft',
-                $data->screenshot, 'id DESC', false);
+            $draftfiles = get_file_storage()->get_area_files(
+                $usercontext->id, 'user', 'draft',
+                $data->screenshot, 'id DESC', false
+            );
             $screenshot = reset($draftfiles);
         }
 
@@ -924,8 +951,10 @@ class lib {
                 // email_to_user() needs the attachment as a file on disk.
                 $filepath = $CFG->tempdir . '/edusupport-' . md5($USER->id . microtime());
                 $screenshot->copy_content_to($filepath);
-                email_to_user($supportuser, $USER, $data->subject, $messagetext, $messagehtml,
-                    $filepath, $screenshot->get_filename());
+                email_to_user(
+                    $supportuser, $USER, $data->subject, $messagetext, $messagehtml,
+                    $filepath, $screenshot->get_filename()
+                );
                 unlink($filepath);
             } else {
                 email_to_user($supportuser, $USER, $data->subject, $messagetext, $messagehtml, '', true);
@@ -939,8 +968,8 @@ class lib {
         }
 
         // Mainly copied from mod/forum/externallib.php > add_discussion().
-        $forum = $DB->get_record('forum', array('id' => $forumid), '*', MUST_EXIST);
-        list($course, $cm) = get_course_and_cm_from_instance($forum, 'forum');
+        $forum = $DB->get_record('forum', ['id' => $forumid], '*', MUST_EXIST);
+        [$course, $cm] = get_course_and_cm_from_instance($forum, 'forum');
         $context = \context_module::instance($cm->id);
 
         if (!groups_get_activity_groupmode($cm)) {
@@ -979,7 +1008,7 @@ class lib {
         $discussion->id = $discussionid;
 
         if ($screenshot) {
-            $fr = (object)array(
+            $fr = (object)[
                 'component' => 'mod_forum',
                 'contextid' => $context->id,
                 'userid' => $USER->id,
@@ -989,17 +1018,17 @@ class lib {
                 'itemid' => $discussion->firstpost,
                 'license' => $CFG->sitedefaultlicense,
                 'author' => fullname($USER),
-            );
-            $fr->source = serialize((object)array('source' => $fr->filename));
+            ];
+            $fr->source = serialize((object)['source' => $fr->filename]);
             get_file_storage()->create_file_from_storedfile($fr, $screenshot);
-            $DB->set_field('forum_posts', 'attachment', 1, array('id' => $discussion->firstpost));
+            $DB->set_field('forum_posts', 'attachment', 1, ['id' => $discussion->firstpost]);
         }
 
-        $event = \mod_forum\event\discussion_created::create(array(
+        $event = \mod_forum\event\discussion_created::create([
             'context' => $context,
             'objectid' => $discussion->id,
-            'other' => array('forumid' => $forum->id),
-        ));
+            'other' => ['forumid' => $forum->id],
+        ]);
         $event->add_record_snapshot('forum_discussions', $discussion);
         $event->trigger();
 
@@ -1017,15 +1046,16 @@ class lib {
             static::set_2nd_level($discussion->id);
         } else {
             // Post answer containing the responsibles.
-            $responsibles = array();
+            $responsibles = [];
             foreach (array_values(static::get_course_supporters($forum)) as $manager) {
                 $responsibles[] = "<a href=\"{$CFG->wwwroot}/user/profile.php?id={$manager->id}\" target=\"_blank\">{$manager->firstname} {$manager->lastname}</a>";
             }
-            static::create_post($discussion->id,
-                get_string('issue_responsibles:post', 'local_edusupport', array(
+            static::create_post(
+                $discussion->id,
+                get_string('issue_responsibles:post', 'local_edusupport', [
                     'responsibles' => implode(', ', $responsibles),
                     'sitename' => $SITE->fullname,
-                )),
+                ]),
                 get_string('issue_responsibles:subject', 'local_edusupport')
             );
         }
